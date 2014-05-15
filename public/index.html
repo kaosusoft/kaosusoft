@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+	<head>
+		<title>가오수 World</title>
+		<meta charset="UTF-8" />
+		<link rel="stylesheet" href="stylesheet.css" />
+		<script src="prefixfree.min.js"></script>
+		<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+		<script>
+			$(document).ready(function(){
+				// var clock = document.getElementById('clock');
+				var datefunc = function(){
+					var date = new Date();
+					var dateString = '';
+					//dateString += date.getMonth() + '월 ';
+					//dateString += date.getDay() + '일 ';
+					if(date.getHours() < 12) dateString += '오전 ';
+					else dateString += '오후 ';
+					if(date.getHours()%12 == 0) dateString += '12시 ';
+					else dateString += (date.getHours()%12) + '시 ';
+					if(date.getMinutes()<10) dateString += '0';
+					dateString += date.getMinutes() + '분 ';
+					if(date.getSeconds()<10) dateString += '0';
+					dateString += date.getSeconds() + '초';
+					return dateString;
+				};
+				
+				$('#clock').html(datefunc());
+				setInterval(function(){
+					$('#clock').html(datefunc());
+				}, 1000);
+				
+				$('#testgame').click(function(){
+					location = "/testgame";
+				});
+				$('#memorycard').click(function(){
+					location = "/memorycard";
+				});
+				$('#quoridor').click(function(){
+					location = "/quoridor";
+				});
+				$('#racer').click(function(){
+					location = "/racer";
+				});
+				$('#upload').click(function(){
+					location = "/upload";
+				});
+				
+				var cubesize = 0;
+				
+				var intervalID = setInterval(function(){
+					if(cubesize>=300) {
+						cubesize = 300;
+						clearInterval(intervalID);
+					};
+					$('#cube_container').css({
+					'top': '100px',
+					'left': '100px'
+					});
+					
+					$('#cube_container>div').css({
+						'left': 150-cubesize*0.5+'px',
+						'width': cubesize,
+						'height': cubesize
+					});
+					cubesize += 4;
+				}, 1000/60);
+			});
+		</script>
+	</head>
+	<body>
+		<div class="container">
+			<div id="button_container">
+				<div id="upload">업로드</div>
+				<div id="testgame">테스트게임</div>
+				<div id="memorycard">카드 짝 맞추기</div>
+				<div id="quoridor">쿼리도 온라인</div>
+				<div id="racer">가오수 그랑프리</div>
+			</div>
+    		<!-- <h2 id="testgame">테스트게임</h2> -->
+    		<!-- <h2 id="memorycard">카드 짝 맞추기</h2> -->
+    		<div id="cube">
+				<div class="heading">
+      				<h1 class="title">가오수 World</h1>
+    			</div>
+    			<p id="clock"> </p>
+    			<p class="game-intro">Welcome to the <strong>kaosu world!</strong></p>
+	    		<div id="cube_container">
+					<div></div>
+					<div></div>
+					<div></div>
+					<div></div>
+					<div></div>
+					<div></div>
+				</div>
+			</div>
+
+			<div id="pudding">
+				<div id="dog"></div>
+				<div id="dog"></div>
+				<div id="dog"></div>
+				<div id="dog"></div>
+				<div id="dog"></div>
+				<div id="dog"></div>
+				<div id="dog"></div>
+				<div id="dog"></div>
+				<div id="dog"></div>
+				<div id="dog"></div>
+				<div id="dog"></div>
+				<div id="dog"></div>
+				<div id="dog"></div>
+				<div id="dog"></div>
+				<div id="dog"></div>
+				<div id="dog"></div>
+				<div id="dog"></div>
+				<div id="dog"></div>
+				<div id="dog"></div>
+				<div id="dog"></div>
+			</div>
+		</div>
+	</body>
+</html>
