@@ -11,10 +11,11 @@ var client = mysql.createConnection({
 	host: 'localhost',
 	port: '3306',
 	user: 'lible',
-	password: '0123523u'
+	password: '0123523u',
+	database: 'lible'
 });
 
-client.query('USE lible');
+// client.query('USE lible');
 
 var app = express();
 
