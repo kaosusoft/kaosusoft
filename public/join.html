@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko">
+	<head>
+		<title>가오수 World</title>
+		<meta charset="UTF-8" />
+		<link rel="stylesheet" href="stylesheet.css" />
+		<script src="prefixfree.min.js"></script>
+		<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+		<script>
+			$(document).ready(function(){
+				$('#join').click(function(){
+					var email = $('#emailinput').val();
+					var pw = $('#pwinput').val();
+					var pw2 = $('#pwinput2').val();
+					var nick = $('#nickinput').val();
+					if(email.length == 0){
+						alert('이메일을 입력하세요.');
+						return;
+					}
+					if(!checkEmail(email)){
+						alert('이메일 형식이 잘못되었습니다.');
+						return;
+					}
+					if(nick.length == 0){
+						alert('닉네임을 입력하세요.');
+						return;
+					}
+					if(pw.length == 0){
+						alert('패스워드를 입력하세요.');
+						return;
+					}
+					if(pw.length<4 || pw.length>12){
+						alert('패스워드는 4자와 12자 사이입니다.');
+						return;
+					}
+					if(pw2.length == 0){
+						alert('패스워드 확인을 입력하세요.');
+						return;
+					}
+					if(pw != pw2){
+						alert('패스워드확인이 일치하지 않습니다.');
+						return;
+					}
+					
+					var form = document.getElementById('register');
+					form.submit();
+					
+					var btjoin = document.getElementById('join');
+					btjoin.disabled = 'true';
+				});
+			});
+			
+			function checkEmail(str){
+				var filter = /^([/\w/g\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/;
+				if(filter.test(str)){
+					return true;
+				}else{
+					return false;
+				}
+			}
+		</script>
+	</head>
+	<body>
+		<div class="container">
+			<div id="form_container">
+				<form method="post" id="register">
+					<fieldset>
+						<legend>회원가입</legend>
+						<table>
+							<tr>
+								<td><label id="emaillabel">E-mail</label></td>
+								<td><input type="email" name="inputE" id="emailinput"/></td>
+							</tr>
+							<tr>
+								<td><label id="nicklabel">Nickname</label></td>
+								<td><input type="text" name="inputN" id="nickinput"/></td>
+							</tr>
+							<tr>
+								<td><label id="pwlabel">Password</label></td>
+								<td><input type="password" name="inputP" id="pwinput"/></td>
+							</tr>
+							<tr>
+								<td><label id="pwlabel2">Confirm</label></td>
+								<td><input type="password" name="inputP2" id="pwinput2"/></td>
+								<td><input type="button" value="회원가입" id="join"/></td>
+							</tr>
+						</table>
+						<br />
+						<label>입력하신 email로 가입확인 메일이 발송됩니다.</label>
+						<br />
+						<label>이 사이트의 모든 개인정보는 전혀 암호화되지 않습니다.</label>
+					</fieldset>
+				</form>
+			</div>
+		</div>
+	</body>
+</html>

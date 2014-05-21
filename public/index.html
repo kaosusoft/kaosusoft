@@ -30,20 +30,8 @@
 					$('#clock').html(datefunc());
 				}, 1000);
 				
-				$('#testgame').click(function(){
-					location = "/testgame";
-				});
-				$('#memorycard').click(function(){
-					location = "/memorycard";
-				});
-				$('#quoridor').click(function(){
-					location = "/quoridor";
-				});
-				$('#racer').click(function(){
-					location = "/racer";
-				});
-				$('#upload').click(function(){
-					location = "/upload";
+				$('#join').click(function(){
+					location = "/register";
 				});
 				
 				var cubesize = 0;
@@ -70,12 +58,24 @@
 	</head>
 	<body>
 		<div class="container">
-			<div id="button_container">
-				<div id="upload">업로드</div>
-				<div id="testgame">테스트게임</div>
-				<div id="memorycard">카드 짝 맞추기</div>
-				<div id="quoridor">쿼리도 온라인</div>
-				<div id="racer">가오수 그랑프리</div>
+			<div id="form_container">
+				<fieldset>
+					<legend>로그인</legend>
+					<table>
+						<tr>
+							<td><label id="emaillabel">E-mail</label></td>
+							<td><input type="email" name="email" id="emailinput"/></td>
+						</tr>
+						<tr>
+							<td><label id="pwlabel">Password</label></td>
+							<td><input type="password" name="password" id="pwinput"/></td>
+							<td><input type="submit" value="로그인"/></td>
+						</tr>
+					</table>
+					<br />
+					<label>이 사이트의 모든 개인정보는 전혀 암호화되지 않습니다.</label>
+					</fieldset>
+				<button id="join">회원가입</button>
 			</div>
     		<!-- <h2 id="testgame">테스트게임</h2> -->
     		<!-- <h2 id="memorycard">카드 짝 맞추기</h2> -->
@@ -93,29 +93,6 @@
 					<div></div>
 					<div></div>
 				</div>
-			</div>
-
-			<div id="pudding">
-				<div id="dog"></div>
-				<div id="dog"></div>
-				<div id="dog"></div>
-				<div id="dog"></div>
-				<div id="dog"></div>
-				<div id="dog"></div>
-				<div id="dog"></div>
-				<div id="dog"></div>
-				<div id="dog"></div>
-				<div id="dog"></div>
-				<div id="dog"></div>
-				<div id="dog"></div>
-				<div id="dog"></div>
-				<div id="dog"></div>
-				<div id="dog"></div>
-				<div id="dog"></div>
-				<div id="dog"></div>
-				<div id="dog"></div>
-				<div id="dog"></div>
-				<div id="dog"></div>
 			</div>
 		</div>
 	</body>
