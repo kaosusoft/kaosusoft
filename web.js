@@ -11,7 +11,7 @@ var client = mysql.createConnection({
 	host: 'localhost',
 	port: 3306,
 	user: 'lible',
-	password: '0123523u',
+	password: 'kaosu123',
 	database: 'lible'
 });
 
@@ -66,7 +66,7 @@ app.post('/register', function(request, response){
 		var output = shasum.digest('hex');
 		
 		console.log(output);
-		var htmlstr = '<h1>가오수월드 가입확인 메일입니다.</h1><h2>가입을 원하시는 경우 다음 링크를 클릭 해 주세요.</h2><a href="http://kaosusoft.cafae24app.com/confirm/';
+		var htmlstr = '<h1>가오수월드 가입확인 메일입니다.</h1><h2>가입을 원하시는 경우 다음 링크를 클릭 해 주세요.</h2><a href="http://kaosusoft.cafe24app.com/confirm/';
 		htmlstr += output;
 		htmlstr += '">가입완료하기</a>';
 		
