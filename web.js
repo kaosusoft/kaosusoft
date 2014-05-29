@@ -12,7 +12,8 @@ var client = mysql.createConnection({
 	port: 3306,
 	user: 'lible',
 	password: 'kaosu123',
-	database: 'lible'
+	database: 'lible',
+	_socket: '/var/run/mysqld/mysqld.sock'
 });
 
 // var client = mysql.createConnection({
