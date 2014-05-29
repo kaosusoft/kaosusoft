@@ -7,8 +7,8 @@ var nodemailer = require('nodemailer');
 var crypto = require('crypto');
 var mysql = require('mysql');
 
-var client = mysql.Client({
-	host: 'localhost',
+var client = mysql.createConnection({
+	host: '10.0.0.1',
 	port: 3306,
 	user: 'lible',
 	password: 'kaosu123',
