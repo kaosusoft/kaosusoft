@@ -102,8 +102,8 @@ app.get('/confirm/:token', function(request, response){
 	var token = request.param('token');
 	for(var i=0; i<memberConfirm.length; i++){
 		if(memberConfirm[i].code == token){
-			client.query('select * from member', function(error, result, fields){
-			// client.query('INSERT INTO member (email, name, password, token) VALUES (?, ?, ?, ?)', [memberConfirm[i].email, memberConfirm[i].name, memberConfirm[i].pw, memberConfirm[i].code], function(error, result, fields){
+			// client.query('select * from member', function(error, result, fields){
+			client.query('INSERT INTO member (email, name, password, token) VALUES (?, ?, ?, ?)', [memberConfirm[i].email, memberConfirm[i].name, memberConfirm[i].pw, memberConfirm[i].code], function(error, result, fields){
 				if(error){
 					console.log('fail');
 					console.log(error);
