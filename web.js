@@ -7,13 +7,12 @@ var nodemailer = require('nodemailer');
 var crypto = require('crypto');
 var mysql = require('mysql');
 
-var client = mysql.createConnection({
+var client = mysql.Client({
 	host: 'localhost',
 	port: 3306,
 	user: 'lible',
 	password: 'kaosu123',
-	database: 'lible',
-	_socket: '/var/run/mysqld/mysqld.sock'
+	database: 'lible'
 });
 
 // var client = mysql.createConnection({
@@ -103,8 +102,8 @@ app.get('/confirm/:token', function(request, response){
 	var token = request.param('token');
 	for(var i=0; i<memberConfirm.length; i++){
 		if(memberConfirm[i].code == token){
-			// client.query('select * from member', function(error, result, fields){
-			client.query('INSERT INTO member (email, name, password, token) VALUES (?, ?, ?, ?)', [memberConfirm[i].email, memberConfirm[i].name, memberConfirm[i].pw, memberConfirm[i].code], function(error, result, fields){
+			client.query('select * from member', function(error, result, fields){
+			// client.query('INSERT INTO member (email, name, password, token) VALUES (?, ?, ?, ?)', [memberConfirm[i].email, memberConfirm[i].name, memberConfirm[i].pw, memberConfirm[i].code], function(error, result, fields){
 				if(error){
 					console.log('fail');
 					console.log(error);
