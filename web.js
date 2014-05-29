@@ -9,11 +9,17 @@ var mysql = require('mysql');
 
 var client = mysql.createConnection({
 	host: 'localhost',
-	port: '3306',
+	port: 3306,
 	user: 'lible',
 	password: '0123523u',
 	database: 'lible'
 });
+
+// var client = mysql.createConnection({
+	// user: 'root',
+	// password: '0123523u',
+	// database: 'lible'
+// });
 
 // client.query('USE lible');
 
@@ -60,8 +66,7 @@ app.post('/register', function(request, response){
 		var output = shasum.digest('hex');
 		
 		console.log(output);
-		
-		var htmlstr = '<h1>가오수월드 가입확인 메일입니다.</h1><h2>가입을 원하시는 경우 다음 링크를 클릭 해 주세요.</h2><a href="http://kaosusoft.cafe24app.com/confirm/';
+		var htmlstr = '<h1>가오수월드 가입확인 메일입니다.</h1><h2>가입을 원하시는 경우 다음 링크를 클릭 해 주세요.</h2><a href="http://kaosusoft.cafae24app.com/confirm/';
 		htmlstr += output;
 		htmlstr += '">가입완료하기</a>';
 		
@@ -97,12 +102,16 @@ app.get('/confirm/:token', function(request, response){
 	var token = request.param('token');
 	for(var i=0; i<memberConfirm.length; i++){
 		if(memberConfirm[i].code == token){
+			// client.query('select * from member', function(error, result, fields){
 			client.query('INSERT INTO member (email, name, password, token) VALUES (?, ?, ?, ?)', [memberConfirm[i].email, memberConfirm[i].name, memberConfirm[i].pw, memberConfirm[i].code], function(error, result, fields){
 				if(error){
 					console.log('fail');
+					console.log(error);
 				}else{
+					console.log('success');
 					console.log(result);
 				}
+				console.log('result');
 			});
 			response.redirect('/registerconfirm');
 			return;
