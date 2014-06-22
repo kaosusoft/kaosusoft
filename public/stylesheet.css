@@ -162,9 +162,15 @@ h2 {
 	margin-left: 10px;
 }
 
-#emailinput, #pwinput, #pwinput2, #nickinput {
+#emailinput, #pwinput, #pwinput2, #nickinput, #nameinput {
 	margin-left: 30px;
-	width: 300px;
+	width: 150px;
+}
+
+#emaillabel2, #pwlabel3, #pwlabel4, #nicklabel2, #namelabel2 {
+	margin-left: 30px;
+	width: 100px;
+	font-size: 0.5em;
 }
 
 #clock{

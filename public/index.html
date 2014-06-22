@@ -31,7 +31,8 @@
 				}, 1000);
 				
 				$('#join').click(function(){
-					location = "/register";
+					// location = "/register";
+					window.open('http://127.0.0.1:8002/register', 'child', 'width=540, height=240', true);
 				});
 				
 				var cubesize = 0;
@@ -63,11 +64,11 @@
 					<legend>로그인</legend>
 					<table>
 						<tr>
-							<td><label id="emaillabel">E-mail</label></td>
+							<td><label id="emaillabel">아이디</label></td>
 							<td><input type="email" name="email" id="emailinput"/></td>
 						</tr>
 						<tr>
-							<td><label id="pwlabel">Password</label></td>
+							<td><label id="pwlabel">패스워드</label></td>
 							<td><input type="password" name="password" id="pwinput"/></td>
 							<td><input type="submit" value="로그인"/></td>
 						</tr>

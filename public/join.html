@@ -6,31 +6,164 @@
 		<link rel="stylesheet" href="stylesheet.css" />
 		<script src="prefixfree.min.js"></script>
 		<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+		<script src="./socket.io/socket.io.js"></script>
 		<script>
 			$(document).ready(function(){
+				var flag_name = false;
+				var flag_nickname = false;
+				var flag_email = false;
+				
+				var socket = io.connect();
+				socket.emit('join_member');
+				socket.on('name_confirm', function(data){
+					if(data.type == 0){
+						$('#namelabel2').text('잘못된 아이디입니다.');
+						$('#namelabel2').css('color', 'red');
+					}else if(data.type == 1){
+						$('#namelabel2').text('등록된 아이디입니다.');
+						$('#namelabel2').css('color', 'red');
+					}else if(data.type == 2){
+						if(data.name == $('#nameinput').val()){
+							$('#namelabel2').text('사용가능한 아이디입니다.');
+							$('#namelabel2').css('color', 'green');
+							flag_name = true;
+						}
+					}
+				});
+				socket.on('nickname_confirm', function(data){
+					if(data.type == 0){
+						$('#nicklabel2').text('잘못된 닉네임입니다.');
+						$('#nicklabel2').css('color', 'red');
+					}else if(data.type == 1){
+						$('#nicklabel2').text('등록된 닉네임입니다.');
+						$('#nicklabel2').css('color', 'red');
+					}else if(data.type == 2){
+						if(data.name == $('#nickinput').val()){
+							$('#nicklabel2').text('사용가능한 닉네임입니다.');
+							$('#nicklabel2').css('color', 'green');
+							flag_nickname = true;
+						}
+					}
+				});
+				socket.on('email_confirm', function(data){
+					if(data.type == 0){
+						$('#emaillabel2').text('잘못된 이메일입니다.');
+						$('#emaillabel2').css('color', 'red');
+					}else if(data.type == 1){
+						$('#emaillabel2').text('등록된 이메일입니다.');
+						$('#emaillabel2').css('color', 'red');
+					}else if(data.type == 2){
+						if(data.name == $('#emailinput').val()){
+							$('#emaillabel2').text('사용가능한 이메일입니다.');
+							$('#emaillabel2').css('color', 'green');
+							flag_email = true;
+						}
+					}
+				});
+				
+				$('#nameinput').keyup(function(){
+					var inputLength = $(this).val().length;
+					if(inputLength==0){
+						$('#namelabel2').text('아이디를 입력해 주세요.');
+						$('#namelabel2').css('color', 'red');
+						flag_name = false;
+					}else if(inputLength<5){
+						$('#namelabel2').text('아이디가 너무 짧습니다.');
+						$('#namelabel2').css('color', 'red');
+						flag_name = false;
+					}else if(inputLength>10){
+						$('#namelabel2').text('아이디가 너무 깁니다.');
+						$('#namelabel2').css('color', 'red');
+						flag_name = false;
+					}else{
+						socket.emit('name_confirms', $(this).val());
+					}
+				});
+				
+				$('#pwinput').keyup(function(){
+					var inputLength = $(this).val().length;
+					if(inputLength==0){
+						$('#pwlabel3').text('패스워드를 입력해 주세요.');
+						$('#pwlabel3').css('color', 'red');
+					}else if(inputLength<6){
+						$('#pwlabel3').text('패스워드가 너무 짧습니다.');
+						$('#pwlabel3').css('color', 'red');
+					}else if(inputLength>12){
+						$('#pwlabel3').text('패스워드가 너무 깁니다.');
+						$('#pwlabel3').css('color', 'red');
+					}else{
+						$('#pwlabel3').text('알맞은 패스워드입니다.');
+						$('#pwlabel3').css('color', 'green');
+					}
+				});
+				
+				$('#pwinput2').keyup(function(){
+					var pw = $('#pwinput').val();
+					var pw2 = $('#pwinput2').val();
+					if(pw != pw2){
+						$('#pwlabel4').text('패스워드가 일치하지 않습니다.');
+						$('#pwlabel4').css('color', 'red');
+					}else{
+						$('#pwlabel4').text('패스워드가 일치합니다.');
+						$('#pwlabel4').css('color', 'green');
+					}
+				});
+				
+				$('#nickinput').keyup(function(){
+					var inputLength = $(this).val().length;
+					if(inputLength==0){
+						$('#nicklabel2').text('닉네임을 입력해 주세요.');
+						$('#nicklabel2').css('color', 'red');
+						flag_nickname = false;
+					}else if(inputLength>12){
+						$('#nicklabel2').text('닉네임이 너무 깁니다.');
+						$('#nicklabel2').css('color', 'red');
+						flag_nickname = false;
+					}else{
+						socket.emit('nickname_confirms', $(this).val());
+					}
+				});
+				
+				$('#emailinput').keyup(function(){
+					var inputLength = $(this).val().length;
+					if(inputLength==0){
+						$('#emaillabel2').text('이메일을 입력해 주세요.');
+						$('#emaillabel2').css('color', 'red');
+						flag_email = false;
+					}else if(!checkEmail($(this).val())){
+						$('#emaillabel2').text('이메일 형식이 잘못되었습니다.');
+						$('#emaillabel2').css('color', 'red');
+						flag_email = false;
+					}else{
+						socket.emit('email_confirms', $(this).val());
+					}
+				});
+				
+				
 				$('#join').click(function(){
+					if(flag_name==false || flag_nickname==false || flag_email==false){
+						alert(flag_name+'/'+flag_nickname+'/'+flag_email);
+						return;
+					}
 					var email = $('#emailinput').val();
 					var pw = $('#pwinput').val();
 					var pw2 = $('#pwinput2').val();
 					var nick = $('#nickinput').val();
-					if(email.length == 0){
-						alert('이메일을 입력하세요.');
+					var name = $('#nameinput').val();
+					if(name.length == 0){
+						alert('아이디를 입력하세요.');
 						return;
 					}
-					if(!checkEmail(email)){
-						alert('이메일 형식이 잘못되었습니다.');
-						return;
-					}
-					if(nick.length == 0){
-						alert('닉네임을 입력하세요.');
+					if(name.length<5 || pw.length>10){
+						alert('아이디는 5자와 10자 사이입니다.');
 						return;
 					}
 					if(pw.length == 0){
 						alert('패스워드를 입력하세요.');
 						return;
 					}
-					if(pw.length<4 || pw.length>12){
-						alert('패스워드는 4자와 12자 사이입니다.');
+					if(pw.length<6 || pw.length>12){
+						alert('패스워드는 6자와 12자 사이입니다.');
 						return;
 					}
 					if(pw2.length == 0){
@@ -41,6 +174,22 @@
 						alert('패스워드확인이 일치하지 않습니다.');
 						return;
 					}
+					if(nick.length == 0){
+						alert('닉네임을 입력하세요.');
+						return;
+					}
+					if(nick.length>12){
+						alert('닉네임이 너무 깁니다.');
+						return;
+					}
+					if(email.length == 0){
+						alert('이메일을 입력하세요.');
+						return;
+					}
+					if(!checkEmail(email)){
+						alert('이메일 형식이 잘못되었습니다.');
+						return;
+					}
 					
 					var form = document.getElementById('register');
 					form.submit();
@@ -48,6 +197,10 @@
 					var btjoin = document.getElementById('join');
 					btjoin.disabled = 'true';
 				});
+			});
+			
+			$(document).unload(function(){
+				if (socket != undefined) socket.disconnect();
 			});
 			
 			function checkEmail(str){
@@ -68,25 +221,34 @@
 						<legend>회원가입</legend>
 						<table>
 							<tr>
-								<td><label id="emaillabel">E-mail</label></td>
-								<td><input type="email" name="inputE" id="emailinput"/></td>
+								<td><label id="namelabel">아이디</label></td>
+								<td><input type="text" name="inputN" id="nameinput"/></td>
+								<td><label id="namelabel2"> </label></td>
 							</tr>
 							<tr>
-								<td><label id="nicklabel">Nickname</label></td>
-								<td><input type="text" name="inputN" id="nickinput"/></td>
-							</tr>
-							<tr>
-								<td><label id="pwlabel">Password</label></td>
+								<td><label id="pwlabel">패스워드</label></td>
 								<td><input type="password" name="inputP" id="pwinput"/></td>
+								<td><label id="pwlabel3"> </label></td>
 							</tr>
 							<tr>
-								<td><label id="pwlabel2">Confirm</label></td>
+								<td><label id="pwlabel2">패스워드확인</label></td>
 								<td><input type="password" name="inputP2" id="pwinput2"/></td>
+								<td><label id="pwlabel4"> </label></td>
+							</tr>
+							<tr>
+								<td><label id="nicklabel">닉네임</label></td>
+								<td><input type="text" name="inputN2" id="nickinput"/></td>
+								<td><label id="nicklabel2"> </label></td>
+							</tr>
+							<tr>
+								<td><label id="emaillabel">이메일</label></td>
+								<td><input type="email" name="inputE" id="emailinput"/></td>
+								<td><label id="emaillabel2"> </label></td>
+							</tr>
+							<tr>
 								<td><input type="button" value="회원가입" id="join"/></td>
 							</tr>
 						</table>
-						<br />
-						<label>입력하신 email로 가입확인 메일이 발송됩니다.</label>
 						<br />
 						<label>이 사이트의 모든 개인정보는 전혀 암호화되지 않습니다.</label>
 					</fieldset>
