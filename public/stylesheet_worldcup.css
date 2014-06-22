@@ -1,0 +1,166 @@
+* {
+	margin: 0; padding: 0;
+}
+
+html {
+	background: #faf8ef;
+}
+
+html, body {
+	margin: 0;
+	padding: 0;
+	color: #776e65;
+	font-family: Arial;
+	font-size: 18px;
+}
+
+body {
+	margin-top: 20px;
+	position: relative;
+}
+
+.container{
+	width: 451px;
+	height: 397px;
+	/*float: left;*/
+	/*position: absolute;*/
+}
+
+img{
+	position: absolute;
+}
+
+h2{
+	position: absolute;
+	color: #000000;
+	margin-left: 60px;
+	margin-top: 5px;
+}
+
+h1.title {
+  font-size: 40px;
+  font-weight: bold;
+  margin: 0;
+  display: block;
+  width:100%;
+  text-align: center; }
+  
+#box1{
+	position: absolute;
+	width: 149px;
+	height: 176px;
+	margin-left: 1px;
+	margin-top: 43px;
+}
+#box2{
+	position: absolute;
+	width: 149px;
+	height: 176px;
+	margin-left: 151px;
+	margin-top: 43px;
+}
+#box3{
+	position: absolute;
+	width: 149px;
+	height: 176px;
+	margin-left: 301px;
+	margin-top: 43px;
+}
+#box4{
+	position: absolute;
+	width: 149px;
+	height: 176px;
+	margin-left: 1px;
+	margin-top: 220px;
+}
+#box5{
+	position: absolute;
+	width: 149px;
+	height: 176px;
+	margin-left: 151px;
+	margin-top: 220px;
+}
+#box6{
+	position: absolute;
+	width: 149px;
+	height: 176px;
+	margin-left: 301px;
+	margin-top: 220px;
+}
+
+h3{
+	margin-left: 52px;
+	margin-top: 25px;
+	color: black;
+}
+
+.h5_1{
+	margin-left: 61px;
+	margin-top: 5px;
+	color: black;
+}
+
+.h5_2{
+	margin-left: 48px;
+	margin-top: 5px;
+	color: black;
+}
+
+.h5_3{
+	margin-left: 35px;
+	margin-top: 5px;
+	color: black;
+}
+
+.h5_4{
+	margin-left: 61px;
+	margin-top: 5px;
+	color: green;
+}
+
+.h5_5{
+	margin-left: 42px;
+	margin-top: 52px;
+	color: red;
+}
+
+h4{
+	margin-left: 35px;
+	margin-top: 25px;
+	color: black;
+}
+
+p {
+  margin-top: 0;
+  margin-bottom: 10px;
+  line-height: 1.65; }
+  
+p.game-intro {
+	position: absolute;
+	top : 220px;
+	font-weight: bold;
+  	display: block;
+  	width:100%;
+  	text-align: center;
+	margin: 0;
+}
+
+a {
+  color: #776e65;
+  font-weight: bold;
+  text-decoration: underline;
+  cursor: pointer; }
+
+strong.important {
+  text-transform: uppercase; }
+
+hr {
+  border: none;
+  border-bottom: 1px solid #d8d4d0;
+  margin-top: 20px;
+  margin-bottom: 30px; }
+
+.container {
+  width: 500px;
+  height: 100%;
+  margin: 0 auto; }

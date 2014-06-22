@@ -7,19 +7,19 @@ var nodemailer = require('nodemailer');
 var crypto = require('crypto');
 var mysql = require('mysql');
 
-var client = mysql.createConnection({
-	host: '10.0.0.1',
-	port: 3306,
-	user: 'lible',
-	password: 'kaosu123',
-	database: 'lible'
-});
-
 // var client = mysql.createConnection({
-	// user: 'root',
-	// password: '0123523u',
+	// host: '10.0.0.1',
+	// port: 3306,
+	// user: 'lible',
+	// password: 'kaosu123',
 	// database: 'lible'
 // });
+
+var client = mysql.createConnection({
+	user: 'root',
+	password: '0123523u',
+	database: 'lible'
+});
 
 var app = express();
 
@@ -82,7 +82,7 @@ app.post('/register', function(request, response){
 					response.redirect('/registeralready');
 				}else{
 					console.log('success1');
-					client.query('INSERT INTO member (email, name, password, token, nickname) VALUES (?, ?, ?, ?, ?)', [email, name, output, output2, nickname], function(errors, results, fieldss){
+					client.query('INSERT INTO member (email, name, password, token, nickname, level, exp) VALUES (?, ?, ?, ?, ?, ?, ?)', [email, name, output, output2, nickname, 1, 0], function(errors, results, fieldss){
 						if(errors){
 							console.log('fail');
 							console.log(errors);
@@ -134,7 +134,7 @@ app.get('/confirm/:token', function(request, response){
 	var token = request.param('token');
 	for(var i=0; i<memberConfirm.length; i++){
 		if(memberConfirm[i].code == token){
-			client.query('INSERT INTO member (email, name, password, token) VALUES (?, ?, ?, ?)', [memberConfirm[i].email, memberConfirm[i].name, memberConfirm[i].pw, memberConfirm[i].code], function(error, result, fields){
+			client.query('INSERT INTO member (email, name, password, token, level, exp) VALUES (?, ?, ?, ?)', [memberConfirm[i].email, memberConfirm[i].name, memberConfirm[i].pw, memberConfirm[i].code], function(error, result, fields){
 				if(error){
 					console.log('fail');
 					console.log(error);
@@ -171,6 +171,12 @@ app.get('/registererror', function(request, response){
 
 app.get('/registeralready', function(request, response){
 	fs.readFile(__dirname+'/public/registeralready.html', function(error, data){
+		response.send(data.toString());
+	});
+});
+
+app.get('/worldcup', function(request, response){
+	fs.readFile(__dirname+'/public/worldcup.html', function(error, data){
 		response.send(data.toString());
 	});
 });
