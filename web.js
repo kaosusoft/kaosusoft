@@ -7,19 +7,19 @@ var nodemailer = require('nodemailer');
 var crypto = require('crypto');
 var mysql = require('mysql');
 
-var client = mysql.createConnection({
-	host: '10.0.0.1',
-	port: 3306,
-	user: 'lible',
-	password: 'kaosu123',
-	database: 'lible'
-});
-
 // var client = mysql.createConnection({
-	// user: 'root',
-	// password: '0123523u',
+	// host: '10.0.0.1',
+	// port: 3306,
+	// user: 'lible',
+	// password: 'kaosu123',
 	// database: 'lible'
 // });
+
+var client = mysql.createConnection({
+	user: 'root',
+	password: '0123523u',
+	database: 'lible'
+});
 
 var app = express();
 
@@ -183,7 +183,7 @@ app.get('/worldcup', function(request, response){
 
 app.get('/worldcupfinal', function(request, response){
 	fs.readFile(__dirname+'/public/worldcup/worldcup2.html', 'utf8', function(error, data){
-		client.query('select * from worldcup', function(error, results){
+		client.query('select * from worldcup order by ordered asc', function(error, results){
 			response.send(ejs.render(data, {
 				data: results
 			}));
@@ -193,7 +193,7 @@ app.get('/worldcupfinal', function(request, response){
 
 app.get('/worldcupadmin', function(request, response){
 	fs.readFile(__dirname+'/public/worldcup/worldcupadmin.html', 'utf8', function(error, data){
-		client.query('select * from worldcup', function(error, results){
+		client.query('select * from worldcup order by ordered asc', function(error, results){
 			response.send(ejs.render(data, {
 				data: results
 			}));
@@ -216,7 +216,7 @@ app.get('/worldcupinsert', function(request, response){
 
 app.post('/worldcupinsert', function(request, response){
 	var body = request.body;
-	client.query('insert into worldcup (name, team1, team2) values (?, ?, ?)', [body.name, body.team1, body.team2], function(){
+	client.query('insert into worldcup (name, team1, team2, ordered) values (?, ?, ?, ?)', [body.name, body.team1, body.team2, 0], function(){
 		response.redirect('/worldcupinsert');
 	});
 });
@@ -233,7 +233,7 @@ app.get('/worldcupedit/:id', function(request, response){
 
 app.post('/worldcupedit/:id', function(request, response){
 	var body = request.body;
-	client.query('update worldcup set name=?, team1=?, team2=? where _id=?', [body.name, body.team1, body.team2, request.param('id')], function(){
+	client.query('update worldcup set name=?, team1=?, team2=?, ordered=? where _id=?', [body.name, body.team1, body.team2, body.ordered, request.param('id')], function(){
 		response.redirect('/worldcupadmin');
 	});
 });

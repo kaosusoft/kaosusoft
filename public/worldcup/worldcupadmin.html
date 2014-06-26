@@ -21,6 +21,7 @@
 				<th>Name</th>
 				<th>TEAM1</th>
 				<th>TEAM2</th>
+				<th>ORDER</th>
 				<th>DELETE</th>
 			</tr>
 			<% data.forEach(function(item, index){ %>
@@ -30,6 +31,7 @@
 					<td><%= item.name %></td>
 					<td><%= item.team1 %></td>
 					<td><%= item.team2 %></td>
+					<td><%= item.ordered %></td>
 					<td><a href="http://kaosu.kr/worldcupdelete/<%= item._id %>">DELETE</a></td>
 				</tr>
 				<% }); %>
