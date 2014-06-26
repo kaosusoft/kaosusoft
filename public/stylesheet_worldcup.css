@@ -88,6 +88,24 @@ h1.title {
 	margin-top: 220px;
 }
 
+#box7{
+	position: absolute;
+	border: 1px solid #E5E5E5;
+	background: #FFFFFF;
+	width: 449px;
+	height: 50px;
+	margin-top: 396px;
+}
+
+#h3_prize{
+	position: absolute;
+	margin-top: 12px;
+	width: 449px;
+	color: black;
+	text-align: center; 
+	margin-left: 0px;
+}
+
 h3{
 	margin-left: 52px;
 	margin-top: 25px;
