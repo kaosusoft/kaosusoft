@@ -7,19 +7,19 @@ var nodemailer = require('nodemailer');
 var crypto = require('crypto');
 var mysql = require('mysql');
 
-// var client = mysql.createConnection({
-	// host: '10.0.0.1',
-	// port: 3306,
-	// user: 'lible',
-	// password: 'kaosu123',
-	// database: 'lible'
-// });
-
 var client = mysql.createConnection({
-	user: 'root',
-	password: '0123523u',
+	host: '10.0.0.1',
+	port: 3306,
+	user: 'lible',
+	password: 'kaosu123',
 	database: 'lible'
 });
+
+// var client = mysql.createConnection({
+	// user: 'root',
+	// password: '0123523u',
+	// database: 'lible'
+// });
 
 var app = express();
 
