@@ -181,6 +181,63 @@ app.get('/worldcup', function(request, response){
 	});
 });
 
+app.get('/worldcupfinal', function(request, response){
+	fs.readFile(__dirname+'/public/worldcup/worldcup2.html', 'utf8', function(error, data){
+		client.query('select * from worldcup', function(error, results){
+			response.send(ejs.render(data, {
+				data: results
+			}));
+		});
+	});
+});
+
+app.get('/worldcupadmin', function(request, response){
+	fs.readFile(__dirname+'/public/worldcup/worldcupadmin.html', 'utf8', function(error, data){
+		client.query('select * from worldcup', function(error, results){
+			response.send(ejs.render(data, {
+				data: results
+			}));
+		});
+	});
+});
+
+app.get('/worldcupdelete/:id', function(request, response){
+	console.log('delete');
+	client.query('delete from worldcup where _id=?', [request.param('id')], function(){
+		response.redirect('/worldcupadmin');
+	});
+});
+
+app.get('/worldcupinsert', function(request, response){
+	fs.readFile(__dirname+'/public/worldcup/worldcupinsert.html', function(error, data){
+		response.send(data.toString());
+	});
+});
+
+app.post('/worldcupinsert', function(request, response){
+	var body = request.body;
+	client.query('insert into worldcup (name, team1, team2) values (?, ?, ?)', [body.name, body.team1, body.team2], function(){
+		response.redirect('/worldcupinsert');
+	});
+});
+
+app.get('/worldcupedit/:id', function(request, response){
+	fs.readFile(__dirname+'/public/worldcup/worldcupedit.html', 'utf8', function(error, data){
+		client.query('select * from worldcup where _id=?', [request.param('id')], function(error, result){
+			response.send(ejs.render(data, {
+				data: result[0]
+			}));
+		});
+	});
+});
+
+app.post('/worldcupedit/:id', function(request, response){
+	var body = request.body;
+	client.query('update worldcup set name=?, team1=?, team2=? where _id=?', [body.name, body.team1, body.team2, request.param('id')], function(){
+		response.redirect('/worldcupadmin');
+	});
+});
+
 var server = http.createServer(app);
 
 server.listen(8002, function(){

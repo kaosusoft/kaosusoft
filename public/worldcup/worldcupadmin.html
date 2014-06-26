@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko">
+	<head>
+		<title>가오수 World</title>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=520, initial-scale=0.5" />
+		<script src="prefixfree.min.js"></script>
+		<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+		<script>
+			
+		</script>
+	</head>
+	<body>
+		<h1>LIST Page</h1>
+		<a href="http://kaosu.kr/worldcupinsert">INSERT DATA</a>
+		<hr />
+		<table width="100%" border="1">
+			<tr>
+				<th>EDIT</th>
+				<th>ID</th>
+				<th>Name</th>
+				<th>TEAM1</th>
+				<th>TEAM2</th>
+				<th>DELETE</th>
+			</tr>
+			<% data.forEach(function(item, index){ %>
+				<tr>
+					<td><a href="http://kaosu.kr/worldcupedit/<%= item._id %>">EDIT</a></td>
+					<td><%= item._id %></td>
+					<td><%= item.name %></td>
+					<td><%= item.team1 %></td>
+					<td><%= item.team2 %></td>
+					<td><a href="http://kaosu.kr/worldcupdelete/<%= item._id %>">DELETE</a></td>
+				</tr>
+				<% }); %>
+		</table>
+	</body>
+</html>

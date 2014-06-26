@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ko">
+	<head>
+		<title>가오수 World</title>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=520, initial-scale=0.5" />
+		<link rel="stylesheet" href="/worldcup/stylesheet_worldcupfinal.css" />
+		<script src="prefixfree.min.js"></script>
+		<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+		<script>
+			$(document).ready(function(){
+				for(var i=0; i<16; i++){
+					$('<img></img>').addClass('img_tournament').appendTo($('#box_tournament'));
+				}
+				
+				for(var i=0; i<16; i++){
+					$('<h5></h5>').addClass('h5_name').appendTo($('#box_tournament'));
+				}
+				
+				for(var i=0; i<7; i++){
+					$('<div></div>').addClass('div_line1').appendTo($('#box_tournament'));
+					$('<div></div>').addClass('div_line2').appendTo($('#box_tournament'));
+				}
+				$('<img></img>').addClass('img_tournament').appendTo($('#box_tournament'));
+				$('<img></img>').addClass('img_tournament').appendTo($('#box_tournament'));
+				
+				$('.h5_name').each(function(index){
+					$('.h5_name').css({
+						position: 'absolute',
+						width: '36px',
+						textAlign: 'center',
+						left: function(index){
+							return ((index%8)*50+28);
+						},
+						top: function(index){
+							return (Math.floor(index/8)*203 + 14);
+						},
+						color: '#000000'
+					});
+					switch(index){
+						case 0: $(this).text('BRA'); break;
+						case 1: $(this).text('CHI'); break;
+						case 2: $(this).text('COL'); break;
+						case 3: $(this).text('URU'); break;
+						case 4: $(this).text('FRA'); break;
+						case 5: $(this).text('NGA'); break;
+						case 6: $(this).text('QUE'); break;
+						case 7: $(this).text('QUE'); break;
+						case 8: $(this).text('NED'); break;
+						case 9: $(this).text('MEX'); break;
+						case 10: $(this).text('CRC'); break;
+						case 11: $(this).text('GRE'); break;
+						case 12: $(this).text('ARG'); break;
+						case 13: $(this).text('SUI'); break;
+						case 14: $(this).text('QUE'); break;
+						case 15: $(this).text('QUE'); break;
+					}
+				});
+				
+				$('.img_tournament').each(function(index){
+					$('.img_tournament').css({
+						position: 'absolute',
+						left: function(index){
+							if(index<16) return ((index%8)*50+28);
+							else return 205;
+						},
+						top: function(index){
+							if(index<16) return (Math.floor(index/8)*163 + 30);
+							else if(index==16) return 99;
+							else return 125;
+						},
+						border: '1px solid #E5E5E5'
+					});
+					switch(index){
+						case 0: $(this).attr('src', '/worldcup/bra.png'); break;
+						case 1: $(this).attr('src', '/worldcup/chi.png'); break;
+						case 2: $(this).attr('src', '/worldcup/col.png'); break;
+						case 3: $(this).attr('src', '/worldcup/uru.png'); break;
+						case 4: $(this).attr('src', '/worldcup/fra.png'); break;
+						case 5: $(this).attr('src', '/worldcup/nga.png'); break;
+						case 6: $(this).attr('src', '/worldcup/que.png'); break;
+						case 7: $(this).attr('src', '/worldcup/que.png'); break;
+						case 8: $(this).attr('src', '/worldcup/ned.png'); break;
+						case 9: $(this).attr('src', '/worldcup/mex.png'); break;
+						case 10: $(this).attr('src', '/worldcup/crc.png'); break;
+						case 11: $(this).attr('src', '/worldcup/gre.png'); break;
+						case 12: $(this).attr('src', '/worldcup/arg.png'); break;
+						case 13: $(this).attr('src', '/worldcup/sui.png'); break;
+						case 14: $(this).attr('src', '/worldcup/que.png'); break;
+						case 15: $(this).attr('src', '/worldcup/que.png'); break;
+						case 16: $(this).attr('src', '/worldcup/que.png'); break;
+						case 17: $(this).attr('src', '/worldcup/que.png'); break;
+					}
+				});
+				
+				$('.div_line1').css({
+					position: 'absolute',
+					width: function(index){
+						if(index<4) return 50;
+						else if(index<6) return 100;
+						else return 200;
+					},
+					height: '18px',
+					border: '1px solid #000000',
+					borderTopStyle: 'none',
+					left: function(index){
+						if(index<4) return (48 + index*100);
+						else if(index<6) return (73 + (index-4)*200);
+						else return 123;
+					},
+					top: function(index){
+						if(index<4) return 55;
+						else if(index<6) return 74;
+						else return 93;
+					}
+				});
+				$('.div_line2').css({
+					position: 'absolute',
+					width: function(index){
+						if(index<4) return 50;
+						else if(index<6) return 100;
+						else return 200;
+					},
+					height: '18px',
+					border: '1px solid #000000',
+					borderBottomStyle: 'none',
+					left: function(index){
+						if(index<4) return (48 + index*100);
+						else if(index<6) return (73 + (index-4)*200);
+						else return 123;
+					},
+					top: function(index){
+						if(index<4) return 175;
+						else if(index<6) return 156;
+						else return 137;
+					}
+				});
+				
+				$('.img_nation').each(function(index){
+					switch($(this).attr('user-data')){
+						case '1': $(this).attr('src', '/worldcup/bra.png'); break;
+						case '2': $(this).attr('src', '/worldcup/chi.png'); break;
+						case '3': $(this).attr('src', '/worldcup/col.png'); break;
+						case '4': $(this).attr('src', '/worldcup/uru.png'); break;
+						case '5': $(this).attr('src', '/worldcup/fra.png'); break;
+						case '6': $(this).attr('src', '/worldcup/nga.png'); break;
+						case '7': $(this).attr('src', '/worldcup/que.png'); break;
+						case '8': $(this).attr('src', '/worldcup/que.png'); break;
+						case '9': $(this).attr('src', '/worldcup/ned.png'); break;
+						case '10': $(this).attr('src', '/worldcup/mex.png'); break;
+						case '11': $(this).attr('src', '/worldcup/crc.png'); break;
+						case '12': $(this).attr('src', '/worldcup/gre.png'); break;
+						case '13': $(this).attr('src', '/worldcup/arg.png'); break;
+						case '14': $(this).attr('src', '/worldcup/sui.png'); break;
+						case '15': $(this).attr('src', '/worldcup/que.png'); break;
+						case '16': $(this).attr('src', '/worldcup/que.png'); break;
+						default: $(this).attr('src', '/worldcup/que.png'); break;
+					}
+					if(index%2==0){
+						$(this).css({
+							position: 'absolute',
+							left: '12px',
+							top: '43px',
+							border: '1px solid #E5E5E5'
+						});
+					}else{
+						$(this).css({
+							position: 'absolute',
+							left: '100px',
+							top: '43px',
+							border: '1px solid #E5E5E5'
+						});
+					}
+				});
+				
+				$('.h5_team1').each(function(index){
+					switch($(this).attr('user-data')){
+						case '1': $(this).text('BRA'); break;
+						case '2': $(this).text('CHI'); break;
+						case '3': $(this).text('COL'); break;
+						case '4': $(this).text('URU'); break;
+						case '5': $(this).text('FRA'); break;
+						case '6': $(this).text('NGA'); break;
+						case '7': $(this).text('QUE'); break;
+						case '8': $(this).text('QUE'); break;
+						case '9': $(this).text('NED'); break;
+						case '10': $(this).text('MEX'); break;
+						case '11': $(this).text('CRC'); break;
+						case '12': $(this).text('GRE'); break;
+						case '13': $(this).text('ARG'); break;
+						case '14': $(this).text('SUI'); break;
+						case '15': $(this).text('QUE'); break;
+						case '16': $(this).text('QUE'); break;
+						default : $(this).text('QUE'); break;
+					}
+				});
+				
+				$('.h5_team2').each(function(index){
+					switch($(this).attr('user-data')){
+						case '1': $(this).text('BRA'); break;
+						case '2': $(this).text('CHI'); break;
+						case '3': $(this).text('COL'); break;
+						case '4': $(this).text('URU'); break;
+						case '5': $(this).text('FRA'); break;
+						case '6': $(this).text('NGA'); break;
+						case '7': $(this).text('QUE'); break;
+						case '8': $(this).text('QUE'); break;
+						case '9': $(this).text('NED'); break;
+						case '10': $(this).text('MEX'); break;
+						case '11': $(this).text('CRC'); break;
+						case '12': $(this).text('GRE'); break;
+						case '13': $(this).text('ARG'); break;
+						case '14': $(this).text('SUI'); break;
+						case '15': $(this).text('QUE'); break;
+						case '16': $(this).text('QUE'); break;
+						default : $(this).text('QUE'); break;
+					}
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<div class="container">
+			<img src="/worldcup/worldcuptitle.png" />
+			<h2>브라질 월드컵 2014 결승예측</h2>
+			<div class="box" id="box1">
+				<% if(data.length>0){ %>
+				<h3 class="h3_name"><%= data[0].name %></h3>
+				<h4 class="h4_vs">VS</h4>
+				<h5 class="h5_team1" user-data="<%= data[0].team1 %>"></h5>
+				<h5 class="h5_team2" user-data="<%= data[0].team2 %>"></h5>
+				<img class="img_nation" user-data="<%= data[0].team1 %>" />
+				<img class="img_nation" user-data="<%= data[0].team2 %>" />
+				<% } %>
+			</div>
+			<div class="box" id="box2">
+				<% if(data.length>1){ %>
+				<h3 class="h3_name"><%= data[1].name %></h3>
+				<h4 class="h4_vs">VS</h4>
+				<h5 class="h5_team1" user-data="<%= data[1].team1 %>"></h5>
+				<h5 class="h5_team2" user-data="<%= data[1].team2 %>"></h5>
+				<img class="img_nation" user-data="<%= data[1].team1 %>" />
+				<img class="img_nation" user-data="<%= data[1].team2 %>" />
+				<% } %>
+			</div>
+			<div class="box" id="box3">
+				<% if(data.length>2){ %>
+				<h3 class="h3_name"><%= data[2].name %></h3>
+				<h4 class="h4_vs">VS</h4>
+				<h5 class="h5_team1" user-data="<%= data[2].team1 %>"></h5>
+				<h5 class="h5_team2" user-data="<%= data[2].team2 %>"></h5>
+				<img class="img_nation" user-data="<%= data[2].team1 %>" />
+				<img class="img_nation" user-data="<%= data[2].team2 %>" />
+				<% } %>
+			</div>
+			<div class="box" id="box4">
+				<% if(data.length>3){ %>
+				<h3 class="h3_name"><%= data[3].name %></h3>
+				<h4 class="h4_vs">VS</h4>
+				<h5 class="h5_team1" user-data="<%= data[3].team1 %>"></h5>
+				<h5 class="h5_team2" user-data="<%= data[3].team2 %>"></h5>
+				<img class="img_nation" user-data="<%= data[3].team1 %>" />
+				<img class="img_nation" user-data="<%= data[3].team2 %>" />
+				<% } %>
+			</div>
+			<div class="box" id="box5">
+				<% if(data.length>4){ %>
+				<h3 class="h3_name"><%= data[4].name %></h3>
+				<h4 class="h4_vs">VS</h4>
+				<h5 class="h5_team1" user-data="<%= data[4].team1 %>"></h5>
+				<h5 class="h5_team2" user-data="<%= data[4].team2 %>"></h5>
+				<img class="img_nation" user-data="<%= data[4].team1 %>" />
+				<img class="img_nation" user-data="<%= data[4].team2 %>" />
+				<% } %>
+			</div>
+			<div class="box" id="box6">
+				<% if(data.length>5){ %>
+				<h3 class="h3_name"><%= data[5].name %></h3>
+				<h4 class="h4_vs">VS</h4>
+				<h5 class="h5_team1" user-data="<%= data[5].team1 %>"></h5>
+				<h5 class="h5_team2" user-data="<%= data[5].team2 %>"></h5>
+				<img class="img_nation" user-data="<%= data[5].team1 %>" />
+				<img class="img_nation" user-data="<%= data[5].team2 %>" />
+				<% } %>
+			</div>
+			<div id="box_result">
+				<h3 id="h3_result">Result : </h3>
+				<img src="/worldcup/que.png" id="img_result_left"/>
+				<h3 id="h3_vs">VS</h3>
+				<img src="/worldcup/que.png" id="img_result_right"/>
+			</div>
+			<div id="box_tournament">
+			</div>
+		</div>
+	</body>
+</html>
