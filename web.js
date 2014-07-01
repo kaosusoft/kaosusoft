@@ -65,7 +65,7 @@ app.post('/register', function(request, response){
 		var nickname = body.inputN2;
 		
 		var shasum = crypto.createHash('sha1');
-		shasum.update(body.inputP);
+		shasum.update(body.inputP+'kaosu');
 		var output = shasum.digest('hex');
 		console.log(output);
 		
@@ -216,7 +216,7 @@ app.get('/worldcupinsert', function(request, response){
 
 app.post('/worldcupinsert', function(request, response){
 	var body = request.body;
-	client.query('insert into worldcup (name, team1, team2, ordered) values (?, ?, ?, ?)', [body.name, body.team1, body.team2, 0], function(){
+	client.query('insert into worldcup (name, team1, team2, ordered, failed) values (?, ?, ?, ?, ?)', [body.name, body.team1, body.team2, 0, 0], function(){
 		response.redirect('/worldcupinsert');
 	});
 });
@@ -233,7 +233,7 @@ app.get('/worldcupedit/:id', function(request, response){
 
 app.post('/worldcupedit/:id', function(request, response){
 	var body = request.body;
-	client.query('update worldcup set name=?, team1=?, team2=?, ordered=? where _id=?', [body.name, body.team1, body.team2, body.ordered, request.param('id')], function(){
+	client.query('update worldcup set name=?, team1=?, team2=?, ordered=?, failed=? where _id=?', [body.name, body.team1, body.team2, body.ordered, body.failed, request.param('id')], function(){
 		response.redirect('/worldcupadmin');
 	});
 });

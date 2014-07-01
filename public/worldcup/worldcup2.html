@@ -223,7 +223,13 @@
 		<div class="container">
 			<img src="/worldcup/worldcuptitle.png" />
 			<h2>브라질 월드컵 2014 결승예측</h2>
-			<div class="box" id="box1">
+			<% if(data.length>0){ %>
+				<% if(data[0].failed == 0){ %>
+					<div class="box" id="box1" style="background: #FFFFFF">
+				<% }else{ %>
+					<div class="box" id="box1" style="background: #FF0000">
+				<% } %>
+			<% } %>
 				<% if(data.length>0){ %>
 				<h3 class="h3_name"><%= data[0].name %></h3>
 				<h4 class="h4_vs">VS</h4>
