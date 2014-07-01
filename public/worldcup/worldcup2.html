@@ -226,9 +226,13 @@
 			<% if(data.length>0){ %>
 				<% if(data[0].failed == 0){ %>
 					<div class="box" id="box1" style="background: #FFFFFF">
+				<% }else if(data[0].failed == 1){ %>
+					<div class="box" id="box1" style="background: #FFCCCC">
 				<% }else{ %>
-					<div class="box" id="box1" style="background: #FF0000">
+					<div class="box" id="box1" style="background: #CCFFCC">
 				<% } %>
+			<% }else{ %>
+				<div class="box" id="box1">
 			<% } %>
 				<% if(data.length>0){ %>
 				<h3 class="h3_name"><%= data[0].name %></h3>
@@ -239,7 +243,17 @@
 				<img class="img_nation" user-data="<%= data[0].team2 %>" />
 				<% } %>
 			</div>
-			<div class="box" id="box2">
+			<% if(data.length>1){ %>
+				<% if(data[1].failed == 0){ %>
+					<div class="box" id="box2" style="background: #FFFFFF">
+				<% }else if(data[1].failed == 1){ %>
+					<div class="box" id="box2" style="background: #FFCCCC">
+				<% }else{ %>
+					<div class="box" id="box2" style="background: #CCFFCC">
+				<% } %>
+			<% }else{ %>
+				<div class="box" id="box2">
+			<% } %>
 				<% if(data.length>1){ %>
 				<h3 class="h3_name"><%= data[1].name %></h3>
 				<h4 class="h4_vs">VS</h4>
@@ -249,7 +263,17 @@
 				<img class="img_nation" user-data="<%= data[1].team2 %>" />
 				<% } %>
 			</div>
-			<div class="box" id="box3">
+			<% if(data.length>2){ %>
+				<% if(data[2].failed == 0){ %>
+					<div class="box" id="box3" style="background: #FFFFFF">
+				<% }else if(data[2].failed == 1){ %>
+					<div class="box" id="box3" style="background: #FFCCCC">
+				<% }else{ %>
+					<div class="box" id="box3" style="background: #CCFFCC">
+				<% } %>
+			<% }else{ %>
+				<div class="box" id="box3">
+			<% } %>
 				<% if(data.length>2){ %>
 				<h3 class="h3_name"><%= data[2].name %></h3>
 				<h4 class="h4_vs">VS</h4>
@@ -259,7 +283,17 @@
 				<img class="img_nation" user-data="<%= data[2].team2 %>" />
 				<% } %>
 			</div>
-			<div class="box" id="box4">
+			<% if(data.length>3){ %>
+				<% if(data[3].failed == 0){ %>
+					<div class="box" id="box4" style="background: #FFFFFF">
+				<% }else if(data[3].failed == 1){ %>
+					<div class="box" id="box4" style="background: #FFCCCC">
+				<% }else{ %>
+					<div class="box" id="box4" style="background: #CCFFCC">
+				<% } %>
+			<% }else{ %>
+				<div class="box" id="box4">
+			<% } %>
 				<% if(data.length>3){ %>
 				<h3 class="h3_name"><%= data[3].name %></h3>
 				<h4 class="h4_vs">VS</h4>
@@ -269,7 +303,17 @@
 				<img class="img_nation" user-data="<%= data[3].team2 %>" />
 				<% } %>
 			</div>
-			<div class="box" id="box5">
+			<% if(data.length>4){ %>
+				<% if(data[4].failed == 0){ %>
+					<div class="box" id="box5" style="background: #FFFFFF">
+				<% }else if(data[4].failed == 1){ %>
+					<div class="box" id="box5" style="background: #FFCCCC">
+				<% }else{ %>
+					<div class="box" id="box5" style="background: #CCFFCC">
+				<% } %>
+			<% }else{ %>
+				<div class="box" id="box5">
+			<% } %>
 				<% if(data.length>4){ %>
 				<h3 class="h3_name"><%= data[4].name %></h3>
 				<h4 class="h4_vs">VS</h4>
@@ -279,7 +323,17 @@
 				<img class="img_nation" user-data="<%= data[4].team2 %>" />
 				<% } %>
 			</div>
-			<div class="box" id="box6">
+			<% if(data.length>5){ %>
+				<% if(data[5].failed == 0){ %>
+					<div class="box" id="box6" style="background: #FFFFFF">
+				<% }else if(data[5].failed == 1){ %>
+					<div class="box" id="box6" style="background: #FFCCCC">
+				<% }else{ %>
+					<div class="box" id="box6" style="background: #CCFFCC">
+				<% } %>
+			<% }else{ %>
+				<div class="box" id="box6">
+			<% } %>
 				<% if(data.length>5){ %>
 				<h3 class="h3_name"><%= data[5].name %></h3>
 				<h4 class="h4_vs">VS</h4>
