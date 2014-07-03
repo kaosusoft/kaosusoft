@@ -75,14 +75,18 @@ h1.title {
 	margin-left: 300px;
 	margin-top: 142px;
 }
+#box7{
+	margin-top: 243px;
+}
 
 #box_result{
 	position: absolute;
 	border: 1px solid #E5E5E5;
 	background: #FFFFFF;
-	width: 449px;
-	height: 50px;
+	width: 299px;
+	height: 100px;
 	margin-top: 243px;
+	margin-left: 150px;
 }
 
 #box_result > img, h3{
@@ -91,26 +95,26 @@ h1.title {
 
 #img_result_left{
 	border: 1px solid #000000;
-	margin-left: 180px;
-	margin-top: 10px;
+	margin-left: 125px;
+	margin-top: 35px;
 }
 
 
 #img_result_right{
 	border: 1px solid #000000;
-	margin-left: 308px;
-	margin-top: 10px;
+	margin-left: 230px;
+	margin-top: 35px;
 }
 
 #h3_result{
-	margin-left: 50px;
-	margin-top: 12px;
+	margin-left: 25px;
+	margin-top: 37px;
 	color: #000000;
 }
 
 #h3_vs{
-	margin-left: 250px;
-	margin-top: 12px;
+	margin-left: 184px;
+	margin-top: 37px;
 	color: #000000;
 }
 
@@ -120,7 +124,7 @@ h1.title {
 	background: #FFFFFF;
 	width: 449px;
 	height: 50px;
-	margin-top: 293px;
+	margin-top: 343px;
 }
 
 #box_tournament{
@@ -129,7 +133,7 @@ h1.title {
 	background: #FFFFFF;
 	width: 449px;
 	height: 250px;
-	margin-top: 344px;
+	margin-top: 394px;
 }
 
 #h3_prize{

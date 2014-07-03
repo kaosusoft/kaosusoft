@@ -343,6 +343,26 @@
 				<img class="img_nation" user-data="<%= data[5].team2 %>" />
 				<% } %>
 			</div>
+			<% if(data.length>6){ %>
+				<% if(data[6].failed == 0){ %>
+					<div class="box" id="box7" style="background: #FFFFFF">
+				<% }else if(data[6].failed == 1){ %>
+					<div class="box" id="box7" style="background: #FFCCCC">
+				<% }else{ %>
+					<div class="box" id="box7" style="background: #CCFFCC">
+				<% } %>
+			<% }else{ %>
+				<div class="box" id="box7">
+			<% } %>
+				<% if(data.length>6){ %>
+				<h3 class="h3_name"><%= data[6].name %></h3>
+				<h4 class="h4_vs">VS</h4>
+				<h5 class="h5_team1" user-data="<%= data[6].team1 %>"></h5>
+				<h5 class="h5_team2" user-data="<%= data[6].team2 %>"></h5>
+				<img class="img_nation" user-data="<%= data[6].team1 %>" />
+				<img class="img_nation" user-data="<%= data[6].team2 %>" />
+				<% } %>
+			</div>
 			<div id="box_prize">
 				<h3 id="h3_prize">상품 : 훌랄라 1회 면제권</h3>
 			</div>
