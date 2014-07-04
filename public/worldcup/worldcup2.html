@@ -9,20 +9,17 @@
 		<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
 		<script>
 			$(document).ready(function(){
-				for(var i=0; i<16; i++){
+				for(var i=0; i<7; i++){
+					$('<div></div>').addClass('div_line1').appendTo($('#box_tournament'));
+					$('<div></div>').addClass('div_line2').appendTo($('#box_tournament'));
+				}
+				for(var i=0; i<30; i++){
 					$('<img></img>').addClass('img_tournament').appendTo($('#box_tournament'));
 				}
 				
 				for(var i=0; i<16; i++){
 					$('<h5></h5>').addClass('h5_name').appendTo($('#box_tournament'));
 				}
-				
-				for(var i=0; i<7; i++){
-					$('<div></div>').addClass('div_line1').appendTo($('#box_tournament'));
-					$('<div></div>').addClass('div_line2').appendTo($('#box_tournament'));
-				}
-				$('<img></img>').addClass('img_tournament').appendTo($('#box_tournament'));
-				$('<img></img>').addClass('img_tournament').appendTo($('#box_tournament'));
 				
 				$('.h5_name').each(function(index){
 					$('.h5_name').css({
@@ -62,14 +59,28 @@
 						position: 'absolute',
 						left: function(index){
 							if(index<16) return ((index%8)*50+28);
-							else return 205;
+							else if(index<18) return 205;
+							else if(index<26) return ((index-18)%4)*100+61;
+							else return ((index-26)%2)*200+111;
 						},
 						top: function(index){
 							if(index<16) return (Math.floor(index/8)*163 + 30);
 							else if(index==16) return 99;
-							else return 125;
+							else if(index==17) return 125;
+							else if(index<22) return 65;
+							else if(index<26) return 166;
+							else if(index<28) return 84;
+							else return 147;
 						},
-						border: '1px solid #E5E5E5'
+						border: '1px solid #E5E5E5',
+						width: function(index){
+							if(index<18) return 36;
+							else return 24;
+						},
+						height: function(index){
+							if(index<18) return 24;
+							else return 16;
+						}
 					});
 					switch(index){
 						case 0: $(this).attr('src', '/worldcup/bra.png'); break;
@@ -90,6 +101,18 @@
 						case 15: $(this).attr('src', '/worldcup/usa.png'); break;
 						case 16: $(this).attr('src', '/worldcup/que.png'); break;
 						case 17: $(this).attr('src', '/worldcup/que.png'); break;
+						case 18: $(this).attr('src', '/worldcup/bra.png'); break;
+						case 19: $(this).attr('src', '/worldcup/col.png'); break;
+						case 20: $(this).attr('src', '/worldcup/fra.png'); break;
+						case 21: $(this).attr('src', '/worldcup/ger.png'); break;
+						case 22: $(this).attr('src', '/worldcup/ned.png'); break;
+						case 23: $(this).attr('src', '/worldcup/crc.png'); break;
+						case 24: $(this).attr('src', '/worldcup/arg.png'); break;
+						case 25: $(this).attr('src', '/worldcup/bel.png'); break;
+						case 26: $(this).attr('src', '/worldcup/bra.png'); break;
+						case 27: $(this).attr('src', '/worldcup/ger.png'); break;
+						case 28: $(this).attr('src', '/worldcup/que.png'); break;
+						case 29: $(this).attr('src', '/worldcup/que.png'); break;
 					}
 				});
 				
