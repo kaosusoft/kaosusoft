@@ -270,18 +270,25 @@ function utf16to8(str) {
     return out;
 }
 
-app.get('/download/:name', function(request, response){
-	var file = __dirname + '/public/upload/multipart/'+request.param('name');
+app.get('/download/:id', function(request, response){
+	client.query('select * from myfile2 where _id=?', request.param('id'), function(error, result, fields){
+		if(result.length>0){
+			var file = __dirname + '/public/upload/multipart/'+result[0].name;
+			response.download(file, utf8.encode(result[0].comment));
+		}
+	});
+	// var file = __dirname + '/public/upload/multipart/'+request.param('name');
 	// response.download(file, request.param('name'));
-	response.download(file, utf8.encode(request.param('name')));
+	// response.download(file, utf8.encode(request.param('name')));
 });
 
 app.post('/upload', function(request, response){
-	var comment = request.param('comment');
+	// var comment = request.param('comment');
 	var file = request.files.image;
 	
 	if(file){
 		var name = file.name;
+		var comment = name;
 		var path = file.path;
 		var addPath = Date.now()+'_'+name;
 		var outputPath = __dirname + '/public/upload/multipart/'+addPath;
