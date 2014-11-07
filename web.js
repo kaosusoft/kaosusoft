@@ -6,20 +6,21 @@ var ejs = require('ejs');
 var nodemailer = require('nodemailer');
 var crypto = require('crypto');
 var mysql = require('mysql');
-
-var client = mysql.createConnection({
-	host: '10.0.0.1',
-	port: 3306,
-	user: 'lible',
-	password: 'kaosu123',
-	database: 'lible'
-});
+var utf8 = require('utf8');
 
 // var client = mysql.createConnection({
-	// user: 'root',
-	// password: '0123523u',
+	// host: '10.0.0.1',
+	// port: 3306,
+	// user: 'lible',
+	// password: 'kaosu123',
 	// database: 'lible'
 // });
+
+var client = mysql.createConnection({
+	user: 'root',
+	password: '0123523u',
+	database: 'lible'
+});
 
 var app = express();
 
@@ -235,6 +236,85 @@ app.post('/worldcupedit/:id', function(request, response){
 	var body = request.body;
 	client.query('update worldcup set name=?, team1=?, team2=?, ordered=?, failed=? where _id=?', [body.name, body.team1, body.team2, body.ordered, body.failed, request.param('id')], function(){
 		response.redirect('/worldcupadmin');
+	});
+});
+
+app.get('/upload', function(request, response){
+	fs.readFile(__dirname+'/public/upload/index.html', 'utf8', function(error, data){
+		client.query('select * from myfile order by _id asc', function(error, results){
+			response.send(ejs.render(data, {
+				data: results
+			}));
+		});
+	});
+});
+
+function utf16to8(str) {
+    var out, i, len, c;
+
+    out = "";
+    len = str.length;
+    for(i = 0; i < len; i++) {
+	c = str.charCodeAt(i);
+	if ((c >= 0x0001) && (c <= 0x007F)) {
+	    out += str.charAt(i);
+	} else if (c > 0x07FF) {
+	    out += String.fromCharCode(0xE0 | ((c >> 12) & 0x0F));
+	    out += String.fromCharCode(0x80 | ((c >>  6) & 0x3F));
+	    out += String.fromCharCode(0x80 | ((c >>  0) & 0x3F));
+	} else {
+	    out += String.fromCharCode(0xC0 | ((c >>  6) & 0x1F));
+	    out += String.fromCharCode(0x80 | ((c >>  0) & 0x3F));
+	}
+    }
+    return out;
+}
+
+app.get('/download/:name', function(request, response){
+	var file = __dirname + '/public/upload/multipart/'+request.param('name');
+	// response.download(file, request.param('name'));
+	response.download(file, utf8.encode(request.param('name')));
+});
+
+app.post('/upload', function(request, response){
+	var comment = request.param('comment');
+	var file = request.files.image;
+	
+	if(file){
+		var name = file.name;
+		var path = file.path;
+		var addPath = Date.now()+'_'+name;
+		var outputPath = __dirname + '/public/upload/multipart/'+addPath;
+		fs.rename(path, outputPath, function(error){
+			client.query('insert into myfile (name, comment) values (?, ?)', [addPath, comment], function(){
+				response.redirect('/upload');
+			});
+		});
+	}else{
+		response.send(404);
+	}
+});
+
+app.get('/uploadshow/:id', function(request, response){
+	client.query('select * from myfile where _id=?', request.param('id'), function(error, result, fields){
+		if(result.length>0){
+			fs.readFile(__dirname+'/public/upload/multipart/'+result[0].name, function(error, data){
+				response.writeHead(200, {'Content-Type':'image/png'});
+				response.end(data);
+			});
+		}
+	});
+});
+
+app.get('/uploaddelete/:id', function(request, response){
+	client.query('select * from myfile where _id=?', request.param('id'), function(error, result, fields){
+		if(result.length>0){
+			fs.unlink(__dirname + '/public/upload/multipart/'+result[0].name, function(error){
+				client.query('delete from myfile where _id=?', request.param('id'), function(){
+					response.redirect('/upload');
+				});
+			});
+		}
 	});
 });
 

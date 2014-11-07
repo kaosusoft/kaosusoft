@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+	<head>
+		<title>가오수 World</title>
+		<meta charset="UTF-8" />
+		<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+		<script src="prefixfree.min.js"></script>
+        <script src="/upload/upload.js"></script>
+	</head>
+	<body>
+		<h1>File Upload</h1>
+		<form method="post" enctype="multipart/form-data">
+			<table>
+				<tr>
+					<td>Comment: </td>
+					<td><input type="text" name="comment" /></td>
+				</tr>
+				<tr>
+					<td>File: </td>
+					<td><input type="file" name="image" /></td>
+				</tr>
+			</table>
+			<input type="submit" />
+		</form>
+		<hr />
+		<table width="100%" border="1">
+			<tr>
+				<th>ID</th>
+				<th>Name</th>
+				<th>Comment</th>
+				<th>Show</th>
+				<th>DELETE</th>
+			</tr>
+			<% data.forEach(function(item, index){ %>
+				<tr>
+					<td><%= item._id %></td>
+					<td><a href="http://kaosu.cafe24app.com/download/<%= item.name %>"><%= item.name %></a></td>
+					<td><%= item.comment %></td>
+					<td><a href="http://kaosu.cafe24app.com/uploadshow/<%= item._id %>">SHOW</a></td>
+					<td><a href="http://kaosu.cafe24app.com/uploaddelete/<%= item._id %>">DELETE</a></td>
+				</tr>
+				<% }); %>
+		</table>
+	</body>
+</html>
