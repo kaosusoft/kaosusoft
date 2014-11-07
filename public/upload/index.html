@@ -6,11 +6,6 @@
 		<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
 		<script src="prefixfree.min.js"></script>
         <script src="/upload/upload.js"></script>
-        <script>
-        	$(document).ready(function(){
-				alert(data);
-			});
-        </script>
 	</head>
 	<body>
 		<h1>File Upload</h1>
@@ -28,7 +23,14 @@
 			<input type="submit" />
 		</form>
 		<hr />
-		<div id="photo"></div>
+		<div id="photo">
+			<% data.forEach(function(item, index){ %>
+				<div class="photo">
+					<h2><%= item.name></h2>
+					<img src="http://kaosu.cafe24app.com/download/<%= item.name %>" />
+				</div>
+				<% }); %>
+		</div>
 		<table width="100%" border="1">
 			<tr>
 				<th>ID</th>
