@@ -242,7 +242,6 @@ app.post('/worldcupedit/:id', function(request, response){
 app.get('/upload', function(request, response){
 	fs.readFile(__dirname+'/public/upload/index.html', 'utf8', function(error, data){
 		client.query('select * from myfile order by _id asc', function(error, results){
-			console.log(results);
 			response.send(ejs.render(data, {
 				data: results
 			}));

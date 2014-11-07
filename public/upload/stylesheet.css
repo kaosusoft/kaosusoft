@@ -1,0 +1,52 @@
+* {
+	margin: 0; padding: 0;
+}
+
+html {
+	background: #faf8ef;
+}
+
+html, body {
+	margin: 0;
+	padding: 0;
+	color: #776e65;
+	font-family: Arial;
+	font-size: 18px;
+}
+
+body {
+	margin-top: 20px;
+	position: relative;
+}
+
+.photo{
+	margin-top: 10px;
+	width: 200px;
+	height: 250px;
+	border: 1px solid #000000;
+	border-radius: 10px;
+}
+.h5_photo{
+	width: 200px;
+	height: 20px;
+	cursor: pointer;
+	text-align: center;
+	color: #000000;
+}
+
+.img_photo{
+	width: 200px;
+	height: 200px;
+	border-radius: 10px;
+}
+
+.a_photo_show{
+	margin-left: 10px;
+}
+
+.a_photo_delete{
+	overflow: hidden;
+	float: right;
+	margin-right: 10px;
+}
+
