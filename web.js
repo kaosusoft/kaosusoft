@@ -241,7 +241,7 @@ app.post('/worldcupedit/:id', function(request, response){
 
 app.get('/upload', function(request, response){
 	fs.readFile(__dirname+'/public/upload/index.html', 'utf8', function(error, data){
-		client.query('select * from myfile order by _id asc', function(error, results){
+		client.query('select * from myfile2 order by _id asc', function(error, results){
 			response.send(ejs.render(data, {
 				data: results
 			}));
@@ -286,7 +286,7 @@ app.post('/upload', function(request, response){
 		var addPath = Date.now()+'_'+name;
 		var outputPath = __dirname + '/public/upload/multipart/'+addPath;
 		fs.rename(path, outputPath, function(error){
-			client.query('insert into myfile (name, comment) values (?, ?)', [addPath, comment], function(){
+			client.query('insert into myfile2 (name, comment) values (?, ?)', [addPath, comment], function(){
 				response.redirect('/upload');
 			});
 		});
@@ -296,7 +296,7 @@ app.post('/upload', function(request, response){
 });
 
 app.get('/uploadshow/:id', function(request, response){
-	client.query('select * from myfile where _id=?', request.param('id'), function(error, result, fields){
+	client.query('select * from myfile2 where _id=?', request.param('id'), function(error, result, fields){
 		if(result.length>0){
 			fs.readFile(__dirname+'/public/upload/multipart/'+result[0].name, function(error, data){
 				response.writeHead(200, {'Content-Type':'image/png'});
@@ -307,10 +307,10 @@ app.get('/uploadshow/:id', function(request, response){
 });
 
 app.get('/uploaddelete/:id', function(request, response){
-	client.query('select * from myfile where _id=?', request.param('id'), function(error, result, fields){
+	client.query('select * from myfile2 where _id=?', request.param('id'), function(error, result, fields){
 		if(result.length>0){
 			fs.unlink(__dirname + '/public/upload/multipart/'+result[0].name, function(error){
-				client.query('delete from myfile where _id=?', request.param('id'), function(){
+				client.query('delete from myfile2 where _id=?', request.param('id'), function(){
 					response.redirect('/upload');
 				});
 			});
