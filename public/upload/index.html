@@ -26,7 +26,7 @@
 		<hr />
 		<% data.forEach(function(item, index){ %>
 			<div class="photo">
-				<h5 class="h5_photo"><%= item.name %></h2>
+				<h5 class="h5_photo"><%= item.comment %></h2>
 				<img class="img_photo" src="/upload/multipart/<%= item.name %>" />
 				<a class="a_photo_show" href="http://kaosu.kr/uploadshow/<%= item._id %>">보기</a>
 				<a class="a_photo_down" href="http://kaosu.kr/download/<%= item._id %>">다운</a>
