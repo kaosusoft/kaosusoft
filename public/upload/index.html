@@ -13,10 +13,6 @@
 		<form method="post" enctype="multipart/form-data">
 			<table>
 				<tr>
-					<td>Comment: </td>
-					<td><input type="text" name="comment" /></td>
-				</tr>
-				<tr>
 					<td>File: </td>
 					<td><input type="file" name="image" /></td>
 				</tr>
@@ -24,8 +20,13 @@
 			<input type="submit" />
 		</form>
 		<hr />
+		<div class="photo_wrap">
 		<% data.forEach(function(item, index){ %>
-			<div class="photo">
+			<% if(index%4==0){ %>
+				<div class="photo" style="clear:both">
+			<% }else{ %>
+				<div class="photo">
+			<% } %>
 				<h5 class="h5_photo"><%= item.comment %></h2>
 				<img class="img_photo" src="/upload/multipart/<%= item.name %>" />
 				<a class="a_photo_show" href="http://kaosu.kr/uploadshow/<%= item._id %>">보기</a>
@@ -33,23 +34,6 @@
 				<a class="a_photo_delete" href="http://kaosu.kr/uploaddelete/<%= item._id %>">삭제</a>
 			</div>
 			<% }); %>
-		<table width="100%" border="1">
-			<tr>
-				<th>ID</th>
-				<th>Name</th>
-				<th>Comment</th>
-				<th>Show</th>
-				<th>DELETE</th>
-			</tr>
-			<% data.forEach(function(item, index){ %>
-				<tr>
-					<td><%= item._id %></td>
-					<td><a href="http://kaosu.kr/download/<%= item.name %>"><%= item.name %></a></td>
-					<td><%= item.comment %></td>
-					<td><a href="http://kaosu.kr/uploadshow/<%= item._id %>">SHOW</a></td>
-					<td><a href="http://kaosu.kr/uploaddelete/<%= item._id %>">DELETE</a></td>
-				</tr>
-				<% }); %>
-		</table>
+		</div>
 	</body>
 </html>

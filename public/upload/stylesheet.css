@@ -19,8 +19,13 @@ body {
 	position: relative;
 }
 
+.photo_wrap{
+	margin-top: 20px;
+}
+
 .photo{
-	margin-top: 10px;
+	float: left;
+	margin: 5px;
 	width: 200px;
 	height: 250px;
 	border: 1px solid #000000;
