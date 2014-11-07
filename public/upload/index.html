@@ -6,6 +6,11 @@
 		<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
 		<script src="prefixfree.min.js"></script>
         <script src="/upload/upload.js"></script>
+        <script>
+        	$(document).ready(function(){
+				alert('1');
+			});
+        </script>
 	</head>
 	<body>
 		<h1>File Upload</h1>
@@ -23,6 +28,7 @@
 			<input type="submit" />
 		</form>
 		<hr />
+		<div id="photo"></div>
 		<table width="100%" border="1">
 			<tr>
 				<th>ID</th>
