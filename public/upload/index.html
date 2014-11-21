@@ -28,7 +28,7 @@
 				<div class="photo">
 			<% } %>
 				<h5 class="h5_photo"><%= item.comment %></h2>
-				<img class="img_photo" src="/upload/multipart/<%= item.name %>" />
+				<img class="img_photo" src="/upload/multipart/thumb_<%= item.name %>" />
 				<a class="a_photo_show" href="http://kaosu.kr/uploadshow/<%= item._id %>">보기</a>
 				<a class="a_photo_down" href="http://kaosu.kr/download/<%= item._id %>">다운</a>
 				<a class="a_photo_delete" href="http://kaosu.kr/uploaddelete/<%= item._id %>">삭제</a>

@@ -7,6 +7,7 @@ var nodemailer = require('nodemailer');
 var crypto = require('crypto');
 var mysql = require('mysql');
 var utf8 = require('utf8');
+var easyimage = require('easyimage');
 
 var client = mysql.createConnection({
 	host: '10.0.0.1',
@@ -291,8 +292,20 @@ app.post('/upload', function(request, response){
 		var comment = name;
 		var path = file.path;
 		var addPath = Date.now()+'_'+name;
+		var addThumbPath = 'thumb_'+addPath;
 		var outputPath = __dirname + '/public/upload/multipart/'+addPath;
+		var outputThumbPath = __dirname + '/public/upload/multipart/'+addThumbPath;
+		
 		fs.rename(path, outputPath, function(error){
+			easyimage.thumbnail({
+				src: outputPath,
+				dst: outputThumbPath,
+				width:100, height:100,
+				x:0, y:0
+			}, function(err, img){
+				if(err) console.log("err");
+				response.redirect('/upload');
+			});
 			client.query('insert into myfile2 (name, comment) values (?, ?)', [addPath, comment], function(){
 				response.redirect('/upload');
 			});
@@ -319,6 +332,9 @@ app.get('/uploaddelete/:id', function(request, response){
 			fs.unlink(__dirname + '/public/upload/multipart/'+result[0].name, function(error){
 				client.query('delete from myfile2 where _id=?', request.param('id'), function(){
 					response.redirect('/upload');
+				});
+				fs.unlink(__dirname + '/public/upload/multipart/thumb_'+result[0].name, function(error){
+					
 				});
 			});
 		}
