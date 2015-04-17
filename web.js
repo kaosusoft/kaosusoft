@@ -394,13 +394,6 @@ function dogangSpringChangeAuto(on, position){
 	else dogangSpring.hour = date.getHours()%12;
 	dogangSpring.minute = date.getMinutes();
 	dogangSpring.position = position;
-	
-	console.log('on : '+dogangSpring.on);
-	console.log('month : '+dogangSpring.month);
-	console.log('day : '+dogangSpring.day);
-	console.log('hour : '+dogangSpring.hour);
-	console.log('minute : '+dogangSpring.minute);
-	console.log('position : '+dogangSpring.position);
 }
 
 function dogangSpringOff(){
@@ -425,13 +418,6 @@ function dogangSpringOff(){
 		dogangSpring.minute = date.getMinutes();
 		dogangSpring.position = 40;
 	}
-	
-	console.log('on : '+dogangSpring.on);
-	console.log('month : '+dogangSpring.month);
-	console.log('day : '+dogangSpring.day);
-	console.log('hour : '+dogangSpring.hour);
-	console.log('minute : '+dogangSpring.minute);
-	console.log('position : '+dogangSpring.position);
 }
 
 function dogangSpringLoop(){
@@ -441,14 +427,6 @@ function dogangSpringLoop(){
 		dogangSpringOff();
 	}
 }
-
-console.log('on : '+dogangSpring.on);
-console.log('month : '+dogangSpring.month);
-console.log('day : '+dogangSpring.day);
-console.log('hour : '+dogangSpring.hour);
-console.log('minute : '+dogangSpring.minute);
-console.log('position : '+dogangSpring.position);
-
 setInterval(dogangSpringLoop, 600000);
 
 

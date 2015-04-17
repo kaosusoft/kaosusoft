@@ -17,6 +17,11 @@
 				var position = 0;
 				
 				var socket = io.connect();
+				$('.status_on').text('로딩중입니다!');
+				$('.status_detail').text('');
+				$('.div_input').hide();
+				$('#btn_off').hide();
+				$('#btn_on').hide();
 				socket.on('dogangSpringSetting', function(data){
 					if(data.on == 0){
 						$('#img_on').attr('src', '/dogang/btn_que_s.png');
