@@ -449,7 +449,7 @@ console.log('hour : '+dogangSpring.hour);
 console.log('minute : '+dogangSpring.minute);
 console.log('position : '+dogangSpring.position);
 
-setInterval(dogangSpringLoop, 3600000);
+setInterval(dogangSpringLoop, 600000);
 
 
 // ------------------------------------------------------------------------------------------------- //
