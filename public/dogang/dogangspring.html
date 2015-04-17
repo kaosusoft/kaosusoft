@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ko">
+	<head>
+		<title>가오수 World</title>
+		<meta charset="UTF-8" />
+		<link rel="stylesheet" href="/dogang/stylesheet_dogangspring.css" />
+		<script src="prefixfree.min.js"></script>
+		<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+		<script src="./socket.io/socket.io.js"></script>
+		<script>
+			$(document).ready(function(){
+				var on = 0;
+				var month = 0;
+				var day = 0;
+				var hour = 0;
+				var minute = 0;
+				var position = 0;
+				
+				var socket = io.connect();
+				socket.on('dogangSpringSetting', function(data){
+					if(data.on == 0){
+						$('#img_on').attr('src', '/dogang/btn_que_s.png');
+						$('.status_on').text('로딩중입니다!');
+						$('.status_detail').text('');
+						$('.div_input').hide();
+						$('#btn_off').hide();
+						$('#btn_on').hide();
+					}else if(data.on == 1){
+						$('#img_on').attr('src', '/dogang/btn_green_s.png');
+						$('.status_on').text('사용가능합니다!');
+						$('.status_detail').text('');
+						$('.div_input').show();
+						$('#input_position').val(0);
+						$('#btn_off').hide();
+						$('#btn_on').show();
+					}else if(data.on == 2){
+						$('#img_on').attr('src', '/dogang/btn_red_s.png');
+						$('.status_on').text('사용했습니다!');
+						var detail_text = '';
+						detail_text += data.hour;
+						detail_text += '시 ';
+						detail_text += data.minute;
+						detail_text += '분, 타석 : ';
+						if(data.position > 0){
+							detail_text += data.position;							
+						}else{
+							detail_text += '??';
+						}
+						
+						$('.status_detail').text(detail_text);
+						$('.div_input').hide();
+						$('#btn_off').show();
+						$('#btn_on').hide();
+					}
+				});
+				
+				$('#btn_on').click(function(){
+					var position = $('#input_position').val();
+					socket.emit('dogangSpringChangeOn', {
+						on: 2,
+						position: position
+					});
+				});
+				
+				$('#btn_off').click(function(){
+					socket.emit('dogangSpringChangeOff');
+				});
+				
+				socket.emit('dogangSpring');
+				
+				// $('#join').click(function(){
+					// if(flag_name==false || flag_nickname==false || flag_email==false){
+						// alert(flag_name+'/'+flag_nickname+'/'+flag_email);
+						// return;
+					// }
+					// var email = $('#emailinput').val();
+					// var pw = $('#pwinput').val();
+					// var pw2 = $('#pwinput2').val();
+					// var nick = $('#nickinput').val();
+					// var name = $('#nameinput').val();
+					// if(name.length == 0){
+						// alert('아이디를 입력하세요.');
+						// return;
+					// }
+					// if(name.length<5 || pw.length>10){
+						// alert('아이디는 5자와 10자 사이입니다.');
+						// return;
+					// }
+					// if(pw.length == 0){
+						// alert('패스워드를 입력하세요.');
+						// return;
+					// }
+					// if(pw.length<6 || pw.length>12){
+						// alert('패스워드는 6자와 12자 사이입니다.');
+						// return;
+					// }
+					// if(pw2.length == 0){
+						// alert('패스워드 확인을 입력하세요.');
+						// return;
+					// }
+					// if(pw != pw2){
+						// alert('패스워드확인이 일치하지 않습니다.');
+						// return;
+					// }
+					// if(nick.length == 0){
+						// alert('닉네임을 입력하세요.');
+						// return;
+					// }
+					// if(nick.length>12){
+						// alert('닉네임이 너무 깁니다.');
+						// return;
+					// }
+					// if(email.length == 0){
+						// alert('이메일을 입력하세요.');
+						// return;
+					// }
+					// if(!checkEmail(email)){
+						// alert('이메일 형식이 잘못되었습니다.');
+						// return;
+					// }
+// 					
+					// var form = document.getElementById('register');
+					// form.submit();
+// 					
+					// var btjoin = document.getElementById('join');
+					// btjoin.disabled = 'true';
+				// });
+			});
+			
+			$(document).unload(function(){
+				if (socket != undefined) socket.disconnect();
+			});
+			
+		</script>
+	</head>
+	<body>
+		<div class="container">
+    		<div id="status">
+				<div class="heading">
+      				<img id='img_on' src="/dogang/btn_que_s.png" />
+    			</div>
+			</div>
+			<div id="control">
+				<div class="heading2">
+      				<p class="status_on"><strong>로딩중입니다!</strong></p>
+      				<p class="status_detail"><strong>4시 30분, 타석 : 40번</strong></p>
+				</div>
+				<div class="heading3">
+					<div class="div_input">
+						<p class="p_position"><strong>타석 : </strong></p>
+						<input type="number" name="input_P" id="input_position"/>
+					</div>
+					<button id="btn_on">카드사용</button>
+					<button id="btn_off">취소</button>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

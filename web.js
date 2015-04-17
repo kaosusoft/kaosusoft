@@ -341,6 +341,120 @@ app.get('/uploaddelete/:id', function(request, response){
 	});
 });
 
+app.get('/dogangspring', function(request, response){
+	fs.readFile(__dirname+'/public/dogang/dogangspring.html', function(error, data){
+		response.send(data.toString());
+	});
+});
+
+app.post('/dogangspring', function(request, response){
+	var body = request.body;
+	
+	var on = body.on;
+	var position = body.position;
+	
+	dogangSpringChangeAuto(on, position);
+});
+
+
+function memberInfo(code, email, name, pw){
+	this.code = code;
+	this.email = email;
+	this.name = name;
+	this.pw = pw;
+}
+
+var memberConfirm = [];
+
+var dogangSpring = {
+	on: 1,
+	month: 0,
+	day: 0,
+	hour: 0,
+	minute: 0,
+	position: 40
+};
+
+function dogangSpringChange(on, month, day, hour, minute, position){
+	dogangSpring.on = on;
+	dogangSpring.month = month;
+	dogangSpring.day = day;
+	dogangSpring.hour = hour;
+	dogangSpring.minute = minute;
+	dogangSpring.position = position;
+};
+
+function dogangSpringChangeAuto(on, position){
+	var date = new Date();
+	
+	dogangSpring.on = on;
+	dogangSpring.month = date.getMonth()+1;
+	dogangSpring.day = date.getDate();
+	if(date.getHours()%12 == 0) dogangSpring.hour = 12;
+	else dogangSpring.hour = date.getHours()%12;
+	dogangSpring.minute = date.getMinutes();
+	dogangSpring.position = position;
+	
+	console.log('on : '+dogangSpring.on);
+	console.log('month : '+dogangSpring.month);
+	console.log('day : '+dogangSpring.day);
+	console.log('hour : '+dogangSpring.hour);
+	console.log('minute : '+dogangSpring.minute);
+	console.log('position : '+dogangSpring.position);
+}
+
+function dogangSpringOff(){
+	var date = new Date();
+	
+	dogangSpring.on = 1;
+	dogangSpring.month = date.getMonth()+1;
+	dogangSpring.day = date.getDate();
+	if(date.getHours()%12 == 0) dogangSpring.hour = 12;
+	else dogangSpring.hour = date.getHours()%12;
+	dogangSpring.minute = date.getMinutes();
+	dogangSpring.position = 40;
+		
+	var date = new Date();
+	
+	if(dogangSpring.month != date.getMonth()+1 || dogangSpring.day != date.getDate()){
+		dogangSpring.on = 1;
+		dogangSpring.month = date.getMonth()+1;
+		dogangSpring.day = date.getDate();
+		if(date.getHours()%12 == 0) dogangSpring.hour = 12;
+		else dogangSpring.hour = date.getHours()%12;
+		dogangSpring.minute = date.getMinutes();
+		dogangSpring.position = 40;
+	}
+	
+	console.log('on : '+dogangSpring.on);
+	console.log('month : '+dogangSpring.month);
+	console.log('day : '+dogangSpring.day);
+	console.log('hour : '+dogangSpring.hour);
+	console.log('minute : '+dogangSpring.minute);
+	console.log('position : '+dogangSpring.position);
+}
+
+function dogangSpringLoop(){
+	var date = new Date();
+	
+	if(dogangSpring.month != date.getMonth()+1 || dogangSpring.day != date.getDate()){
+		dogangSpringOff();
+	}
+}
+
+console.log('on : '+dogangSpring.on);
+console.log('month : '+dogangSpring.month);
+console.log('day : '+dogangSpring.day);
+console.log('hour : '+dogangSpring.hour);
+console.log('minute : '+dogangSpring.minute);
+console.log('position : '+dogangSpring.position);
+
+setInterval(dogangSpringLoop, 3600000);
+
+
+// ------------------------------------------------------------------------------------------------- //
+
+
 var server = http.createServer(app);
 
 server.listen(8002, function(){
@@ -430,18 +544,43 @@ io.sockets.on('connection', function(socket){
 		});
 	});
 	
+	socket.on('dogangSpring', function(data){
+		socket.emit('dogangSpringSetting', {
+			on: dogangSpring.on,
+			month: dogangSpring.month,
+			day: dogangSpring.day,
+			hour: dogangSpring.hour,
+			minute: dogangSpring.minute,
+			position: dogangSpring.position
+		});
+	});
+	
+	socket.on('dogangSpringChangeOn', function(data){
+		dogangSpringChangeAuto(data.on, data.position);
+		socket.emit('dogangSpringSetting', {
+			on: dogangSpring.on,
+			month: dogangSpring.month,
+			day: dogangSpring.day,
+			hour: dogangSpring.hour,
+			minute: dogangSpring.minute,
+			position: dogangSpring.position
+		});
+	});
+	
+	socket.on('dogangSpringChangeOff', function(data){
+		dogangSpringOff();
+		socket.emit('dogangSpringSetting', {
+			on: dogangSpring.on,
+			month: dogangSpring.month,
+			day: dogangSpring.day,
+			hour: dogangSpring.hour,
+			minute: dogangSpring.minute,
+			position: dogangSpring.position
+		});
+	});
+	
 	socket.on('disconnect', function(){
 		
 	});
 });
-
-function memberInfo(code, email, name, pw){
-	this.code = code;
-	this.email = email;
-	this.name = name;
-	this.pw = pw;
-}
-
-var memberConfirm = [];
-
 
