@@ -9,19 +9,19 @@ var mysql = require('mysql');
 var utf8 = require('utf8');
 var easyimage = require('easyimage');
 
-var client = mysql.createConnection({
-	host: '10.0.0.1',
-	port: 3306,
-	user: 'lible',
-	password: 'kaosu123',
-	database: 'lible'
-});
-
 // var client = mysql.createConnection({
-	// user: 'root',
-	// password: '0123523u',
+	// host: '10.0.0.1',
+	// port: 3306,
+	// user: 'lible',
+	// password: 'kaosu123',
 	// database: 'lible'
 // });
+
+var client = mysql.createConnection({
+	user: 'root',
+	password: '0123523u',
+	database: 'lible'
+});
 
 var app = express();
 
@@ -336,6 +336,28 @@ app.get('/uploaddelete/:id', function(request, response){
 				fs.unlink(__dirname + '/public/upload/multipart/thumb_'+result[0].name, function(error){
 					
 				});
+			});
+		}
+	});
+});
+
+app.get('/junggo', function(request, response){
+	fs.readFile(__dirname+'/public/junggo/junggolist.html', 'utf8', function(error, data){
+		client.query('select * from junggo order by orders asc', function(error, results){
+			response.send(ejs.render(data, {
+				data: results
+			}));
+		});
+	});
+});
+
+app.get('/junggoshow/:id', function(request, response){
+	client.query('select * from junggo where _id=?', request.param('id'), function(error, result, fields){
+		if(result.length>0){
+			fs.readFile(__dirname+'/public/junggo/junggodetail.html', 'utf8', function(error, data){
+				response.send(ejs.render(data, {
+					data: result
+				}));
 			});
 		}
 	});
