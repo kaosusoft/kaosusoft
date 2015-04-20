@@ -8,7 +8,7 @@
 		<link rel="stylesheet" href="/junggo/stylesheet_detail.css" />
 		<script>
 			$(document).ready(function(){
-				$('.h4_junggo_kilo').each(function(index){
+				$('.h2_junggo_kilo').each(function(index){
 					if($(this).text().length>3){
 						var kilotext = $(this).text().substr(0, $(this).text().length-3);
 						kilotext += ',';
@@ -34,23 +34,30 @@
 		</script>
 	</head>
 	<body>
-		<div id="title" style="position:fixed; z-index:99; width:100%; height:100px;">
+		<div id="title" style="width:100%; height:100px;">
 			<h1 class="h1_title">길승카</h1>
 		</div>
 		<div class="junggo_wrap">
-			<div style="width=100%; height:100px"></div>
 		<% data.forEach(function(item, index){ %>
 			<div class="junggo" style="clear: both">
-				<img class="img_junggo" src="/upload/multipart/thumb_<%= item.data2 %>" />
+				<img class="img_junggo" src="/junggo/multipart/car_<%= item._id %>" />
 				<h2 class="h2_junggo_name"><%= item.data2 %></h2>
-				<h4 class="h4_junggo_age"><%= item.data3 %>년식</h4>
-				<h4 class="h4_junggo_kilo"><%= item.data4 %></h4>
-				<h4 class="h4_junggo_mission"><%= item.data6 %></h4>
-				<h4 class="h4_junggo_oil"><%= item.data5 %></h4>
+				<h4 class="h4_junggo_age"><%= item.data3 %>년식 / <%= item.data11 %>등록</h4>
+				<h2 class="h2_junggo_kilo"><%= item.data4 %></h2>
+				<h4 class="h4_junggo_mission"><%= item.data5 %> / <%= item.data6 %></h4>
 				<h3 class="h3_junggo_acc"><%= item.data7 %></h3>
 				<h1 class="h1_junggo_price"><%= item.data1 %></h1>
+				<h4 class="h4_junggo_color"><%= item.data9 %> / <%= item.data10 %></h4>
+				<h3 class="h3_junggo_acc2"><%= item.data8 %></h3>
+				<h5 class="h5_junggo_price">가격</h5>
+				<h5 class="h5_junggo_age">연식/등록일</h5>
+				<h5 class="h5_junggo_kilo">주행거리</h5>
+				<h5 class="h5_junggo_oil">연료/변속기</h5>
+				<h5 class="h5_junggo_color">색상/차량번호</h5>
+				<h5 class="h5_junggo_acc">사고이력</h5>
 			</div>
 			<% }); %>
+			<h1 class="h1_ps">정직한 가격! 확실한 품질! 길승카!</h1>
 		</div>
 	</body>
 </html>

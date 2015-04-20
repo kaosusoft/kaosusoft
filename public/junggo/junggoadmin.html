@@ -3,10 +3,10 @@
 	<head>
 		<title>가오수 World</title>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="user-scalable=no, initial-scale=0.5, maximum-scale=0.5, minimum-scale=0.5, width=device-width" />
+		<meta name="viewport" content="width=520, initial-scale=0.5" />
+		<script src="prefixfree.min.js"></script>
 		<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
 		<link rel="stylesheet" href="/junggo/stylesheet.css" />
-		<script src="prefixfree.min.js"></script>
 		<script>
 			$(document).ready(function(){
 				$('.h4_junggo_kilo').each(function(index){
@@ -31,17 +31,55 @@
 						$(this).text($(this).text()+'만원');
 					}
 				});
+				$('#btn_add').click(function(){
+					location = "/junggoinsert";
+				});
+				
+				$('.btn_edit').each(function(index){
+					$(this).click(function(){
+						if(confirm('수정하시겠습니까?')){
+							location = "/junggoedit/"+$(this).data('x');
+						}
+					});
+				});
+				
+				$('.btn_delete').each(function(index){
+					$(this).click(function(){
+						if(confirm('삭제하시겠습니까?')){
+							location = "/junggodelete/"+$(this).data('x');
+						}
+					});
+				});
+			});
+			
+			$(document).ready(function(){
+				var onClickSeat = function(){
+					var x = $(this).attr('data-x');
+					var y = $(this).attr('data-y');
+					
+					if(confirm('좌석을 예약하시겠습니까?')){
+						$(this).off('click');
+						socket.emit('reserve', {
+							x: x,
+							y: y,
+							reservation: 2
+						});
+						$(this).on('click', onCancelSeat);
+					}else{
+						alert('취소되었습니다.');
+					}
+				};
 			});
 		</script>
 	</head>
 	<body>
-		<div id="title" style="position:fixed; z-index:99; width:100%; height:100px;">
-			<h1 class="h1_title">길승카</h1>
-		</div>
 		<div class="junggo_wrap">
-			<div style="width=100%; height:100px"></div>
+			<div style="width=100%; height:100px">
+				<button id="btn_add">차량 추가</button>
+			</div>
 		<% data.forEach(function(item, index){ %>
-			<div class="junggo" style="cursor:pointer" onclick="window.location.href='http://kaosu.kr/junggoshow/<%= item._id %>';">
+			<!-- <div class="junggo" style="cursor:pointer" onclick="window.location.href='http://kaosu.kr/junggoshow/<%= item._id %>';"> -->
+			<div class="junggo_admin" style="clear: both">
 				<img class="img_junggo" src="/junggo/multipart/car_<%= item._id %>" />
 				<h2 class="h2_junggo_name"><%= item.data2 %></h2>
 				<h4 class="h4_junggo_age"><%= item.data3 %>년식</h4>
@@ -50,6 +88,9 @@
 				<h4 class="h4_junggo_oil"><%= item.data5 %></h4>
 				<h3 class="h3_junggo_acc"><%= item.data7 %></h3>
 				<h1 class="h1_junggo_price"><%= item.data1 %></h1>
+				<hr class="hr_junggo" />
+				<button class="btn_edit"  data-x='<%= item._id %>'>수정</button>
+				<button class="btn_delete" data-x='<%= item._id %>'>삭제</button>
 			</div>
 			<% }); %>
 		</div>

@@ -351,6 +351,74 @@ app.get('/junggo', function(request, response){
 	});
 });
 
+app.get('/junggoadmin', function(request, response){
+	fs.readFile(__dirname+'/public/junggo/junggoadmin.html', 'utf8', function(error, data){
+		client.query('select * from junggo order by orders asc', function(error, results){
+			response.send(ejs.render(data, {
+				data: results
+			}));
+		});
+	});
+});
+
+app.get('/junggoinsert', function(request, response){
+	fs.readFile(__dirname+'/public/junggo/junggoinsert.html', function(error, data){
+		response.send(data.toString());
+	});
+});
+
+app.post('/junggoinsert', function(request, response){
+	var body = request.body;
+	console.log(body);
+	client.query('insert into junggo (data1, data2, data3, data4, data5, data6, data7, data8, data9, data10, data11, data12, data13, data14, data15, orders) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [body.data1, body.data2, body.data3, body.data4, body.data5, body.data6, body.data7, body.data8, body.data9, body.data10, body.data11, '', '', '', '', 0], function(error, result, field){
+		console.log(result.insertId);
+		response.redirect('/junggoadmin');
+		var file = request.files.image;
+		
+		if(file){
+			// var name = file.name;
+			// var comment = name;
+			var path = file.path;
+			// var addPath = Date.now()+'_'+name;
+			// var addThumbPath = 'thumb_'+addPath;
+			var outputPath = __dirname + '/public/junggo/multipart/car_'+result.insertId;
+			// var outputThumbPath = __dirname + '/public/upload/multipart/'+addThumbPath;
+// 			
+			fs.rename(path, outputPath, function(error){
+				// easyimage.thumbnail({
+					// src: outputPath,
+					// dst: outputThumbPath,
+					// width:100, height:100,
+					// x:0, y:0
+				// }, function(err, img){
+					// if(err) console.log("err");
+					// response.redirect('/upload');
+				// });
+				// client.query('insert into myfile2 (name, comment) values (?, ?)', [addPath, comment], function(){
+					// response.redirect('/upload');
+				// });
+			});
+		}else{
+			response.send(404);
+		}
+	});
+});
+
+app.get('/junggodelete/:id', function(request, response){
+	client.query('select * from junggo where _id=?', request.param('id'), function(error, result, fields){
+		if(result.length>0){
+			fs.unlink(__dirname + '/public/upload/multipart/car_'+result[0]._id, function(error){
+				client.query('delete from junggo where _id=?', request.param('id'), function(){
+					response.redirect('/junggoadmin');
+				});
+				// fs.unlink(__dirname + '/public/upload/multipart/thumb_'+result[0].name, function(error){
+// 					
+				// });
+			});
+		}
+	});
+});
+
 app.get('/junggoshow/:id', function(request, response){
 	client.query('select * from junggo where _id=?', request.param('id'), function(error, result, fields){
 		if(result.length>0){

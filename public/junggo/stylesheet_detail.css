@@ -30,14 +30,15 @@ body {
 .junggo{
 	float: left;
 	margin: 5px;
-	width: 640px;
-	height: 180px;
+	width: 630px;
+	height: 600px;
 	border: 1px solid #000000;
 	border-radius: 10px;
+	position: absolute;
 }
 
 .h1_title{
-	width: 640px;
+	width: 630px;
 	height: 50px;
 	color: #000000;
 	margin-top: 20px;
@@ -47,9 +48,8 @@ body {
 }
 
 .h2_junggo_name{
-	width: 460px;
+	width: 630px;
 	height: 30px;
-	margin-left: 180px;
 	margin-top: 10px;
 	text-align: center;
 	color: #000000;
@@ -57,82 +57,155 @@ body {
 }
 
 .h4_junggo_age{
-	width: 100px;
+	width: 240px;
 	height: 30px;
-	margin-left: 200px;
-	margin-top: 70px;
-	text-align: left;
-	color: #888888;
+	margin-left: 370px;
+	margin-top: 140px;
+	text-align: right;
+	color: #000000;
 	position: absolute;
 }
 
-.h4_junggo_kilo{
-	width: 120px;
+.h2_junggo_kilo{
+	width: 270px;
 	height: 30px;
-	margin-left: 310px;
-	margin-top: 70px;
+	margin-left: 405px;
+	margin-top: 180px;
 	text-align: center;
-	color: #888888;
+	color: orange;
 	position: absolute;
 }
 
 .h4_junggo_mission{
-	width: 80px;
+	width: 160px;
 	height: 30px;
-	margin-left: 440px;
-	margin-top: 70px;
-	text-align: center;
-	color: #888888;
+	margin-left: 500px;
+	margin-top: 230px;
+	text-align: left;
+	color: #000000;
 	position: absolute;
 }
 
-.h4_junggo_oil{
-	width: 100px;
+.h4_junggo_color{
+	width: 180px;
 	height: 30px;
-	margin-left: 500px;
-	margin-top: 70px;
-	text-align: right;
-	color: #888888;
+	margin-left: 450px;
+	margin-top: 275px;
+	text-align: center;
+	color: #000000;
 	position: absolute;
 }
 
 .h3_junggo_acc{
 	width: 150px;
 	height: 30px;
-	margin-left: 200px;
-	margin-top: 120px;
+	margin-left: 505px;
+	margin-top: 320px;
 	text-align: left;
-	color: #FFD700;
+	color: #FA6900;
+	position: absolute;
+}
+
+.h3_junggo_acc2{
+	width: 200px;
+	height: 30px;
+	margin-left: 435px;
+	margin-top: 360px;
+	text-align: left;
+	color: #FA6900;
 	position: absolute;
 }
 
 .h1_junggo_price{
-	width: 200px;
+	width: 310px;
 	height: 30px;
-	margin-left: 400px;
-	margin-top: 110px;
+	margin-left: 300px;
+	margin-top: 70px;
 	text-align: right;
 	color: #FF0000;
 	position: absolute;
 }
 
 .img_junggo{
-	width: 160px;
-	height: 160px;
-	margin: 10px;
+	width: 300px;
+	height: 300px;
+	margin-top: 70px;
+	margin-left: 10px;
 	border-radius: 10px;
 	position: absolute;
 }
 
-.a_junggo_show{
-	margin-left: 10px;
+.h5_junggo_age{
+	width: 80px;
+	height: 30px;
+	margin-left: 320px;
+	margin-top: 145px;
+	text-align: center;
+	font-size: 12px;
+	color: #000000;
 	position: absolute;
 }
 
-.a_junggo_delete{
-	overflow: hidden;
-	float: right;
-	margin-right: 10px;
+.h5_junggo_price{
+	width: 80px;
+	height: 30px;
+	margin-left: 320px;
+	margin-top: 90px;
+	text-align: center;
+	font-size: 12px;
+	color: #000000;
 	position: absolute;
 }
 
+.h5_junggo_kilo{
+	width: 80px;
+	height: 30px;
+	margin-left: 320px;
+	margin-top: 190px;
+	text-align: center;
+	font-size: 12px;
+	color: #000000;
+	position: absolute;
+}
+
+.h5_junggo_oil{
+	width: 80px;
+	height: 30px;
+	margin-left: 320px;
+	margin-top: 235px;
+	text-align: center;
+	font-size: 12px;
+	color: #000000;
+	position: absolute;
+}
+
+.h5_junggo_color{
+	width: 80px;
+	height: 30px;
+	margin-left: 320px;
+	margin-top: 280px;
+	text-align: center;
+	font-size: 12px;
+	color: #000000;
+	position: absolute;
+}
+
+.h5_junggo_acc{
+	width: 80px;
+	height: 30px;
+	margin-left: 320px;
+	margin-top: 327px;
+	text-align: center;
+	font-size: 12px;
+	color: #000000;
+	position: absolute;
+}
+
+.h1_ps{
+	width: 630px;
+	height: 50px;
+	margin-top: 500px;
+	text-align: center;
+	color: #000000;
+	position: absolute;
+}
