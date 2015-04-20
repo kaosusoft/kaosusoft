@@ -431,6 +431,17 @@ app.get('/junggoshow/:id', function(request, response){
 	});
 });
 
+app.get('/junggoimage/:id', function(request, response){
+	client.query('select * from junggo where _id=?', request.param('id'), function(error, result, fields){
+		if(result.length>0){
+			fs.readFile(__dirname+'/public/junggo/multipart/car_'+result[0]._id, function(error, data){
+				response.writeHead(200, {'Content-Type':'image/png'});
+				response.end(data);
+			});
+		}
+	});
+});
+
 app.get('/dogangspring', function(request, response){
 	fs.readFile(__dirname+'/public/dogang/dogangspring.html', function(error, data){
 		response.send(data.toString());
