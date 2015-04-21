@@ -17,11 +17,11 @@ var client = mysql.createConnection({
 	database: 'lible'
 });
 
-// var client = mysql.createConnection({
-	// user: 'root',
-	// password: '0123523u',
-	// database: 'lible'
-// });
+var client = mysql.createConnection({
+	user: 'root',
+	password: '0123523u',
+	database: 'lible'
+});
 
 var app = express();
 
