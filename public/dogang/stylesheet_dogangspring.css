@@ -95,6 +95,8 @@ p.p_position{
 
 img{
 	position: relative;
+	width: 240px;
+	height: 240px;
 }
 
 p.status_title{
