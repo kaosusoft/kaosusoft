@@ -202,8 +202,7 @@ body {
 }
 
 .field_car{
-	width: 300px;
-	table-layout: fixed;
+	width: 250px;
 	margin: 10px;
 	padding: 10px;
 }
@@ -212,10 +211,13 @@ body {
 	max-width: 150px;
 	width: 160px;
 	font-size: 14px;
-	table-layout: fixed;
 }
 
 .tb_car{
-	width: 310px;
+	max-width: 320px;
 	table-layout: fixed;
+}
+
+.div_input{
+	width:320px;
 }

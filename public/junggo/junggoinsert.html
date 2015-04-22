@@ -13,9 +13,10 @@
 	</head>
 	<body>
 	<h1 class="h1_title1">중고차 추가</h1>
+	<div class="div_input">
 	<form method="post" enctype="multipart/form-data">
 		<fieldset class="field_car">
-			<legend>차량 정보</legend>
+			<legend align="center">차량 정보</legend>
 			<table class="tb_car">
 				<tr>
 					<td class="td_name"><label>모델명</label></td>
@@ -92,11 +93,12 @@
 				</tr>
 				<tr>
 					<td class="td_name"><label>차량사진</label></td>
-					<td class="td_input"><input type="file" name="image" /></td>
+					<td class="td_input"><input style="width: 180px" type="file" name="image" /></td>
 				</tr>
 			</table>
 			<input class="input_submit" type="submit" />
 		</fieldset>
 	</form>
+	</div>
 	</body>
 </html>
