@@ -5,41 +5,102 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+		<link rel="stylesheet" href="/junggo/stylesheet.css" />
+		<script>
+			$(document).ready(function(){
+				$('#select_age').val($('#select_age').attr('data-x'));
+				$('#select_oil').val($('#select_oil').attr('data-x'));
+				$('#select_mission').val($('#select_mission').attr('data-x'));
+				$('#select_acc').val($('#select_acc').attr('data-x'));
+			});
+		</script>
 	</head>
 	<body>
-		<h1>Edit Page</h1>
-		<hr />
-		<form method="post">
-			<fieldset>
-				<legend>Edit DATA</legend>
-				<table>
-					<tr>
-						<td><label>ID</label></td>
-						<td><input type="text" name="id" value="<%= data._id %>" disabled /></td>
-					</tr>
-					<tr>
-						<td><label>Name</label></td>
-						<td><input type="text" name="name" value="<%= data.name %>"/></td>
-					</tr>
-					<tr>
-						<td><label>TEAM1</label></td>
-						<td><input type="number" name="team1" value="<%= data.team1 %>" /></td>
-					</tr>
-					<tr>
-						<td><label>TEAM2</label></td>
-						<td><input type="number" name="team2" value="<%= data.team2 %>" /></td>
-					</tr>
-					<tr>
-						<td><label>Order</label></td>
-						<td><input type="number" name="ordered" value="<%= data.ordered %>" /></td>
-					</tr>
-					<tr>
-						<td><label>Failed</label></td>
-						<td><input type="number" name="failed" value="<%= data.failed %>" /></td>
-					</tr>
-				</table>
-				<input type="submit" />
-			</fieldset>
-		</form>
+		<h1 class="h1_title1">중고차 추가</h1>
+		<% data.forEach(function(item, index){ %>
+			<div class="div_input">
+			<form method="post" enctype="multipart/form-data">
+				<fieldset class="field_car">
+					<legend align="center">차량 정보</legend>
+					<table class="tb_car">
+						<tr>
+							<td class="td_name"><label>모델명</label></td>
+							<td class="td_input"><input type="text" name="data2" value="<%= item.data2 %>" /><br /><label class="label_hint">ex)[BMW] 5-Series 520d</label></td>
+						</tr>
+						<tr>
+							<td class="td_name"><label>가격</label></td>
+							<td class="td_input"><input type="number" name="data1" value="<%= item.data1 %>" /><br /><label class="label_hint">ex) 3700</label></td>
+						</tr>
+						<tr>
+							<td class="td_name"><label>연식</label></td>
+							<td class="td_input"><select id="select_age" name="data3" data-x='<%= item.data3 %>'>
+								<option value="2015">2015</option>
+								<option value="2014">2014</option>
+								<option value="2013">2013</option>
+								<option value="2012">2012</option>
+								<option value="2011">2011</option>
+								<option value="2010">2010</option>
+								<option value="2009">2009</option>
+								<option value="2008">2008</option>
+								<option value="2007">2007</option>
+								<option value="2006">2006</option>
+								<option value="2005">2005</option>
+								<option value="2004">2004</option>
+								<option value="2003">2003</option>
+								<option value="2002">2002</option>
+								<option value="2001">2001</option>
+								<option value="2000">2000</option>
+							</select></td>
+						</tr>
+						<tr>
+							<td class="td_name"><label>최초등록일</label></td>
+							<td class="td_input"><input type="month" name="data11" value="<%= item.data11 %>"/></td>
+						</tr>
+						<tr>
+							<td class="td_name"><label>주행거리</label></td>
+							<td class="td_input"><input type="number" name="data4"  value="<%= item.data4 %>"/><br /><label class="label_hint">ex) 160000</label></td>
+						</tr>
+						<tr>
+							<td class="td_name"><label>연료</label></td>
+							<td class="td_input"><select select id="select_oil" name="data5" data-x='<%= item.data5 %>'>
+								<option>휘발유</option>
+								<option>경유</option>
+								<option>LPG</option>
+							</select></td>
+						</tr>
+						<tr>
+							<td class="td_name"><label>변속기</label></td>
+							<td class="td_input"><select select id="select_mission" name="data6" data-x='<%= item.data6 %>'>
+								<option>오토</option>
+								<option>수동</option>
+							</select></td>
+						</tr>
+						<tr>
+							<td class="td_name"><label>색상</label></td>
+							<td class="td_input"><input type="text" name="data9"  value="<%= item.data9 %>"/><br /><label class="label_hint">ex) 흰색</label></td>
+						</tr>
+						<tr>
+							<td class="td_name"><label>차량번호</label></td>
+							<td class="td_input"><input type="text" name="data10"  value="<%= item.data10 %>"/><br /><label class="label_hint">ex) 12가3456</label></td>
+						</tr>
+						<tr>
+							<td class="td_name"><label>사고정보</label></td>
+							<td class="td_input"><select select id="select_acc" name="data7" data-x='<%= item.data7 %>'>
+								<option>완전무사고</option>
+								<option>무사고</option>
+								<option>단순교환</option>
+								<option>기타</option>
+							</select></td>
+						</tr>
+						<tr>
+							<td class="td_name"><label>기타사항</label></td>
+							<td class="td_input"><input type="text" name="data8"  value="<%= item.data8 %>"/><br /><label class="label_hint">ex) 올튜닝, 엔진계열 올수리, 1인신조, 여성운전자</label></td>
+						</tr>
+					</table>
+					<input class="input_submit" type="submit" />
+				</fieldset>
+			</form>
+			</div>
+		<% }); %>
 	</body>
 </html>

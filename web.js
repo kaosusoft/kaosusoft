@@ -404,6 +404,40 @@ app.post('/junggoinsert', function(request, response){
 	});
 });
 
+app.get('/junggoedit/:id', function(request, response){
+	client.query('select * from junggo where _id=?', request.param('id'), function(error, result, fields){
+		console.log(result);
+		if(result.length>0){
+			fs.readFile(__dirname+'/public/junggo/junggoedit.html', 'utf8', function(error, data){
+				response.send(ejs.render(data, {
+					data: result
+				}));
+			});
+		}
+	});
+});
+
+app.post('/junggoedit/:id', function(request, response){
+	var body = request.body;
+	console.log(body);
+	client.query('update junggo set data1=?, data2=?, data3=?, data4=?, data5=?, data6=?, data7=?, data8=?, data9=?, data10=?, data11=?, data12=?, data13=?, data14=?, data15=?, orders=? where _id=?', [body.data1, body.data2, body.data3, body.data4, body.data5, body.data6, body.data7, body.data8, body.data9, body.data10, body.data11, '', '', '', '', 0, request.param('id')], function(error, result, field){
+		console.log(result.insertId);
+		response.redirect('/junggoadmin');
+		var file = request.files.image;
+		
+		// if(file){
+			// var path = file.path;
+			// var outputPath = __dirname + '/public/junggo/multipart/car_'+result.insertId;
+// 
+			// fs.rename(path, outputPath, function(error){
+// 
+			// });
+		// }else{
+			// response.send(404);
+		// }
+	});
+});
+
 app.get('/junggodelete/:id', function(request, response){
 	client.query('select * from junggo where _id=?', request.param('id'), function(error, result, fields){
 		if(result.length>0){
@@ -421,6 +455,7 @@ app.get('/junggodelete/:id', function(request, response){
 
 app.get('/junggoshow/:id', function(request, response){
 	client.query('select * from junggo where _id=?', request.param('id'), function(error, result, fields){
+		console.log(result);
 		if(result.length>0){
 			fs.readFile(__dirname+'/public/junggo/junggodetail.html', 'utf8', function(error, data){
 				response.send(ejs.render(data, {
