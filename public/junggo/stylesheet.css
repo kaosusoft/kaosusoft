@@ -167,3 +167,39 @@ body {
 	width: 80px;
 	height: 25px;
 }
+
+
+.h1_title1{
+	width: 320px;
+	height: 70px;
+	color: #000000;
+	margin-top: 10px;
+	text-align: center;
+}
+
+.label_name{
+	width: 200px;
+	height: 50px;
+	color: #000000;
+}
+
+.td_name{
+	min-width: 90px;
+	color: #000000;
+	width: 100px;
+}
+
+.input_submit{
+	width: 80px;
+	height:30px;
+	margin: 30px;
+}
+
+
+.label_hint{
+	font-size: 14px;
+}
+
+.tb_car{
+	margin-left: 10px;
+}
