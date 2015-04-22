@@ -187,11 +187,12 @@ body {
 	min-width: 90px;
 	color: #000000;
 	width: 95px;
+	height: 60px;
 }
 
 .td_input{
 	min-width: 90px;
-	width: 170px;
+	width: 215px;
 }
 
 .input_submit{
@@ -203,6 +204,7 @@ body {
 .field_car{
 	width: 300px;
 	table-layout: fixed;
+	margin: 10px;
 	padding: 10px;
 }
 
