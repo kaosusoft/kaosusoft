@@ -492,6 +492,12 @@ app.post('/dogangspring', function(request, response){
 	dogangSpringChangeAuto(on, position);
 });
 
+app.get('/couplegosa', function(request, response){
+	fs.readFile(__dirname+'/public/couplegosa/index.html', function(error, data){
+		response.send(data.toString());
+	});
+});
+
 
 function memberInfo(code, email, name, pw){
 	this.code = code;

@@ -1,0 +1,28 @@
+<!doctype HTML>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Login Demo - Kakao Javascript SDK</title>
+    <script src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
+  </head>
+  <body>
+    <a id="kakao-login-btn"></a>
+
+    <script>
+      // 사용할 앱의 Javascript 키를 설정해 주세요.
+      Kakao.init('6d72b47bf0df2339d699766ce40bc208');
+
+      // 카카오 로그인 버튼을 생성합니다.
+      Kakao.Auth.createLoginButton({
+        container: '#kakao-login-btn',
+        success: function(authObj) {
+          alert(JSON.stringify(authObj));
+        },
+        fail: function(err) {
+          alert(JSON.stringify(err))
+        }
+      });
+    </script>
+  </body>
+</html>
