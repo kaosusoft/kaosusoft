@@ -493,6 +493,12 @@ app.post('/dogangspring', function(request, response){
 });
 
 app.get('/couplegosa', function(request, response){
+	fs.readFile(__dirname+'/public/couplegosa/couplegosa.html', function(error, data){
+		response.send(data.toString());
+	});
+});
+
+app.get('/couplegosaauth', function(request, response){
 	fs.readFile(__dirname+'/public/couplegosa/index.html', function(error, data){
 		response.send(data.toString());
 	});
