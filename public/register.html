@@ -11,12 +11,10 @@
 			$(document).ready(function(){
 				var flag_name = false;
 				var flag_nickname = false;
-				var quit_name = '';
-				// var flag_email = false;
+				var flag_email = false;
 				
 				var socket = io.connect();
 				socket.emit('join_member');
-
 				socket.on('name_confirm', function(data){
 					if(data.type == 0){
 						$('#namelabel2').text('잘못된 아이디입니다.');
@@ -47,35 +45,21 @@
 						}
 					}
 				});
-				socket.on('join_error', function(data){
-					alert('가입 중 오류가 발생하였습니다.');
-					var btjoin = document.getElementById('join');
-					btjoin.disabled = 'false';
+				socket.on('email_confirm', function(data){
+					if(data.type == 0){
+						$('#emaillabel2').text('잘못된 이메일입니다.');
+						$('#emaillabel2').css('color', 'red');
+					}else if(data.type == 1){
+						$('#emaillabel2').text('등록된 이메일입니다.');
+						$('#emaillabel2').css('color', 'red');
+					}else if(data.type == 2){
+						if(data.name == $('#emailinput').val()){
+							$('#emaillabel2').text('사용가능한 이메일입니다.');
+							$('#emaillabel2').css('color', 'green');
+							flag_email = true;
+						}
+					}
 				});
-				socket.on('join_already', function(data){
-					alert('이미 가입된 ID입니다.');
-					var btjoin = document.getElementById('join');
-					btjoin.disabled = 'false';
-				});
-				socket.on('join_success', function(data){
-					alert('가입되었습니다');
-					window.close();
-				});
-				// socket.on('email_confirm', function(data){
-					// if(data.type == 0){
-						// $('#emaillabel2').text('잘못된 이메일입니다.');
-						// $('#emaillabel2').css('color', 'red');
-					// }else if(data.type == 1){
-						// $('#emaillabel2').text('등록된 이메일입니다.');
-						// $('#emaillabel2').css('color', 'red');
-					// }else if(data.type == 2){
-						// if(data.name == $('#emailinput').val()){
-							// $('#emaillabel2').text('사용가능한 이메일입니다.');
-							// $('#emaillabel2').css('color', 'green');
-							// flag_email = true;
-						// }
-					// }
-				// });
 				
 				$('#nameinput').keyup(function(){
 					var inputLength = $(this).val().length;
@@ -140,28 +124,28 @@
 					}
 				});
 				
-				// $('#emailinput').keyup(function(){
-					// var inputLength = $(this).val().length;
-					// if(inputLength==0){
-						// $('#emaillabel2').text('이메일을 입력해 주세요.');
-						// $('#emaillabel2').css('color', 'red');
-						// flag_email = false;
-					// }else if(!checkEmail($(this).val())){
-						// $('#emaillabel2').text('이메일 형식이 잘못되었습니다.');
-						// $('#emaillabel2').css('color', 'red');
-						// flag_email = false;
-					// }else{
-						// socket.emit('email_confirms', $(this).val());
-					// }
-				// });
+				$('#emailinput').keyup(function(){
+					var inputLength = $(this).val().length;
+					if(inputLength==0){
+						$('#emaillabel2').text('이메일을 입력해 주세요.');
+						$('#emaillabel2').css('color', 'red');
+						flag_email = false;
+					}else if(!checkEmail($(this).val())){
+						$('#emaillabel2').text('이메일 형식이 잘못되었습니다.');
+						$('#emaillabel2').css('color', 'red');
+						flag_email = false;
+					}else{
+						socket.emit('email_confirms', $(this).val());
+					}
+				});
 				
 				
 				$('#join').click(function(){
-					if(flag_name==false || flag_nickname==false){
-						alert(flag_name+'/'+flag_nickname);
+					if(flag_name==false || flag_nickname==false || flag_email==false){
+						alert(flag_name+'/'+flag_nickname+'/'+flag_email);
 						return;
 					}
-					// var email = $('#emailinput').val();
+					var email = $('#emailinput').val();
 					var pw = $('#pwinput').val();
 					var pw2 = $('#pwinput2').val();
 					var nick = $('#nickinput').val();
@@ -198,25 +182,17 @@
 						alert('닉네임이 너무 깁니다.');
 						return;
 					}
-					// if(email.length == 0){
-						// alert('이메일을 입력하세요.');
-						// return;
-					// }
-					// if(!checkEmail(email)){
-						// alert('이메일 형식이 잘못되었습니다.');
-						// return;
-					// }
+					if(email.length == 0){
+						alert('이메일을 입력하세요.');
+						return;
+					}
+					if(!checkEmail(email)){
+						alert('이메일 형식이 잘못되었습니다.');
+						return;
+					}
 					
-					// var form = document.getElementById('register');
-					// form.submit();
-					
-					socket.emit('join_access', {
-						name: name,
-						pw: pw,
-						nickname: nick
-					});
-					
-					quit_name = name;
+					var form = document.getElementById('register');
+					form.submit();
 					
 					var btjoin = document.getElementById('join');
 					btjoin.disabled = 'true';
@@ -240,36 +216,43 @@
 	<body>
 		<div class="container">
 			<div id="form_container">
-				<fieldset>
-					<legend>회원가입</legend>
-					<table>
-						<tr>
-							<td><label id="namelabel">아이디</label></td>
-							<td><input type="text" name="inputN" id="nameinput"/></td>
-							<td><label id="namelabel2"> </label></td>
-						</tr>
-						<tr>
-							<td><label id="pwlabel">패스워드</label></td>
-							<td><input type="password" name="inputP" id="pwinput"/></td>
-							<td><label id="pwlabel3"> </label></td>
-						</tr>
-						<tr>
-							<td><label id="pwlabel2">패스워드확인</label></td>
-							<td><input type="password" name="inputP2" id="pwinput2"/></td>
-							<td><label id="pwlabel4"> </label></td>
-						</tr>
-						<tr>
-							<td><label id="nicklabel">닉네임</label></td>
-							<td><input type="text" name="inputN2" id="nickinput"/></td>
-							<td><label id="nicklabel2"> </label></td>
-						</tr>
-						<tr>
-							<td><button id="join">회원가입</button></td>
-						</tr>
-					</table>
-					<br />
-					<label>이 사이트의 모든 개인정보는 전혀 암호화되지 않습니다.</label>
-				</fieldset>
+				<form method="post" id="register">
+					<fieldset>
+						<legend>회원가입</legend>
+						<table>
+							<tr>
+								<td><label id="namelabel">아이디</label></td>
+								<td><input type="text" name="inputN" id="nameinput"/></td>
+								<td><label id="namelabel2"> </label></td>
+							</tr>
+							<tr>
+								<td><label id="pwlabel">패스워드</label></td>
+								<td><input type="password" name="inputP" id="pwinput"/></td>
+								<td><label id="pwlabel3"> </label></td>
+							</tr>
+							<tr>
+								<td><label id="pwlabel2">패스워드확인</label></td>
+								<td><input type="password" name="inputP2" id="pwinput2"/></td>
+								<td><label id="pwlabel4"> </label></td>
+							</tr>
+							<tr>
+								<td><label id="nicklabel">닉네임</label></td>
+								<td><input type="text" name="inputN2" id="nickinput"/></td>
+								<td><label id="nicklabel2"> </label></td>
+							</tr>
+							<tr>
+								<td><label id="emaillabel">이메일</label></td>
+								<td><input type="email" name="inputE" id="emailinput"/></td>
+								<td><label id="emaillabel2"> </label></td>
+							</tr>
+							<tr>
+								<td><input type="button" value="회원가입" id="join"/></td>
+							</tr>
+						</table>
+						<br />
+						<label>이 사이트의 모든 개인정보는 전혀 암호화되지 않습니다.</label>
+					</fieldset>
+				</form>
 			</div>
 		</div>
 	</body>

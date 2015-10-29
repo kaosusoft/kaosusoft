@@ -8,6 +8,7 @@ var crypto = require('crypto');
 var mysql = require('mysql');
 var utf8 = require('utf8');
 var easyimage = require('easyimage');
+var uuid = require('node-uuid');
 
 var client = mysql.createConnection({
 	host: '10.0.0.1',
@@ -32,21 +33,157 @@ app.use(app.router);
 app.use(express.static(__dirname+'/public'));
 
 app.get('/', function(request, response){
-	fs.readFile(__dirname+'/public/index.html', function(error, data){
+	console.log('cookie-session : '+request.cookies.session);
+	if(request.cookies.session == undefined){
+		fs.readFile(__dirname+'/public/index.html', 'utf8',  function(error, data){
+			response.send(ejs.render(data, {
+				data: {
+					result : 0
+				}
+			}));
+		});
+	}else{
+		console.log('cookie-session : '+request.cookies.session);
+		
+		client.query('SELECT * from member where token = ?', request.cookies.session, function(error, result, fields){
+			if(error){
+				response.redirect('/logout');
+			}else{
+				if(result.length>0){
+					fs.readFile(__dirname+'/public/index.html', 'utf8',  function(error, data){
+						console.log('name : '+result[0].name);
+						console.log('nickname : '+result[0].nickname);
+						response.send(ejs.render(data, {
+							data: {
+								result : 1,
+								name: result[0].name,
+								nickname: result[0].nickname
+							}
+						}));
+					});
+				}else{
+					response.redirect('/logout');
+				}
+			}
+		});
+	}
+});
+
+app.get('/logout', function(request, response){
+	response.clearCookie('session');
+	response.redirect('/');
+});
+
+app.get('/register', function(request, response){
+	fs.readFile(__dirname+'/public/register.html', function(error, data){
 		response.send(data.toString());
 	});
 });
 
-app.get('/register', function(request, response){
+app.get('/join', function(request, response){
 	fs.readFile(__dirname+'/public/join.html', function(error, data){
 		response.send(data.toString());
 	});
 });
 
+app.get('/kaosu', function (request, response) {
+	console.log('cookie : '+request.cookies.pw);
+	
+	fs.readFile(__dirname+'/public/worldcup.html', function (error, data) {
+		response.cookie('string', 'cookie');
+		response.cookie('json',{
+			id: 'kaosu',
+			pw: 'kaosu123'
+		});
+		response.send(data.toString());
+	});
+});
+
+app.get('/login_error/:id', function(request, response){
+	var id = request.param('id');
+	fs.readFile(__dirname+'/public/index_redirect.html', 'utf8', function(error, data){
+		console.log('id : '+id);
+		console.log(data);
+		response.send(ejs.render(data, {
+			data: id
+		}));
+	});
+});
+
 app.post('/', function(request, response){
 	var body = request.body;
+	var name = body.email;
+	var password = body.password;
 	console.log(body.email+'/'+body.password);
-	response.redirect('/');
+	
+	client.query('SELECT * from member where name = ?', name, function(error, result, fields){
+		if(error){
+			response.redirect('/login_error/2');
+		}else{
+			if(result.length>0){
+				console.log('log : '+result[0].name);
+				console.log('log : '+result[0].password);
+				var shasum = crypto.createHash('sha1');
+				shasum.update(name+'#'+password+'@kaosu');
+				var pw = shasum.digest('hex');
+				console.log('log pw : '+pw);
+				if(pw == result[0].password){
+					var output2 = uuid.v4();
+					console.log('login success : '+result[0].id+' token : '+output2);
+					client.query('update member set token=? where id=?', [output2, result[0].id], function(){
+						response.cookie('session', output2);
+						response.redirect('/');
+					});
+				}else{
+					response.redirect('/login_error/1');
+				}
+			}else{
+				response.redirect('/login_error/0');
+			}
+		}
+	});
+});
+
+app.post('/join', function(request, response){
+	var body = request.body;
+	console.log(body.inputN+'/'+body.inputP+'/'+body.inputN2);
+	
+	var pw = body.inputP;
+	var name = body.inputN;
+	var nickname = body.inputN2;
+	
+	var shasum = crypto.createHash('sha1');
+	shasum.update(body.inputP+'kaosu');
+	var output = shasum.digest('hex');
+	console.log(output);
+	
+	// var shasum2 = crypto.createHash('sha1');
+	// shasum2.update(body.inputN+body.inputP+'kaosu');
+	// var output2 = shasum2.digest('hex');
+	var output2 = uuid.v4();
+
+	client.query('SELECT * from member where name = ?', name, function(error, result, fields){
+		if(error){
+			response.redirect('/registererror');
+		}else{
+			console.log(result.length);
+			if(result.length>0){
+				response.redirect('/registeralready');
+			}else{
+				console.log('success1');
+				client.query('INSERT INTO member (name, password, token, nickname, level, exp) VALUES (?, ?, ?, ?, ?, ?, ?)', [name, output, output2, nickname, 1, 0], function(errors, results, fieldss){
+					if(errors){
+						console.log('fail');
+						console.log(errors);
+						response.redirect('/registererror');
+					}else{
+						console.log('success');
+						response.redirect('/registerok');
+					}
+				});
+			}
+		}
+	});
 });
 
 app.post('/register', function(request, response){
@@ -492,13 +629,13 @@ app.post('/dogangspring', function(request, response){
 	dogangSpringChangeAuto(on, position);
 });
 
-app.get('/couplegosa', function(request, response){
+app.get('/couple', function(request, response){
 	fs.readFile(__dirname+'/public/couplegosa/couplegosa.html', function(error, data){
 		response.send(data.toString());
 	});
 });
 
-app.get('/couplegosaauth', function(request, response){
+app.get('/coupleauth', function(request, response){
 	fs.readFile(__dirname+'/public/couplegosa/index.html', function(error, data){
 		response.send(data.toString());
 	});
@@ -593,6 +730,47 @@ io.sockets.on('connection', function(socket){
 	socket.on('join_member', function(){
 		socket.join('kaosusoft');
 		socket.set('room', 'kaosusoft');
+	});
+	socket.on('join_access', function(data){
+		console.log(data);
+		var name = data.name;
+		var pw = data.pw;
+		var nickname = data.nickname;
+		
+		var shasum = crypto.createHash('sha1');
+		shasum.update(name+'#'+pw+'@kaosu');
+		var output = shasum.digest('hex');
+		console.log(output);
+		
+		// var shasum2 = crypto.createHash('sha1');
+		// shasum2.update(body.inputN+body.inputP+'kaosu');
+		// var output2 = shasum2.digest('hex');
+		var output2 = uuid.v4();
+		console.log(output2);
+
+		client.query('SELECT * from member where name = ?', name, function(error, result, fields){
+			if(error){
+				socket.emit('join_error');
+			}else{
+				console.log(result.length);
+				if(result.length>0){
+					socket.emit('join_already');
+				}else{
+					console.log('success1');
+					client.query('INSERT INTO member (name, password, token, nickname, level, exp) VALUES (?, ?, ?, ?, ?, ?)', [name, output, output2, nickname, 1, 0], function(errors, results, fieldss){
+						if(errors){
+							console.log('fail');
+							console.log(errors);
+							socket.emit('join_error');
+						}else{
+							console.log('success');
+							socket.emit('join_success');
+						}
+					});
+				}
+			}
+		});
+
 	});
 	socket.on('name_confirms', function(data){
 		console.log(data);
@@ -709,4 +887,3 @@ io.sockets.on('connection', function(socket){
 		
 	});
 });
-

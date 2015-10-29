@@ -33,7 +33,11 @@
 				$('#join').click(function(){
 					// location = "/register";
 					// window.open('http://kaosusoft.cafe24app.com/register', 'child', 'width=540, height=240', true);
-					window.open('http://127.0.0.1:8002/register', 'child', 'width=540, height=240', true);
+					window.open('http://kaosu.kr/join', 'child', 'width=540, height=240', true);
+				});
+				
+				$('#logout').click(function(){
+					location = "/logout";
 				});
 				
 				var cubesize = 0;
@@ -60,25 +64,48 @@
 	</head>
 	<body>
 		<div class="container">
-			<div id="form_container">
-				<fieldset>
-					<legend>로그인</legend>
-					<table>
-						<tr>
-							<td><label id="emaillabel">아이디</label></td>
-							<td><input type="email" name="email" id="emailinput"/></td>
-						</tr>
-						<tr>
-							<td><label id="pwlabel">패스워드</label></td>
-							<td><input type="password" name="password" id="pwinput"/></td>
-							<td><input type="submit" value="로그인"/></td>
-						</tr>
-					</table>
-					<br />
-					<label>이 사이트의 모든 개인정보는 전혀 암호화되지 않습니다.</label>
-					</fieldset>
-				<button id="join">회원가입</button>
-			</div>
+			<% if(data.result==0){ %>
+				<div id="form_container">
+					<form method="post">
+						<fieldset>
+							<legend>로그인</legend>
+							<table>
+								<tr>
+									<td><label id="emaillabel">아이디</label></td>
+									<td><input type="text" name="email" id="emailinput"/></td>
+								</tr>
+								<tr>
+									<td><label id="pwlabel">패스워드</label></td>
+									<td><input type="password" name="password" id="pwinput"/></td>
+									<td><input type="submit" value="로그인"/></td>
+								</tr>
+							</table>
+							<br />
+							<label>이 사이트의 모든 개인정보는 전혀 암호화되지 않습니다.</label>
+						</fieldset>
+					</form>
+					<button id="join">회원가입</button>
+				</div>
+			<% }else{ %>
+				<div id="form_container">
+					<form method="post">
+						<fieldset>
+							<legend>회원정보</legend>
+							<table>
+								<tr>
+									<td><label><%= data.nickname %>(<%= data.name %>)님 안녕하세요.</label></td>
+								</tr>
+								<tr>
+									<td><label>모든것이 유료인 가오수 월드 입니다.</label></td>
+								</tr>
+							</table>
+							<br />
+							<label>개인정보의 수정및 탈퇴는 구축중입니다.(예정 : 2015년 11월 31일)</label>
+						</fieldset>
+					</form>
+					<button id="logout">로그아웃</button>
+				</div>
+			<% } %>
     		<!-- <h2 id="testgame">테스트게임</h2> -->
     		<!-- <h2 id="memorycard">카드 짝 맞추기</h2> -->
     		<div id="cube">
@@ -96,11 +123,11 @@
 					<div></div>
 				</div>
 			</div>
-			<a href="http://kaosu.kr/upload">가오수 업로드</a>
+			<!-- <a href="http://kaosu.kr/upload">가오수 업로드</a>
 			<br />
 			<a href="http://kaosu.kr/worldcup">월드컵 조별예선 예측</a>
 			<br />
-			<a href="http://kaosu.kr/worldcupfinal">월드컵 결승 예측</a>
+			<a href="http://kaosu.kr/worldcupfinal">월드컵 결승 예측</a> -->
 		</div>
 	</body>
 </html>

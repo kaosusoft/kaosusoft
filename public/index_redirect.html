@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ko">
+	<head>
+		<title>가오수 World</title>
+		<meta charset="UTF-8" />
+		<link rel="stylesheet" href="stylesheet.css" />
+		<script src="prefixfree.min.js"></script>
+		<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+		<script>
+			$(document).ready(function(){
+				<% if(data==0){ %>
+					alert('ID가 존재하지 않습니다.');
+				<% }else if(data==1){ %>
+					alert('패스워드가 일치하지 않습니다.');
+				<% }else{ %>
+					alert('로그인 오류입니다.');
+				<% } %>
+				location = '/';
+			});
+		</script>
+	</head>
+	<body>
+	</body>
+</html>

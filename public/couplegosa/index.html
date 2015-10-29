@@ -4,10 +4,15 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Login Demo - Kakao Javascript SDK</title>
+	<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
     <script src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
   </head>
   <body>
     <a id="kakao-login-btn"></a>
+    <br />
+    <img id="image_profile" src="http://placehold.it/110x110" />
+    <br />
+    <h1 class="h1_name">환영합니다.</h1>
 
     <script>
       // 사용할 앱의 Javascript 키를 설정해 주세요.
@@ -18,9 +23,14 @@
         container: '#kakao-login-btn',
         success: function(authObj) {
           alert(JSON.stringify(authObj));
+          Kakao.Auth.getStatus(function(statusObj){
+          	alert(JSON.stringify(statusObj));
+          	$('.h1_name').text(statusObj.user.properties.nickname+'님 환영합니다.');
+          	$('#image_profile').attr('src', statusObj.user.properties.thumbnail_image);
+          });
         },
         fail: function(err) {
-          alert(JSON.stringify(err))
+          alert(JSON.stringify(err));
         }
       });
     </script>
