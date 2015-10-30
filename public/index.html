@@ -42,6 +42,10 @@
 					location = "/logout";
 				});
 				
+				$('#btn_enter').click(function(){
+					location = "/lobby";
+				});
+				
 				var cubesize = 0;
 				
 				var intervalID = setInterval(function(){
@@ -113,18 +117,13 @@
     		<div id="cube">
 				<div class="heading">
       				<h1 class="title">가오수 World</h1>
+    				<p class="game-intro">Welcome to the <strong>kaosu world!</strong></p>
     			</div>
     			<p id="clock"> </p>
-    			<p class="game-intro">Welcome to the <strong>kaosu world!</strong></p>
-	    		<div id="cube_container">
-					<div></div>
-					<div></div>
-					<div></div>
-					<div></div>
-					<div></div>
-					<div></div>
-				</div>
 			</div>
+			<div id="enter">
+    			<button id="btn_enter">가오수 게임월드 입장</button>
+    		</div>
 			<!-- <a href="http://kaosu.kr/upload">가오수 업로드</a>
 			<br />
 			<a href="http://kaosu.kr/worldcup">월드컵 조별예선 예측</a>

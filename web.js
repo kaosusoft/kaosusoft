@@ -11,7 +11,7 @@ var easyimage = require('easyimage');
 var uuid = require('node-uuid');
 var util = require('./util.js');
 
-var test = false; // 테스트중이면 true, 진짜는 false 
+var test = true; // 테스트중이면 true, 진짜는 false 
 
 var client;
 
@@ -73,6 +73,12 @@ app.get('/', function(request, response){
 	}
 });
 
+app.get('/bad_access', function(request, response){
+	fs.readFile(__dirname+'/public/bad_access.html', function(error, data){
+		response.send(data.toString());
+	});
+});
+
 app.get('/logout', function(request, response){
 	response.clearCookie('session');
 	response.redirect('/');
@@ -122,40 +128,32 @@ app.post('/', function(request, response){
 	});
 });
 
-app.post('/join', function(request, response){
-	var body = request.body;
-	
-	var pw = body.inputP;
-	var name = body.inputN;
-	var nickname = body.inputN2;
-	
-	var shasum = crypto.createHash('sha1');
-	shasum.update(body.inputP+'kaosu');
-	var output = shasum.digest('hex');
-	
-	// var shasum2 = crypto.createHash('sha1');
-	// shasum2.update(body.inputN+body.inputP+'kaosu');
-	// var output2 = shasum2.digest('hex');
-	var output2 = uuid.v4();
-
-	client.query('SELECT * from member where name = ?', name, function(error, result, fields){
-		if(error){
-			response.redirect('/registererror');
-		}else{
-			if(result.length>0){
-				response.redirect('/registeralready');
+app.get('/lobby', function(request, response){
+	if(request.cookies.session == undefined){
+		response.redirect('/bad_access');
+	}else{		
+		client.query('SELECT * from member where token = ?', request.cookies.session, function(error, result, fields){
+			if(error){
+				response.redirect('/bad_access');
 			}else{
-				client.query('INSERT INTO member (name, password, token, nickname, level, exp) VALUES (?, ?, ?, ?, ?, ?, ?)', [name, output, output2, nickname, 1, 0], function(errors, results, fieldss){
-					if(errors){
-						response.redirect('/registererror');
-					}else{
-						response.redirect('/registerok');
-					}
-				});
+				if(result.length>0){
+					fs.readFile(__dirname+'/public/lobby.html', 'utf8',  function(error, data){
+						response.send(ejs.render(data, {
+							data: {
+								test : test,
+								name: result[0].name,
+								nickname: result[0].nickname
+							}
+						}));
+					});
+				}else{
+					response.redirect('/bad_access');
+				}
 			}
-		}
-	});
+		});
+	}
 });
+
 
 // app.post('/register', function(request, response){
 		//var htmlstr = '<h1>가오수월드 가입확인 메일입니다.</h1><h2>가입을 원하시는 경우 다음 링크를 클릭 해 주세요.</h2><a href="http://kaosusoft.cafe24app.com/confirm/';
@@ -660,7 +658,7 @@ io.sockets.on('connection', function(socket){
 				if(result.length>0){
 					socket.emit('join_already');
 				}else{
-					client.query('INSERT INTO member (name, password, token, nickname, level, exp) VALUES (?, ?, ?, ?, ?, ?)', [name, output, output2, nickname, 1, 0], function(errors, results, fieldss){
+					client.query('INSERT INTO member (name, password, token, nickname, num1, num2, num3, num4, num5, level, exp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [name, output, output2, nickname, 10000, 0, 0, 0, 0, 1, 0], function(errors, results, fieldss){
 						if(errors){
 							socket.emit('join_error');
 						}else{
