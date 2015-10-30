@@ -11,7 +11,7 @@ var easyimage = require('easyimage');
 var uuid = require('node-uuid');
 var util = require('./util.js');
 
-var test = false; // 테스트중이면 true, 진짜는 false 
+var test = true; // 테스트중이면 true, 진짜는 false 
 
 var client;
 
@@ -736,10 +736,13 @@ server.listen(8002, function(){
 var io = socketio.listen(server);
 io.set('log level', 2);
 io.sockets.on('connection', function(socket){
-	socket.on('join_member', function(){
-		socket.join('kaosusoft');
-		socket.set('room', 'kaosusoft');
-	});
+	// socket.on('join_member', function(){
+		// socket.join('kaosusoft');
+		// socket.set('room', 'kaosusoft');
+	// });
+	// socket.on('join_member_disconn', function(){
+// 		
+	// });
 	socket.on('join_access', function(data){
 		console.log(data);
 		var name = data.name;

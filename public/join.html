@@ -245,6 +245,7 @@
 			});
 			
 			$(document).unload(function(){
+				socket.emit('join_member_disconn');
 				if (socket != undefined) socket.disconnect();
 			});
 			

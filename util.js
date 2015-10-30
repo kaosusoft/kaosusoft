@@ -10,11 +10,11 @@ exports.checkID = function(str){
 	}
 };
 
-function checkNick(str){
+exports.checkNick = function(str){
 	var filter = /^[a-zA-Z0-9가-힣]{1,12}$/;
 	if(filter.test(str)){
 		return true;
 	}else{
 		return false;
 	}
-}
+};
