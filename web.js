@@ -592,7 +592,7 @@ setInterval(dogangSpringLoop, 600000);
 var server = http.createServer(app);
 
 server.listen(8002, function(){
-	console.log('Server Running at http://kaosusoft.cafe24app.com');
+	console.log('Server Running at http://kaosu.kr');
 });
 
 var io = socketio.listen(server);
@@ -606,7 +606,6 @@ io.sockets.on('connection', function(socket){
 // 		
 	// });
 	socket.on('join_access', function(data){
-		console.log(data);
 		var name = data.name;
 		var pw = data.pw;
 		var nickname = data.nickname;
@@ -776,3 +775,7 @@ io.sockets.on('connection', function(socket){
 		
 	});
 });
+
+var date = new Date();
+
+console.log(date.getTime());
