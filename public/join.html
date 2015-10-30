@@ -16,6 +16,11 @@
 				
 				var socket = io.connect();
 				socket.emit('join_member');
+				
+				socket.on('join_message', function(data){
+					alert(data);
+					location = '/join';
+				});
 
 				socket.on('name_confirm', function(data){
 					if(data.type == 0){
@@ -77,10 +82,14 @@
 					// }
 				// });
 				
+				$('#namelabel2').text('아이디는 5-10자입니다.');
+				$('#pwlabel3').text('패스워드는 6-12자입니다.');
+				$('#nicklabel2').text('닉네임은 1-12자입니다.');
+				
 				$('#nameinput').keyup(function(){
 					var inputLength = $(this).val().length;
 					if(inputLength==0){
-						$('#namelabel2').text('아이디를 입력해 주세요.');
+						$('#namelabel2').text('아이디는 5-10자입니다.');
 						$('#namelabel2').css('color', 'red');
 						flag_name = false;
 					}else if(inputLength<5){
@@ -92,14 +101,20 @@
 						$('#namelabel2').css('color', 'red');
 						flag_name = false;
 					}else{
-						socket.emit('name_confirms', $(this).val());
+						if(checkID($(this).val())){
+							socket.emit('name_confirms', $(this).val());
+						}else{
+							$('#namelabel2').text('영문,숫자만 가능합니다.');
+							$('#namelabel2').css('color', 'red');
+							flag_name = false;
+						}
 					}
 				});
 				
 				$('#pwinput').keyup(function(){
 					var inputLength = $(this).val().length;
 					if(inputLength==0){
-						$('#pwlabel3').text('패스워드를 입력해 주세요.');
+						$('#pwlabel3').text('패스워드는 6-12자입니다.');
 						$('#pwlabel3').css('color', 'red');
 					}else if(inputLength<6){
 						$('#pwlabel3').text('패스워드가 너무 짧습니다.');
@@ -136,7 +151,13 @@
 						$('#nicklabel2').css('color', 'red');
 						flag_nickname = false;
 					}else{
-						socket.emit('nickname_confirms', $(this).val());
+						if(checkNick($(this).val())){
+							socket.emit('nickname_confirms', $(this).val());
+						}else{
+							$('#nicklabel2').text('영문,숫자,한글만 가능합니다.');
+							$('#nicklabel2').css('color', 'red');
+							flag_nickname = false;
+						}
 					}
 				});
 				
@@ -158,7 +179,7 @@
 				
 				$('#join').click(function(){
 					if(flag_name==false || flag_nickname==false){
-						alert(flag_name+'/'+flag_nickname);
+						alert('잘못된 항목이 있습니다.');
 						return;
 					}
 					// var email = $('#emailinput').val();
@@ -170,7 +191,7 @@
 						alert('아이디를 입력하세요.');
 						return;
 					}
-					if(name.length<5 || pw.length>10){
+					if(name.length<5 || name.length>10){
 						alert('아이디는 5자와 10자 사이입니다.');
 						return;
 					}
@@ -229,6 +250,24 @@
 			
 			function checkEmail(str){
 				var filter = /^([/\w/g\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/;
+				if(filter.test(str)){
+					return true;
+				}else{
+					return false;
+				}
+			}
+			
+			function checkID(str){
+				var filter = /^[a-zA-Z0-9]{5,10}$/;
+				if(filter.test(str)){
+					return true;
+				}else{
+					return false;
+				}
+			}
+			
+			function checkNick(str){
+				var filter = /^[a-zA-Z0-9가-힣]{1,12}$/;
 				if(filter.test(str)){
 					return true;
 				}else{

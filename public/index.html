@@ -31,9 +31,11 @@
 				}, 1000);
 				
 				$('#join').click(function(){
-					// location = "/register";
-					// window.open('http://kaosusoft.cafe24app.com/register', 'child', 'width=540, height=240', true);
-					window.open('http://kaosu.kr/join', 'child', 'width=540, height=240', true);
+					<% if(data.test==true){ %>
+						window.open('http://127.0.0.1:8002/join', 'child', 'width=540, height=240', true);
+					<% }else{ %>
+						window.open('http://kaosu.kr/join', 'child', 'width=540, height=240', true);
+					<% } %>
 				});
 				
 				$('#logout').click(function(){

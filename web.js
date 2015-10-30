@@ -9,20 +9,27 @@ var mysql = require('mysql');
 var utf8 = require('utf8');
 var easyimage = require('easyimage');
 var uuid = require('node-uuid');
+var util = require('./util.js');
 
-var client = mysql.createConnection({
-	host: '10.0.0.1',
-	port: 3306,
-	user: 'lible',
-	password: 'kaosu123',
-	database: 'lible'
-});
+var test = false; // 테스트중이면 true, 진짜는 false 
 
-// var client = mysql.createConnection({
-	// user: 'root',
-	// password: '0123523u',
-	// database: 'lible'
-// });
+var client;
+
+if(test){
+	client = mysql.createConnection({
+		user: 'root',
+		password: '0123523u',
+		database: 'lible'
+	});
+}else{
+	client = mysql.createConnection({
+		host: '10.0.0.1',
+		port: 3306,
+		user: 'lible',
+		password: 'kaosu123',
+		database: 'lible'
+	});
+}
 
 var app = express();
 
@@ -38,6 +45,7 @@ app.get('/', function(request, response){
 		fs.readFile(__dirname+'/public/index.html', 'utf8',  function(error, data){
 			response.send(ejs.render(data, {
 				data: {
+					test : test,
 					result : 0
 				}
 			}));
@@ -55,6 +63,7 @@ app.get('/', function(request, response){
 						console.log('nickname : '+result[0].nickname);
 						response.send(ejs.render(data, {
 							data: {
+								test : test,
 								result : 1,
 								name: result[0].name,
 								nickname: result[0].nickname
@@ -736,6 +745,37 @@ io.sockets.on('connection', function(socket){
 		var name = data.name;
 		var pw = data.pw;
 		var nickname = data.nickname;
+		
+		if(name.length == 0){
+			socket.emit('join_message', '아이디를 입력하세요.');
+			return;
+		}
+		if(name.length<5 || name.length>10){
+			socket.emit('join_message', '아이디는 5자와 10자 사이입니다.');
+			return;
+		}
+		if(pw.length == 0){
+			socket.emit('join_message', '패스워드를 입력하세요.');
+			return;
+		}
+		if(pw.length<6 || pw.length>12){
+			socket.emit('join_message', '패스워드는 6자와 12자 사이입니다.');
+			return;
+		}
+		if(nickname.length == 0){
+			socket.emit('join_message', '닉네임을 입력하세요.');
+			return;
+		}
+		if(nickname.length>12){
+			socket.emit('join_message', '닉네임이 너무 깁니다.');
+			return;
+		}
+		if(!util.checkID(name)){
+			socket.emit('join_message', 'ID는 영문, 숫자만 가능합니다.');
+		}
+		if(!util.checkNick(name)){
+			socket.emit('join_message', '닉네임은 영문, 숫자, 한글만 가능합니다.');
+		}
 		
 		var shasum = crypto.createHash('sha1');
 		shasum.update(name+'#'+pw+'@kaosu');
