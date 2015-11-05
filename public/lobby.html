@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ko">
+	<head>
+		<title>가오수 World</title>
+		<meta charset="UTF-8" />
+		<link rel="stylesheet" href="stylesheet_lobby.css" />
+		<script src="prefixfree.min.js"></script>
+		<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+		<script>
+			$(document).ready(function(){
+				$('#btn_logout').click(function(){
+					location = "/logout";
+				});
+				
+				$('#server1_1').click(function(){
+					alert('준비중입니다.');
+				});
+				$('#server1_2').click(function(){
+					alert('준비중입니다.');
+				});
+				$('#server1_3').click(function(){
+					alert('준비중입니다.');
+				});
+				$('#server2_1').click(function(){
+					alert('준비중입니다.');
+				});
+				$('#server2_2').click(function(){
+					alert('준비중입니다.');
+				});
+				$('#server2_3').click(function(){
+					alert('준비중입니다.');
+				});
+				$('#server3_1').click(function(){
+					alert('준비도 안하고 있습니다.');
+				});
+				$('#server3_2').click(function(){
+					alert('준비도 안하고 있습니다.');
+				});
+				$('#server3_3').click(function(){
+					alert('준비도 안하고 있습니다.');
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<div class="container">
+			<img id="img_title" src="title.png"/>
+			<div class="div_member">
+				<label id="label_member"><%= data.nickname %>님 환영합니다.</label>
+				<button id="btn_logout">로그아웃</button>
+			</div>
+			<div class="div_game">
+				<div class="div_gamedetail">
+					<img src="game1.png"/>
+					<div class="div_server">
+						<div id="server1_1" class="div_servergo">
+							<label class="label_servername">서버1</label>
+							<label class="label_serverperson">(0/2)</label>
+						</div>
+						<div id="server1_2" class="div_servergo">
+							<label class="label_servername">서버2</label>
+							<label class="label_serverperson">(0/2)</label>
+						</div>
+						<div id="server1_3" class="div_servergo">
+							<label class="label_servername">서버3</label>
+							<label class="label_serverperson">(0/2)</label>
+						</div>
+					</div>
+					<div class="div_gameinfo">
+						<label class="label_gameinfo">서로가 만드는 미로를 뚫는 최강의 두뇌게임!</label>
+					</div>
+				</div>
+				<div class="div_gamedetail">
+					<img src="game2.png"/>
+					<div class="div_server">
+						<div id="server2_1" class="div_servergo">
+							<label class="label_servername">서버1</label>
+							<label class="label_serverperson">(0/8)</label>
+						</div>
+						<div id="server2_2" class="div_servergo">
+							<label class="label_servername">서버2</label>
+							<label class="label_serverperson">(0/8)</label>
+						</div>
+						<div id="server2_3" class="div_servergo">
+							<label class="label_servername">서버3</label>
+							<label class="label_serverperson">(0/8)</label>
+						</div>
+					</div>
+					<div class="div_gameinfo">
+						<label class="label_gameinfo">미소녀가 펼치는 아슬아슬 캐주얼 골프!</label>
+					</div>
+				</div>
+				<div class="div_gamedetail">
+					<img src="game3.png"/>
+					<div class="div_server">
+						<div id="server3_1" class="div_servergo">
+							<label class="label_servername">서버1</label>
+							<label class="label_serverperson">(0/2)</label>
+						</div>
+						<div id="server3_2" class="div_servergo">
+							<label class="label_servername">서버2</label>
+							<label class="label_serverperson">(0/2)</label>
+						</div>
+						<div id="server3_3" class="div_servergo">
+							<label class="label_servername">서버3</label>
+							<label class="label_serverperson">(0/2)</label>
+						</div>
+					</div>
+					<div class="div_gameinfo">
+						<label class="label_gameinfo">전설의 영웅들이 펼치는 마지막 TCG!</label>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
