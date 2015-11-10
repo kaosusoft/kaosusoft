@@ -11,7 +11,7 @@ var easyimage = require('easyimage');
 var uuid = require('node-uuid');
 var util = require('./util.js');
 
-var test = true; // 테스트중이면 true, 진짜는 false 
+var test = false; // 테스트중이면 true, 진짜는 false 
 
 var client;
 
