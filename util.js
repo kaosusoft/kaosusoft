@@ -16,6 +16,10 @@ exports.checkNick = function(str){
 	}
 };
 
+// exports.trimStr = function(str){
+	// str.
+// };
+
 exports.utf16to8 = function(str) {
     var out, i, len, c;
 

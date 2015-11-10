@@ -11,7 +11,7 @@ var easyimage = require('easyimage');
 var uuid = require('node-uuid');
 var util = require('./util.js');
 
-var test = false; // 테스트중이면 true, 진짜는 false 
+var test = true; // 테스트중이면 true, 진짜는 false 
 
 var client;
 
@@ -592,7 +592,11 @@ setInterval(dogangSpringLoop, 600000);
 var server = http.createServer(app);
 
 server.listen(8002, function(){
-	console.log('Server Running at http://kaosu.kr');
+	if(test){
+		console.log('Server Running at http://127.0.0.1:8002');
+	}else{
+		console.log('Server Running at http://kaosu.kr');
+	}
 });
 
 var io = socketio.listen(server);
@@ -636,9 +640,11 @@ io.sockets.on('connection', function(socket){
 		}
 		if(!util.checkID(name)){
 			socket.emit('join_message', 'ID는 영문, 숫자만 가능합니다.');
+			return;
 		}
 		if(!util.checkNick(name)){
 			socket.emit('join_message', '닉네임은 영문, 숫자, 한글만 가능합니다.');
+			return;
 		}
 		
 		var shasum = crypto.createHash('sha1');
