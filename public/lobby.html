@@ -67,6 +67,7 @@
 			});
 				
 			$(document).unload(function(){
+				socket.emit('disconnect_lobby');
 				if (socket != undefined) socket.disconnect();
 			});
 			

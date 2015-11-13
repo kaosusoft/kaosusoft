@@ -802,6 +802,10 @@ io.sockets.on('connection', function(socket){
 		});
 	});
 	
+	socket.on('disconnect_lobby', function(){
+		socket.leave('lobby');
+	});
+	
 	socket.on('disconnect', function(){
 		
 	});
@@ -815,19 +819,25 @@ function chat_piece(name, str){
 }
 
 function delete_chat(){
-	console.log('삭제시작! : '+lobby_chat.length);
 	while(lobby_chat.length>20){
 		lobby_chat.shift();
 	};
-	console.log('삭제끝! : '+lobby_chat.length);
 }
 
 
 // ************************* Quoridor ****************************** //
 
-function player(id, name){
+function quoridor_room(){
+	var quoridor_player = [];
+	var quoridor_gallery = [];
+}
+
+function player(id, socket, name, session, nickname){
+	this.socket = socket;
 	this.id = id;
 	this.name = name;
+	this.session = session;
+	this.nickname = nickname;
 }
 var quoridor = [];
 var quoridor_stat = 0;
