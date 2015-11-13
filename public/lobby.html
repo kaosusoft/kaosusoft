@@ -6,8 +6,29 @@
 		<link rel="stylesheet" href="stylesheet_lobby.css" />
 		<script src="prefixfree.min.js"></script>
 		<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+		<script src="./socket.io/socket.io.js"></script>
+		<script type="text/javascript" src="jquery.cookie.js"></script>
 		<script>
+			var socket = undefined;
+			
 			$(document).ready(function(){
+				socket = io.connect();
+				socket.emit('join_lobby');
+				
+				socket.on('lobby_chat_update', function(data){
+					if(data.length > 0){
+						$('.inner_chat').remove();
+						for(var i=0; i<data.length; i++){
+							addChat(data[i].name, data[i].str);
+						}
+						// alert(lobby_chat);
+					}
+				});
+				
+				socket.on('lobby_chat_error', function(){
+					alert('잘못된 채팅입니다.');
+				});
+				
 				$('#btn_logout').click(function(){
 					location = "/logout";
 				});
@@ -39,14 +60,56 @@
 				$('#server3_3').click(function(){
 					alert('준비도 안하고 있습니다.');
 				});
+				
+				$('.btn_chat').click(function(){
+					chat_input();
+				});
 			});
+				
+			$(document).unload(function(){
+				if (socket != undefined) socket.disconnect();
+			});
+			
+			function chat_input(){
+				var str = $('.input_chat').val();
+				var session = $.cookie("session");
+				if(str.length>0 && session.length>0){
+					socket.emit('lobby_chat_add', {
+						session: session,
+						str: str
+					});
+				}
+				$('.input_chat').val('');
+			}
+			
+			function addChat(name, str){
+				var nickname = $('#label_nickname').html();
+				var chat = $('<div></div>').addClass('inner_chat');
+				var label = $('<label></label>').addClass('label_chat').html(name+' : '+str);
+				if(name == nickname){
+					label.css({
+						fontWeight: 'bold',
+						color: '#ff0000'
+					});
+				}else{
+					label.css({
+						color: '#000000'
+					});
+				}
+				label.appendTo(chat);
+				chat.appendTo($('.div_lobby_chat_body'));
+				$('.div_lobby_chat_body').scrollTop($('.div_lobby_chat_body').prop('scrollHeight'));
+			}
 		</script>
 	</head>
 	<body>
 		<div class="container">
 			<img id="img_title" src="title.png"/>
 			<div class="div_member">
-				<label id="label_member"><%= data.nickname %>님 환영합니다.</label>
+				<div class="div_label">
+					<label id="label_nickname" class="label_member"><%= data.nickname %></label>
+					<label class="label_member">님 환영합니다.</label>
+				</div>
 				<button id="btn_logout">로그아웃</button>
 			</div>
 			<div class="div_game">
@@ -108,6 +171,14 @@
 					</div>
 					<div class="div_gameinfo">
 						<label class="label_gameinfo">전설의 영웅들이 펼치는 마지막 TCG!</label>
+					</div>
+				</div>
+				<div class="div_lobby_chat">
+					<div class="div_lobby_chat_body" style="overflow:auto">
+					</div>
+					<div class="div_lobby_chat_input">
+						<input class="input_chat" onkeydown="javascript:if (event.keyCode == 13) chat_input()"/>
+						<button class="btn_chat">입력</button>
 					</div>
 				</div>
 			</div>

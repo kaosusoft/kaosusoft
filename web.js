@@ -609,6 +609,31 @@ io.sockets.on('connection', function(socket){
 	// socket.on('join_member_disconn', function(){
 // 		
 	// });
+	
+	socket.on('join_lobby', function(){
+		socket.join('lobby');
+		socket.emit('lobby_chat_update', lobby_chat);
+	});
+	
+	socket.on('lobby_chat_add', function(data){
+		if(data.str.length>0){
+			client.query('SELECT * from member where token = ?', data.session, function(error, result, fields){
+				if(error){
+					socket.emit('lobby_chat_error');
+				}else{
+					if(result.length>0){
+						lobby_chat.push(new chat_piece(result[0].nickname, data.str));
+						delete_chat();
+						io.sockets.in('lobby').emit('lobby_chat_update', lobby_chat);
+						// result[0].nickname;
+					}else{
+						socket.emit('lobby_chat_error');
+					}
+				}
+			});
+		}
+	});
+	
 	socket.on('join_access', function(data){
 		var name = data.name;
 		var pw = data.pw;
@@ -781,6 +806,349 @@ io.sockets.on('connection', function(socket){
 		
 	});
 });
+
+var lobby_chat = [];
+
+function chat_piece(name, str){
+	this.name = name;
+	this.str = str;
+}
+
+function delete_chat(){
+	console.log('삭제시작! : '+lobby_chat.length);
+	while(lobby_chat.length>20){
+		lobby_chat.shift();
+	};
+	console.log('삭제끝! : '+lobby_chat.length);
+}
+
+
+// ************************* Quoridor ****************************** //
+
+function player(id, name){
+	this.id = id;
+	this.name = name;
+}
+var quoridor = [];
+var quoridor_stat = 0;
+var playerID = 1;
+var quoridor_ready = 0;
+
+var quoridor_chat = [];
+
+var quoridorMap = [
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+];;
+
+function quoridor_init(){
+	quoridor_ready = 0;
+	quoridor_stat = 0;
+	quoridorMap = [
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	];
+	io.sockets.in('quoridor').emit('quoridor_map', quoridorMap);
+	io.sockets.in('quoridor').emit('quoridor_init');
+}
+
+var quoridor_join = function(socket){
+	socket.join('quoridor');
+	socket.set('room', 'quoridor');
+	
+	var index = quoridor.push(new player(socket.id, 'player'+playerID));
+	
+	socket.playerName = quoridor[index-1].name;
+	playerID++;
+	
+	socket.emit('join_success', socket.playerName);
+	
+	var list = [];
+	for(var i in quoridor){
+		list.push(quoridor[i].name);
+	}
+	io.sockets.in('quoridor').emit('quoridor_list_all', list);
+	
+	if(quoridor_stat == 0) socket.emit('quoridor_message', 0, "Wait other player");
+	else if(quoridor_stat == 1) socket.emit('quoridor_message', 1, "Message : " +quoridor[0].name + "'s turn.");
+	else if(quoridor_stat == 2) socket.emit('quoridor_message', 2, "Message : " +quoridor[1].name + "'s turn.");
+	
+	socket.emit('quoridor_map', quoridorMap);
+	socket.emit('quoridor_chat', quoridor_chat);
+};
+
+var quoridor_move = function(socket, data){
+	if(quoridor_stat == 1 && socket.id == quoridor[0].id){
+		for(var i=0; i<17; i++){
+			for(var j=0; j<17; j++){
+				if(quoridorMap[i][j] == 1) {
+					quoridorMap[i][j] = 0;
+					break;
+				}
+			}
+		}
+		quoridorMap[data.y][data.x] = 1;
+		io.sockets.in('quoridor').emit('quoridor_map', quoridorMap);
+		io.sockets.in('quoridor').emit('quoridor_init');
+		var flag = false;
+		for(var i=0; i<17; i++){
+			if(quoridorMap[i][16] == 1){
+				flag = true;
+				break;
+			}
+		}
+		if(flag){
+			quoridor_stat = 0;
+			io.sockets.in('quoridor').emit('quoridor_message_win', 1);
+		}else{
+			quoridor_stat = 2;
+			io.sockets.in('quoridor').emit('quoridor_message', 2, "Message : " +quoridor[1].name + "'s turn.");
+			io.sockets.sockets[quoridor[1].id].emit('quoridor_permission', 2);
+		}
+	}else if(quoridor_stat == 2 && socket.id == quoridor[1].id){
+		for(var i=0; i<17; i++){
+			for(var j=0; j<17; j++){
+				if(quoridorMap[i][j] == 2) {
+					quoridorMap[i][j] = 0;
+					break;
+				}
+			}
+		}
+		quoridorMap[data.y][data.x] = 2;
+		io.sockets.in('quoridor').emit('quoridor_map', quoridorMap);
+		io.sockets.in('quoridor').emit('quoridor_init');
+		var flag = false;
+		for(var i=0; i<17; i++){
+			if(quoridorMap[i][0] == 2){
+				flag = true;
+				break;
+			}
+		}
+		if(flag){
+			quoridor_stat = 0;
+			io.sockets.in('quoridor').emit('quoridor_message_win', 2);
+		}else{
+			quoridor_stat = 1;
+			io.sockets.in('quoridor').emit('quoridor_message', 1, "Message : " +quoridor[0].name + "'s turn.");
+			io.sockets.sockets[quoridor[0].id].emit('quoridor_permission', 1);
+		}
+	}
+};
+
+var quoridor_move_admin = function(socket, data){
+	if(quoridor_stat == 1){
+		if(quoridorMap[data.y][data.x]==2) return;
+		for(var i=0; i<17; i++){
+			for(var j=0; j<17; j++){
+				if(quoridorMap[i][j] == 1) {
+					quoridorMap[i][j] = 0;
+					break;
+				}
+			}
+		}
+		quoridorMap[data.y][data.x] = 1;
+		io.sockets.in('quoridor').emit('quoridor_map', quoridorMap);
+		var flag = false;
+		for(var i=0; i<17; i++){
+			if(quoridorMap[i][16] == 1){
+				flag = true;
+				break;
+			}
+		}
+		if(flag){
+			quoridor_stat = 0;
+			io.sockets.in('quoridor').emit('quoridor_message_win', 1);
+		}
+	}else if(quoridor_stat == 2){
+		if(quoridorMap[data.y][data.x]==1) return;
+		for(var i=0; i<17; i++){
+			for(var j=0; j<17; j++){
+				if(quoridorMap[i][j] == 2) {
+					quoridorMap[i][j] = 0;
+					break;
+				}
+			}
+		}
+		quoridorMap[data.y][data.x] = 2;
+		io.sockets.in('quoridor').emit('quoridor_map', quoridorMap);
+		var flag = false;
+		for(var i=0; i<17; i++){
+			if(quoridorMap[i][0] == 2){
+				flag = true;
+				break;
+			}
+		}
+		if(flag){
+			quoridor_stat = 0;
+			io.sockets.in('quoridor').emit('quoridor_message_win', 2);
+		}
+	}
+};
+
+var quoridor_wall = function(socket, data){
+	if(quoridor_stat == 1 && socket.id == quoridor[0].id){
+		quoridorMap[data.y1][data.x1] = 3;
+		quoridorMap[data.y2][data.x2] = 3;
+		quoridorMap[data.y3][data.x3] = 3;
+		io.sockets.in('quoridor').emit('quoridor_map', quoridorMap);
+		io.sockets.in('quoridor').emit('quoridor_init');
+		quoridor_stat = 2;
+		io.sockets.in('quoridor').emit('quoridor_message', 2, "Message : " +quoridor[1].name + "'s turn.");
+		io.sockets.sockets[quoridor[1].id].emit('quoridor_permission', 2);
+	}else if(quoridor_stat == 2 && socket.id == quoridor[1].id){
+		quoridorMap[data.y1][data.x1] = 3;
+		quoridorMap[data.y2][data.x2] = 3;
+		quoridorMap[data.y3][data.x3] = 3;
+		io.sockets.in('quoridor').emit('quoridor_map', quoridorMap);
+		io.sockets.in('quoridor').emit('quoridor_init');
+		quoridor_stat = 1;
+		io.sockets.in('quoridor').emit('quoridor_message', 1, "Message : " +quoridor[0].name + "'s turn.");
+		io.sockets.sockets[quoridor[0].id].emit('quoridor_permission', 1);
+	}
+};
+
+var quoridor_wall_admin = function(socket, data){
+	if(quoridor_stat > 0){
+		if(quoridorMap[data.y1][data.x1] == 0)	quoridorMap[data.y1][data.x1] = 3;
+		else if(quoridorMap[data.y1][data.x1] == 3) quoridorMap[data.y1][data.x1] = 0;
+		io.sockets.in('quoridor').emit('quoridor_map', quoridorMap);
+	}
+};
+
+var quoridor_change = function(socket, data){
+	while(true){
+		for(var i=0; i<quoridor.length; i++){
+			if(quoridor[i].name == data){
+				data = data+'.';
+				continue;
+			}
+		}
+		break;
+	}
+	for(var i=0; i<quoridor.length; i++){
+		if(quoridor[i].id == socket.id){
+			quoridor[i].name = data;
+			var list = [];
+			for(var i in quoridor){
+				list.push(quoridor[i].name);
+			}
+			io.sockets.in('quoridor').emit('quoridor_list_all', list);
+			socket.emit('join_success', data);
+		}
+	}
+};
+
+var quoridor_chatf = function(socket, data){
+	if(data.toString().length>13 && data.toString().slice(0, 13) == 'kaosu : /cmd '){
+		var cmd = (data.toString()+' ').slice(13, -1);
+		if(cmd == 'ban1'){
+			console.log('ban1');
+		}else if(cmd == 'ban2'){
+			console.log('ban2');
+		}else{
+			if(Number(cmd) != NaN){
+				var num = Number(cmd);
+				var numi = Math.floor((num%10000)/100);
+				var numj = num%100;
+				if(numi%2 == 0 && numj%2==0){
+					
+				}else{
+					if(quoridorMap[numi][numj]==3) quoridorMap[numi][numj]=0;
+					else if(quoridorMap[numi][numj]==0) quoridorMap[numi][numj]=3;
+				}
+				io.sockets.in('quoridor').emit('quoridor_map', quoridorMap);
+			}
+		}
+	}else{
+		quoridor_chat.push(data);
+		if(quoridor_chat.length>16){
+			quoridor_chat = quoridor_chat.filter(function(element, index, array){
+				return index>0;
+			});
+		}
+		io.sockets.in('quoridor').emit('quoridor_chat', quoridor_chat);
+	}
+};
+
+var quoridor_gg = function(socket){
+	if(quoridor.length>1 && quoridor[0].id == socket.id){
+		io.sockets.in('quoridor').emit('quoridor_message_win', 2);
+		quoridor_init();
+	}
+	if(quoridor.length>1 && quoridor[1].id == socket.id){
+		io.sockets.in('quoridor').emit('quoridor_message_win', 1);
+		quoridor_init();
+	}
+};
+
+var quoridor_disconnect = function(socket){
+	if(quoridor.length>1 && quoridor[0].id == socket.id){
+		io.sockets.in('quoridor').emit('quoridor_message', 0, quoridor[0].name + " left game.");
+		io.sockets.in('quoridor').emit('quoridor_message_win', 2);
+		quoridor_init();
+	}
+	if(quoridor.length>1 && quoridor[1].id == socket.id){
+		io.sockets.in('quoridor').emit('quoridor_message', 0, quoridor[1].name + " left game.");
+		io.sockets.in('quoridor').emit('quoridor_message_win', 1);
+		quoridor_init();
+	}
+	
+	quoridor = quoridor.filter(function(element, index, array){
+		return element.id != socket.id;
+	});
+	var list = [];
+	for(var i in quoridor){
+		list.push(quoridor[i].name);
+	}
+	io.sockets.in('quoridor').emit('quoridor_list_all', list);
+};
+
+function gameLoop(){
+	if(quoridor_stat == 0 && quoridor.length>1){
+		if(quoridor_ready<6000){
+			quoridor_ready += 1000;
+			io.sockets.in('quoridor').emit('quoridor_message', 0, "Message : " +Math.floor((6000-quoridor_ready)/1000) + " sec.");
+		}else{
+			quoridor_init();
+			quoridor_stat = 1;
+			io.sockets.in('quoridor').emit('quoridor_message', 1, "Message : " +quoridor[0].name + "'s turn.");
+			io.sockets.sockets[quoridor[0].id].emit('quoridor_permission', 1);
+			io.sockets.in('quoridor').emit('quoridor_message_win', 0);
+		}
+	}
+}
+
+setInterval(gameLoop, 1000);
 
 var date = new Date();
 
