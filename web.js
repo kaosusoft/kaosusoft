@@ -56,6 +56,8 @@ app.get('/', function(request, response){
 			}else{
 				if(result.length>0){
 					fs.readFile(__dirname+'/public/index.html', 'utf8',  function(error, data){
+						var maxAge = 7 * 24 * 60 * 60 * 1000;
+						response.cookie('session', result[0].token, {maxAge: maxAge});
 						response.send(ejs.render(data, {
 							data: {
 								test : test,
@@ -115,7 +117,8 @@ app.post('/', function(request, response){
 				if(pw == result[0].password){
 					var output2 = uuid.v4();
 					client.query('update member set token=? where id=?', [output2, result[0].id], function(){
-						response.cookie('session', output2);
+						var maxAge = 7 * 24 * 60 * 60 * 1000;
+						response.cookie('session', output2, {maxAge: maxAge});
 						response.redirect('/');
 					});
 				}else{
