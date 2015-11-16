@@ -586,7 +586,7 @@ function dogangSpringLoop(){
 		dogangSpringOff();
 	}
 }
-setInterval(dogangSpringLoop, 600000);
+// setInterval(dogangSpringLoop, 600000);
 
 
 // ------------------------------------------------------------------------------------------------- //
@@ -1161,7 +1161,7 @@ function gameLoop(){
 	}
 }
 
-setInterval(gameLoop, 1000);
+// setInterval(gameLoop, 1000);
 
 var date = new Date();
 
