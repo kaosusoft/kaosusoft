@@ -10,6 +10,7 @@ var utf8 = require('utf8');
 var easyimage = require('easyimage');
 var uuid = require('node-uuid');
 var util = require('./util.js');
+var ttt = require('./ttt.js'); // Tic Tac Toe
 
 var test = false; // 테스트중이면 true, 진짜는 false 
 
@@ -141,6 +142,8 @@ app.get('/lobby', function(request, response){
 			}else{
 				if(result.length>0){
 					fs.readFile(__dirname+'/public/lobby.html', 'utf8',  function(error, data){
+						var maxAge = 7 * 24 * 60 * 60 * 1000;
+						response.cookie('session', result[0].token, {maxAge: maxAge});
 						response.send(ejs.render(data, {
 							data: {
 								test : test,
@@ -148,6 +151,53 @@ app.get('/lobby', function(request, response){
 								nickname: result[0].nickname
 							}
 						}));
+					});
+				}else{
+					response.redirect('/bad_access');
+				}
+			}
+		});
+	}
+});
+
+app.get('/lobby_error/:id', function(request, response){
+	var id = request.param('id');
+	fs.readFile(__dirname+'/public/lobby_redirect.html', 'utf8', function(error, data){
+		response.send(ejs.render(data, {
+			data: id
+		}));
+	});
+});
+
+app.get('/quoridor/:room', function(request, response){
+	var room = request.param('room');
+	console.log('error : '+room);
+	if(room!='1' && room!='2' && room!='3' && room!='quoridor.js'){
+		response.redirect('/lobby_error/1');
+		console.log('error2 : '+room);
+		return;
+	}
+	
+	if(request.cookies.session == undefined){
+		response.redirect('/bad_access');
+	}else{		
+		client.query('SELECT * from member where token = ?', request.cookies.session, function(error, result, fields){
+			if(error){
+				response.redirect('/bad_access');
+			}else{
+				if(result.length>0){
+					fs.readFile(__dirname+'/public/quoridor/index.html', 'utf8',  function(error, data){
+						// var maxAge = 7 * 24 * 60 * 60 * 1000;
+						// response.cookie('session', result[0].token, {maxAge: maxAge});
+						// response.send(ejs.render(data, {
+							// data: {
+								// test : test,
+								// name: result[0].name,
+								// nickname: result[0].nickname
+							// }
+						// }));
+						console.log(data);
+						response.send(data.toString());
 					});
 				}else{
 					response.redirect('/bad_access');
@@ -209,68 +259,7 @@ app.get('/lobby', function(request, response){
 	// response.redirect('/registererror');
 // });
 
-app.get('/worldcup', function(request, response){
-	fs.readFile(__dirname+'/public/worldcup.html', function(error, data){
-		response.send(data.toString());
-	});
-});
 
-app.get('/worldcupfinal', function(request, response){
-	fs.readFile(__dirname+'/public/worldcup/worldcup2.html', 'utf8', function(error, data){
-		client.query('select * from worldcup order by ordered asc', function(error, results){
-			response.send(ejs.render(data, {
-				data: results
-			}));
-		});
-	});
-});
-
-app.get('/worldcupadmin', function(request, response){
-	fs.readFile(__dirname+'/public/worldcup/worldcupadmin.html', 'utf8', function(error, data){
-		client.query('select * from worldcup order by ordered asc', function(error, results){
-			response.send(ejs.render(data, {
-				data: results
-			}));
-		});
-	});
-});
-
-app.get('/worldcupdelete/:id', function(request, response){
-	console.log('delete');
-	client.query('delete from worldcup where _id=?', [request.param('id')], function(){
-		response.redirect('/worldcupadmin');
-	});
-});
-
-app.get('/worldcupinsert', function(request, response){
-	fs.readFile(__dirname+'/public/worldcup/worldcupinsert.html', function(error, data){
-		response.send(data.toString());
-	});
-});
-
-app.post('/worldcupinsert', function(request, response){
-	var body = request.body;
-	client.query('insert into worldcup (name, team1, team2, ordered, failed) values (?, ?, ?, ?, ?)', [body.name, body.team1, body.team2, 0, 0], function(){
-		response.redirect('/worldcupinsert');
-	});
-});
-
-app.get('/worldcupedit/:id', function(request, response){
-	fs.readFile(__dirname+'/public/worldcup/worldcupedit.html', 'utf8', function(error, data){
-		client.query('select * from worldcup where _id=?', [request.param('id')], function(error, result){
-			response.send(ejs.render(data, {
-				data: result[0]
-			}));
-		});
-	});
-});
-
-app.post('/worldcupedit/:id', function(request, response){
-	var body = request.body;
-	client.query('update worldcup set name=?, team1=?, team2=?, ordered=?, failed=? where _id=?', [body.name, body.team1, body.team2, body.ordered, body.failed, request.param('id')], function(){
-		response.redirect('/worldcupadmin');
-	});
-});
 
 app.get('/upload', function(request, response){
 	fs.readFile(__dirname+'/public/upload/index.html', 'utf8', function(error, data){
@@ -352,241 +341,6 @@ app.get('/uploaddelete/:id', function(request, response){
 	});
 });
 
-app.get('/junggo', function(request, response){
-	fs.readFile(__dirname+'/public/junggo/junggolist.html', 'utf8', function(error, data){
-		client.query('select * from junggo order by orders asc', function(error, results){
-			response.send(ejs.render(data, {
-				data: results
-			}));
-		});
-	});
-});
-
-app.get('/junggoadmin', function(request, response){
-	fs.readFile(__dirname+'/public/junggo/junggoadmin.html', 'utf8', function(error, data){
-		client.query('select * from junggo order by orders asc', function(error, results){
-			response.send(ejs.render(data, {
-				data: results
-			}));
-		});
-	});
-});
-
-app.get('/junggoinsert', function(request, response){
-	fs.readFile(__dirname+'/public/junggo/junggoinsert.html', function(error, data){
-		response.send(data.toString());
-	});
-});
-
-app.post('/junggoinsert', function(request, response){
-	var body = request.body;
-	console.log(body);
-	client.query('insert into junggo (data1, data2, data3, data4, data5, data6, data7, data8, data9, data10, data11, data12, data13, data14, data15, orders) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [body.data1, body.data2, body.data3, body.data4, body.data5, body.data6, body.data7, body.data8, body.data9, body.data10, body.data11, '', '', '', '', 0], function(error, result, field){
-		console.log(result.insertId);
-		response.redirect('/junggoadmin');
-		var file = request.files.image;
-		
-		if(file){
-			// var name = file.name;
-			// var comment = name;
-			var path = file.path;
-			// var addPath = Date.now()+'_'+name;
-			// var addThumbPath = 'thumb_'+addPath;
-			var outputPath = __dirname + '/public/junggo/multipart/car_'+result.insertId;
-			// var outputThumbPath = __dirname + '/public/upload/multipart/'+addThumbPath;
-// 			
-			fs.rename(path, outputPath, function(error){
-				// easyimage.thumbnail({
-					// src: outputPath,
-					// dst: outputThumbPath,
-					// width:100, height:100,
-					// x:0, y:0
-				// }, function(err, img){
-					// if(err) console.log("err");
-					// response.redirect('/upload');
-				// });
-				// client.query('insert into myfile2 (name, comment) values (?, ?)', [addPath, comment], function(){
-					// response.redirect('/upload');
-				// });
-			});
-		}else{
-			response.send(404);
-		}
-	});
-});
-
-app.get('/junggoedit/:id', function(request, response){
-	client.query('select * from junggo where _id=?', request.param('id'), function(error, result, fields){
-		console.log(result);
-		if(result.length>0){
-			fs.readFile(__dirname+'/public/junggo/junggoedit.html', 'utf8', function(error, data){
-				response.send(ejs.render(data, {
-					data: result
-				}));
-			});
-		}
-	});
-});
-
-app.post('/junggoedit/:id', function(request, response){
-	var body = request.body;
-	console.log(body);
-	client.query('update junggo set data1=?, data2=?, data3=?, data4=?, data5=?, data6=?, data7=?, data8=?, data9=?, data10=?, data11=?, data12=?, data13=?, data14=?, data15=?, orders=? where _id=?', [body.data1, body.data2, body.data3, body.data4, body.data5, body.data6, body.data7, body.data8, body.data9, body.data10, body.data11, '', '', '', '', 0, request.param('id')], function(error, result, field){
-		console.log(result.insertId);
-		response.redirect('/junggoadmin');
-		var file = request.files.image;
-		
-		// if(file){
-			// var path = file.path;
-			// var outputPath = __dirname + '/public/junggo/multipart/car_'+result.insertId;
-// 
-			// fs.rename(path, outputPath, function(error){
-// 
-			// });
-		// }else{
-			// response.send(404);
-		// }
-	});
-});
-
-app.get('/junggodelete/:id', function(request, response){
-	client.query('select * from junggo where _id=?', request.param('id'), function(error, result, fields){
-		if(result.length>0){
-			fs.unlink(__dirname + '/public/upload/multipart/car_'+result[0]._id, function(error){
-				client.query('delete from junggo where _id=?', request.param('id'), function(){
-					response.redirect('/junggoadmin');
-				});
-				// fs.unlink(__dirname + '/public/upload/multipart/thumb_'+result[0].name, function(error){
-// 					
-				// });
-			});
-		}
-	});
-});
-
-app.get('/junggoshow/:id', function(request, response){
-	client.query('select * from junggo where _id=?', request.param('id'), function(error, result, fields){
-		console.log(result);
-		if(result.length>0){
-			fs.readFile(__dirname+'/public/junggo/junggodetail.html', 'utf8', function(error, data){
-				response.send(ejs.render(data, {
-					data: result
-				}));
-			});
-		}
-	});
-});
-
-app.get('/junggoimage/:id', function(request, response){
-	client.query('select * from junggo where _id=?', request.param('id'), function(error, result, fields){
-		if(result.length>0){
-			fs.readFile(__dirname+'/public/junggo/multipart/car_'+result[0]._id, function(error, data){
-				response.writeHead(200, {'Content-Type':'image/png'});
-				response.end(data);
-			});
-		}
-	});
-});
-
-app.get('/dogangspring', function(request, response){
-	fs.readFile(__dirname+'/public/dogang/dogangspring.html', function(error, data){
-		response.send(data.toString());
-	});
-});
-
-app.post('/dogangspring', function(request, response){
-	var body = request.body;
-	
-	var on = body.on;
-	var position = body.position;
-	
-	dogangSpringChangeAuto(on, position);
-});
-
-app.get('/couple', function(request, response){
-	fs.readFile(__dirname+'/public/couplegosa/couplegosa.html', function(error, data){
-		response.send(data.toString());
-	});
-});
-
-app.get('/coupleauth', function(request, response){
-	fs.readFile(__dirname+'/public/couplegosa/index.html', function(error, data){
-		response.send(data.toString());
-	});
-});
-
-
-function memberInfo(code, email, name, pw){
-	this.code = code;
-	this.email = email;
-	this.name = name;
-	this.pw = pw;
-}
-
-var memberConfirm = [];
-
-var dogangSpring = {
-	on: 1,
-	month: 0,
-	day: 0,
-	hour: 0,
-	minute: 0,
-	position: 40
-};
-
-function dogangSpringChange(on, month, day, hour, minute, position){
-	dogangSpring.on = on;
-	dogangSpring.month = month;
-	dogangSpring.day = day;
-	dogangSpring.hour = hour;
-	dogangSpring.minute = minute;
-	dogangSpring.position = position;
-};
-
-function dogangSpringChangeAuto(on, position){
-	var date = new Date();
-	
-	dogangSpring.on = on;
-	dogangSpring.month = date.getMonth()+1;
-	dogangSpring.day = date.getDate();
-	if(date.getHours()%12 == 0) dogangSpring.hour = 12;
-	else dogangSpring.hour = date.getHours()%12;
-	dogangSpring.minute = date.getMinutes();
-	dogangSpring.position = position;
-}
-
-function dogangSpringOff(){
-	var date = new Date();
-	
-	dogangSpring.on = 1;
-	dogangSpring.month = date.getMonth()+1;
-	dogangSpring.day = date.getDate();
-	if(date.getHours()%12 == 0) dogangSpring.hour = 12;
-	else dogangSpring.hour = date.getHours()%12;
-	dogangSpring.minute = date.getMinutes();
-	dogangSpring.position = 40;
-		
-	var date = new Date();
-	
-	if(dogangSpring.month != date.getMonth()+1 || dogangSpring.day != date.getDate()){
-		dogangSpring.on = 1;
-		dogangSpring.month = date.getMonth()+1;
-		dogangSpring.day = date.getDate();
-		if(date.getHours()%12 == 0) dogangSpring.hour = 12;
-		else dogangSpring.hour = date.getHours()%12;
-		dogangSpring.minute = date.getMinutes();
-		dogangSpring.position = 40;
-	}
-}
-
-function dogangSpringLoop(){
-	var date = new Date();
-	
-	if(dogangSpring.month != date.getMonth()+1 || dogangSpring.day != date.getDate()){
-		dogangSpringOff();
-	}
-}
-// setInterval(dogangSpringLoop, 600000);
 
 
 // ------------------------------------------------------------------------------------------------- //
@@ -770,41 +524,6 @@ io.sockets.on('connection', function(socket){
 		});
 	});
 	
-	socket.on('dogangSpring', function(data){
-		socket.emit('dogangSpringSetting', {
-			on: dogangSpring.on,
-			month: dogangSpring.month,
-			day: dogangSpring.day,
-			hour: dogangSpring.hour,
-			minute: dogangSpring.minute,
-			position: dogangSpring.position
-		});
-	});
-	
-	socket.on('dogangSpringChangeOn', function(data){
-		dogangSpringChangeAuto(data.on, data.position);
-		socket.emit('dogangSpringSetting', {
-			on: dogangSpring.on,
-			month: dogangSpring.month,
-			day: dogangSpring.day,
-			hour: dogangSpring.hour,
-			minute: dogangSpring.minute,
-			position: dogangSpring.position
-		});
-	});
-	
-	socket.on('dogangSpringChangeOff', function(data){
-		dogangSpringOff();
-		socket.emit('dogangSpringSetting', {
-			on: dogangSpring.on,
-			month: dogangSpring.month,
-			day: dogangSpring.day,
-			hour: dogangSpring.hour,
-			minute: dogangSpring.minute,
-			position: dogangSpring.position
-		});
-	});
-	
 	socket.on('disconnect_lobby', function(){
 		socket.leave('lobby');
 	});
@@ -827,13 +546,7 @@ function delete_chat(){
 	};
 }
 
-
-// ************************* Quoridor ****************************** //
-
-function quoridor_room(){
-	var quoridor_player = [];
-	var quoridor_gallery = [];
-}
+// ************************* All *********************************** //
 
 function player(id, socket, name, session, nickname){
 	this.socket = socket;
@@ -842,6 +555,34 @@ function player(id, socket, name, session, nickname){
 	this.session = session;
 	this.nickname = nickname;
 }
+
+function gameLoop(){
+	// console.log('Loop start!!');
+	// ttt.tttLoop();
+	// if(quoridor_stat == 0 && quoridor.length>1){
+		// if(quoridor_ready<6000){
+			// quoridor_ready += 1000;
+			// io.sockets.in('quoridor').emit('quoridor_message', 0, "Message : " +Math.floor((6000-quoridor_ready)/1000) + " sec.");
+		// }else{
+			// quoridor_init();
+			// quoridor_stat = 1;
+			// io.sockets.in('quoridor').emit('quoridor_message', 1, "Message : " +quoridor[0].name + "'s turn.");
+			// io.sockets.sockets[quoridor[0].id].emit('quoridor_permission', 1);
+			// io.sockets.in('quoridor').emit('quoridor_message_win', 0);
+		// }
+	// }
+}
+
+setInterval(gameLoop, 1000);
+
+
+// ************************* Quoridor ****************************** //
+
+function quoridor_room(){
+	var quoridor_player = [];
+	var quoridor_gallery = [];
+}
+
 var quoridor = [];
 var quoridor_stat = 0;
 var playerID = 1;
@@ -1146,20 +887,20 @@ var quoridor_disconnect = function(socket){
 	io.sockets.in('quoridor').emit('quoridor_list_all', list);
 };
 
-function gameLoop(){
-	if(quoridor_stat == 0 && quoridor.length>1){
-		if(quoridor_ready<6000){
-			quoridor_ready += 1000;
-			io.sockets.in('quoridor').emit('quoridor_message', 0, "Message : " +Math.floor((6000-quoridor_ready)/1000) + " sec.");
-		}else{
-			quoridor_init();
-			quoridor_stat = 1;
-			io.sockets.in('quoridor').emit('quoridor_message', 1, "Message : " +quoridor[0].name + "'s turn.");
-			io.sockets.sockets[quoridor[0].id].emit('quoridor_permission', 1);
-			io.sockets.in('quoridor').emit('quoridor_message_win', 0);
-		}
-	}
-}
+// function gameLoop(){
+	// if(quoridor_stat == 0 && quoridor.length>1){
+		// if(quoridor_ready<6000){
+			// quoridor_ready += 1000;
+			// io.sockets.in('quoridor').emit('quoridor_message', 0, "Message : " +Math.floor((6000-quoridor_ready)/1000) + " sec.");
+		// }else{
+			// quoridor_init();
+			// quoridor_stat = 1;
+			// io.sockets.in('quoridor').emit('quoridor_message', 1, "Message : " +quoridor[0].name + "'s turn.");
+			// io.sockets.sockets[quoridor[0].id].emit('quoridor_permission', 1);
+			// io.sockets.in('quoridor').emit('quoridor_message_win', 0);
+		// }
+	// }
+// }
 
 // setInterval(gameLoop, 1000);
 
