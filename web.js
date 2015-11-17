@@ -169,12 +169,10 @@ app.get('/lobby_error/:id', function(request, response){
 	});
 });
 
-app.get('/quoridor/:room', function(request, response){
+app.get('/game_quoridor/:room', function(request, response){
 	var room = request.param('room');
-	console.log('error : '+room);
-	if(room!='1' && room!='2' && room!='3' && room!='quoridor.js'){
-		response.redirect('/lobby_error/1');
-		console.log('error2 : '+room);
+	if(room!='1' && room!='2' && room!='3'){
+		response.redirect('/lobby_error/0');
 		return;
 	}
 	
@@ -187,17 +185,16 @@ app.get('/quoridor/:room', function(request, response){
 			}else{
 				if(result.length>0){
 					fs.readFile(__dirname+'/public/quoridor/index.html', 'utf8',  function(error, data){
-						// var maxAge = 7 * 24 * 60 * 60 * 1000;
-						// response.cookie('session', result[0].token, {maxAge: maxAge});
-						// response.send(ejs.render(data, {
-							// data: {
-								// test : test,
-								// name: result[0].name,
-								// nickname: result[0].nickname
-							// }
-						// }));
+						var maxAge = 7 * 24 * 60 * 60 * 1000;
+						response.cookie('session', result[0].token, {maxAge: maxAge});
+						response.send(ejs.render(data, {
+							data: {
+								test : test,
+								name: result[0].name,
+								nickname: result[0].nickname
+							}
+						}));
 						console.log(data);
-						response.send(data.toString());
 					});
 				}else{
 					response.redirect('/bad_access');
