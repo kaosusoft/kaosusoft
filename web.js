@@ -366,7 +366,7 @@ io.sockets.on('connection', function(socket){
 	
 	socket.on('join_lobby', function(){
 		socket.join('lobby');
-		socket.emit('lobby_chat_update', lobby_chat);
+		socket.emit('lobby_chat_update', server_data.lobby_chat);
 	});
 	
 	socket.on('lobby_chat_add', function(data){
@@ -376,9 +376,9 @@ io.sockets.on('connection', function(socket){
 					socket.emit('lobby_chat_error');
 				}else{
 					if(result.length>0){
-						lobby_chat.push(new chat_piece(result[0].nickname, data.str));
+						server_data.lobby_chat.push(new chat_piece(result[0].nickname, data.str));
 						delete_chat();
-						io.sockets.in('lobby').emit('lobby_chat_update', lobby_chat);
+						io.sockets.in('lobby').emit('lobby_chat_update', server_data.lobby_chat);
 						// result[0].nickname;
 					}else{
 						socket.emit('lobby_chat_error');
@@ -530,7 +530,17 @@ io.sockets.on('connection', function(socket){
 	});
 });
 
-var lobby_chat = [];
+// ************************* All *********************************** //
+
+function kaosu_data(){
+	this.lobby_chat = [];
+	this.date = new Date();
+}
+
+var server_data = new kaosu_data();
+
+// var lobby_chat = [];
+// var date = new Date();
 
 function chat_piece(name, str){
 	this.name = name;
@@ -538,12 +548,11 @@ function chat_piece(name, str){
 }
 
 function delete_chat(){
-	while(lobby_chat.length>20){
-		lobby_chat.shift();
+	while(server_data.lobby_chat.length>20){
+		server_data.lobby_chat.shift();
 	};
 }
 
-// ************************* All *********************************** //
 
 function player(id, socket, name, session, nickname){
 	this.socket = socket;
@@ -554,8 +563,9 @@ function player(id, socket, name, session, nickname){
 }
 
 function gameLoop(){
+	server_data.date = new Date();
 	// console.log('Loop start!!');
-	// ttt.tttLoop();
+	ttt.tttLoop(server_data.date.getTime());
 	// if(quoridor_stat == 0 && quoridor.length>1){
 		// if(quoridor_ready<6000){
 			// quoridor_ready += 1000;
@@ -901,6 +911,18 @@ var quoridor_disconnect = function(socket){
 
 // setInterval(gameLoop, 1000);
 
-var date = new Date();
 
-console.log(date.getTime());
+
+// console.log(date.getTime());
+var day;
+switch(server_data.date.getDay()){
+	case 0: day='일';break;
+	case 1: day='월';break;
+	case 2: day='화';break;
+	case 3: day='수';break;
+	case 4: day='목';break;
+	case 5: day='금';break;
+	case 6: day='토';break;
+}
+console.log((server_data.date.getMonth()+1)+'월 '+server_data.date.getDate()+'일 '
++day+'요일 '+(server_data.date.getHours()%12)+'시 '+server_data.date.getMinutes()+'분');

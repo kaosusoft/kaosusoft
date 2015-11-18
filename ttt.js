@@ -18,6 +18,6 @@ function ttt_room(){
 	this.ttt_delay = 0;
 }
 
-exports.tttLoop = function(){
-	console.log(ttt_server.length);
+exports.tttLoop = function(time){
+	
 };
