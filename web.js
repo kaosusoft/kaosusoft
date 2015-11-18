@@ -565,7 +565,7 @@ io.sockets.on('connection', function(socket){
 // ************************* All *********************************** //
 
 function kaosu_data(){
-	this.db_timer_reset = 6000;
+	this.db_timer_reset = 600000;
 	this.lobby_chat = [];
 	this.db_timer = this.db_timer_reset;
 	this.date = new Date();
