@@ -6,8 +6,8 @@
 		<link rel="stylesheet" href="/quoridor/stylesheet.css" />
 		<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
 		<script src="prefixfree.min.js"></script>
-		<script src="jquery.cookie.js"></script>
-		<script src="./socket.io/socket.io.js"></script>
+		<script src="/jquery.cookie.js"></script>
+		<script src="../socket.io/socket.io.js"></script>
 		<script src="/quoridor/GameFrameCounter.js"></script>
 		<script src="/quoridor/GameObject.js"></script>
 		<script src="/quoridor/GameSoundManager.js"></script>
@@ -23,7 +23,7 @@
         </canvas>
         <br />
         <br />
-        <label id="label_name"> : </label>
+        <label id="label_name"><%= data.nickname %> : </label>
         <input type="text" id="chat" style="left: 25px; width: 400px" maxlength="15" placeholder="15글자까지만 가능해여" onkeydown="javascript:if (event.keyCode == 13) chat_input()"/>
         <button id="chatb">채팅입력</button>
         <button id="gg">GG</button>

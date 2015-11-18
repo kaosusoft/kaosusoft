@@ -10,7 +10,7 @@ var utf8 = require('utf8');
 var easyimage = require('easyimage');
 var uuid = require('node-uuid');
 var util = require('./util.js');
-var ttt = require('./ttt.js'); // Tic Tac Toe
+var quoridor = require('./quoridor.js'); // Tic Tac Toe
 
 var test = false; // 테스트중이면 true, 진짜는 false 
 
@@ -194,7 +194,6 @@ app.get('/game_quoridor/:room', function(request, response){
 								nickname: result[0].nickname
 							}
 						}));
-						console.log(data);
 					});
 				}else{
 					response.redirect('/bad_access');
@@ -521,6 +520,39 @@ io.sockets.on('connection', function(socket){
 		});
 	});
 	
+	socket.on('join_quoridor', function(session){
+		console.log(session);
+		// quoridor_join(socket);
+	});
+	
+	// socket.on('quoridor_move', function(data){
+		// quoridor_move(socket, data);
+	// });
+// 	
+	// socket.on('quoridor_wall', function(data){
+		// quoridor_wall(socket, data);
+	// });
+// 	
+	// socket.on('quoridor_move_admin', function(data){
+		// quoridor_move_admin(socket, data);
+	// });
+// 	
+	// socket.on('quoridor_wall_admin', function(data){
+		// quoridor_wall_admin(socket, data);
+	// });
+// 	
+	// socket.on('quoridor_change', function(data){
+		// quoridor_change(socket, data);
+	// });
+// 	
+	// socket.on('quoridor_chat', function(data){
+		// quoridor_chatf(socket, data);
+	// });
+// 	
+	// socket.on('quoridor_gg', function(){
+		// quoridor_gg(socket);
+	// });
+	
 	socket.on('disconnect_lobby', function(){
 		socket.leave('lobby');
 	});
@@ -533,8 +565,13 @@ io.sockets.on('connection', function(socket){
 // ************************* All *********************************** //
 
 function kaosu_data(){
+	this.chat_timer_reset = 600000;
 	this.lobby_chat = [];
+	this.lobby_chat_timer = this.chat_timer_reset;
 	this.date = new Date();
+	this.time = this.date.getTime();
+	
+	
 }
 
 var server_data = new kaosu_data();
@@ -563,9 +600,18 @@ function player(id, socket, name, session, nickname){
 }
 
 function gameLoop(){
-	server_data.date = new Date();
+	var date = new Date();
+	var time = date.getTime();
+	var gap = time - server_data.time;
+	server_data.lobby_chat_timer-=gap;
+	if(server_data.lobby_chat_timer<0) {
+		server_data.lobby_chat_timer = server_data.chat_timer_reset;
+		console.log('lobby_chat : '+server_data.lobby_chat.length);
+	}
+	
 	// console.log('Loop start!!');
-	ttt.tttLoop(server_data.date.getTime());
+	
+	quoridor.quoridorLoop(time);
 	// if(quoridor_stat == 0 && quoridor.length>1){
 		// if(quoridor_ready<6000){
 			// quoridor_ready += 1000;
@@ -578,44 +624,14 @@ function gameLoop(){
 			// io.sockets.in('quoridor').emit('quoridor_message_win', 0);
 		// }
 	// }
+	server_data.date = new Date();
+	server_data.time = server_data.date.getTime();
 }
 
 setInterval(gameLoop, 1000);
 
 
 // ************************* Quoridor ****************************** //
-
-function quoridor_room(){
-	var quoridor_player = [];
-	var quoridor_gallery = [];
-}
-
-var quoridor = [];
-var quoridor_stat = 0;
-var playerID = 1;
-var quoridor_ready = 0;
-
-var quoridor_chat = [];
-
-var quoridorMap = [
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-];;
 
 function quoridor_init(){
 	quoridor_ready = 0;
@@ -924,5 +940,6 @@ switch(server_data.date.getDay()){
 	case 5: day='금';break;
 	case 6: day='토';break;
 }
+
 console.log((server_data.date.getMonth()+1)+'월 '+server_data.date.getDate()+'일 '
 +day+'요일 '+(server_data.date.getHours()%12)+'시 '+server_data.date.getMinutes()+'분');
