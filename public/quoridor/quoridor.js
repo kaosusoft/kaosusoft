@@ -55,7 +55,7 @@ $(document).unload(function(){
 $(document).ready(function(){
 	socket = io.connect();
 	var session = $.cookie("session");
-	socket.emit('join_quoridor1', {session: session, room: 1});
+	socket.emit('join_quoridor', {session: session, room: 1});
 	
 	var canvas = document.getElementById('canvas');
 	

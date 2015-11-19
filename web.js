@@ -520,7 +520,7 @@ io.sockets.on('connection', function(socket){
 		});
 	});
 	
-	socket.on('join_quoridor1', function(data){
+	socket.on('join_quoridor', function(data){
 		console.log(data.session);
 		quoridor_join(socket, data.session, data.room);
 	});
