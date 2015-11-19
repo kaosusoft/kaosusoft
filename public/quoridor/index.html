@@ -11,6 +11,15 @@
 		<script src="/quoridor/GameFrameCounter.js"></script>
 		<script src="/quoridor/GameObject.js"></script>
 		<script src="/quoridor/GameSoundManager.js"></script>
+		<script>
+			<% if(data.room==1){ %>
+				var room = 1;
+			<% }else if(data.room==2){ %>
+				var room = 2;
+			<% }else if(data.room==3){ %>
+				var room = 3;
+			<% } %>
+		</script>
         <script src="/quoridor/quoridor.js"></script>
     </head>
     <body>
@@ -24,7 +33,7 @@
         <br />
         <br />
         <label id="label_name"><%= data.nickname %> : </label>
-        <input type="text" id="chat" style="left: 25px; width: 400px" maxlength="15" placeholder="15글자까지만 가능해여" onkeydown="javascript:if (event.keyCode == 13) chat_input()"/>
+        <input type="text" id="chat" style="left: 25px; width: 400px" maxlength="15" placeholder="15자까지 입력 가능합니다." onkeydown="javascript:if (event.keyCode == 13) chat_input()"/>
         <button id="chatb">채팅입력</button>
         <button id="gg">GG</button>
         <hr />

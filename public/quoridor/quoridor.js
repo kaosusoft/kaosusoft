@@ -33,20 +33,28 @@ var map = [
 // var message = '';
 // var messageColor = "#000000";
 // var message_win = 0;
-// var chat = [];
-// 
+var chat = [];
+
 // var playerList = [];
 // 
 // var mousePosition = -1;
 
+var quoridor_gallery = [];
+
 var socket = undefined;
 
-// function chat_input(){
-	// if($('#chat').val().length>0){
-		// socket.emit('quoridor_chat', player.name + " : "+$('#chat').val());
-		// $('#chat').val('');
-	// }
-// }
+
+function chat_input(){
+	var session = $.cookie("session");
+	if($('#chat').val().length>0){
+		socket.emit('quoridor_chat_input', {
+			session: session,
+			str: $('#chat').val(),
+			room: room
+			});
+		$('#chat').val('');
+	}
+}
 
 $(document).unload(function(){
 	if (socket != undefined) socket.disconnect();
@@ -55,7 +63,7 @@ $(document).unload(function(){
 $(document).ready(function(){
 	socket = io.connect();
 	var session = $.cookie("session");
-	socket.emit('join_quoridor', {session: session, room: 1});
+	socket.emit('join_quoridor', {session: session, room: room});
 	
 	var canvas = document.getElementById('canvas');
 	
@@ -78,23 +86,23 @@ $(document).ready(function(){
 			// name_input();
 		// }
 	// }
-// 	
-	// $('#chatb').click(function(){
-		// chat_input();
-	// });
-// 	
+	
+	$('#chatb').click(function(){
+		chat_input();
+	});
+	
 	// $('#gg').click(function(){
 		// socket.emit('quoridor_gg');
 	// });
 // 	
-	// socket.on('join_success', function(data){
-		// player.name = data;
-	// });
-// 	
-	// socket.on('quoridor_chat', function(data){
-		// chat = data;
-	// });
-// 	
+	socket.on('quoridor_gallery', function(data){
+		quoridor_gallery = data;
+	});
+	
+	socket.on('quoridor_chat', function(data){
+		chat = data;
+	});
+	
 	// socket.on('quoridor_list_all', function(data){
 		// playerList = data;
 	// });
@@ -531,13 +539,13 @@ function Render()
 	// player.player1.Render(Context);
 	// player.player2.Render(Context);
 	
-	// FPS 표시
-	// Context.fillStyle = "#000000";
-	// Context.font = '15px Nanum';
-	// Context.textBaseLine = "top";
-// 	
-	// Context.fillText("Connect List", 710, 110);
-	// for(var i in playerList){
+	// FPS 표시 
+	Context.fillStyle = "#000000";
+	Context.font = '15px Nanum';
+	Context.textBaseLine = "top";
+	
+	Context.fillText("Connect List", 710, 110);
+	for(var i in quoridor_gallery){
 		// if(i==0) Context.fillStyle = "#00FF00";
 		// else if(i==1) Context.fillStyle = "#0000FF";
 		// else Context.fillStyle = "#000000";
@@ -546,21 +554,21 @@ function Render()
 			// Context.fillText('...', 790, 130+20*i);
 			// break;
 		// }
-		// Context.fillText(playerList[i], 790, 130+20*i);
+		Context.fillText(quoridor_gallery[i].nickname, 790, 130+20*i);
 		// Context.fillStyle = "#000000";
-		// if(playerList[i] == player.name) Context.fillText('You --> ', 725, 130+20*i);
-// 		
-	// }
+		// if(playerList[i] == player.name) Context.fillText('You --> ', 725, 130+20*i);	
+	}
 // 	
 	// Context.fillStyle = messageColor;
 	// Context.fillText(message, 700, 40);
 // 	
-	// Context.font = '12px Nanum';
-	// for(var i in chat){
-		// Context.fillStyle = "#000000";
-		// Context.fillText(chat[i], 675, 360+20*i);
-	// }
-// 	
+	Context.font = '12px Nanum';
+	for(var i in chat){
+		Context.fillStyle = "#000000";
+		var str = chat[i].nickname+' : '+chat[i].str;
+		Context.fillText(str, 675, 360+20*i);
+	}
+	
 	// Context.font = '96px Arial';
 	// if(message_win == 1){
 		// Context.fillStyle = "#00FF00";
