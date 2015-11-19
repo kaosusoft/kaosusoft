@@ -107,7 +107,7 @@ exports.quoridorChatInput = function(session, str, room){
 	if(index == -1) return uoridor_server[room-1].quoridor_chat;
 	else {
 		quoridor_server[room-1].quoridor_chat.push(new chat_piece(quoridor_server[room-1].quoridor_gallery[index].nickname, str));
-		while(quoridor_server[room-1].quoridor_chat.length>20){
+		while(quoridor_server[room-1].quoridor_chat.length>17){
 			quoridor_server[room-1].quoridor_chat.shift();
 		};
 		return quoridor_server[room-1].quoridor_chat;
