@@ -32,6 +32,8 @@ if(test){
 	});
 }
 
+console.log('');
+
 var app = express();
 
 app.use(express.cookieParser());
