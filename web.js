@@ -875,7 +875,6 @@ var quoridor_chat_input = function(socket, data){
 	
 	var chat = quoridor.quoridorChatInput(session, str, room);
 	var roomname = 'quoridor'+room;
-	console.log(chat);
 	io.sockets.in(roomname).emit('quoridor_chat', chat);
 	
 	return;
