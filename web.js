@@ -32,8 +32,6 @@ if(test){
 	});
 }
 
-console.log('');
-
 var app = express();
 
 app.use(express.cookieParser());
@@ -567,7 +565,7 @@ io.sockets.on('connection', function(socket){
 // ************************* All *********************************** //
 
 function kaosu_data(){
-	this.db_timer_reset = 6000;
+	this.db_timer_reset = 600000;
 	this.lobby_chat = [];
 	this.db_timer = this.db_timer_reset;
 	this.date = new Date();
@@ -606,7 +604,9 @@ function gameLoop(){
 	server_data.db_timer-=gap;
 	if(server_data.db_timer<0) {
 		server_data.db_timer = server_data.db_timer_reset;
-		client.query('SELECT 1',function(error, result, fields){});
+		console.log('lobby_chat : '+server_data.lobby_chat.length+' - '+(date.getHours()%12)+'시 '+date.getMinutes()+'분');
+		client.query('SELECT 1', function(error, result, fields){
+		});
 	}
 	
 	// console.log('Loop start!!');
