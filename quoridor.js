@@ -50,6 +50,12 @@ exports.quoridor_room_init = function(room){
 	
 };
 
+exports.quoridor_add_gallery = function(player, room){
+	if(room==1 || room==2 || room==3){
+		quoridor_server[room-1].quoridor_gallery.push(player);
+	}
+};
+
 exports.quoridorLoop = function(time){
 	
 };

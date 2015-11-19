@@ -520,9 +520,9 @@ io.sockets.on('connection', function(socket){
 		});
 	});
 	
-	socket.on('join_quoridor', function(session){
-		console.log(session);
-		// quoridor_join(socket);
+	socket.on('join_quoridor1', function(data){
+		console.log(data.session);
+		quoridor_join(socket, data.session, data.room);
 	});
 	
 	// socket.on('quoridor_move', function(data){
@@ -565,13 +565,11 @@ io.sockets.on('connection', function(socket){
 // ************************* All *********************************** //
 
 function kaosu_data(){
-	this.chat_timer_reset = 600000;
+	this.db_timer_reset = 6000;
 	this.lobby_chat = [];
-	this.lobby_chat_timer = this.chat_timer_reset;
+	this.db_timer = this.db_timer_reset;
 	this.date = new Date();
 	this.time = this.date.getTime();
-	
-	
 }
 
 var server_data = new kaosu_data();
@@ -591,7 +589,7 @@ function delete_chat(){
 }
 
 
-function player(id, socket, name, session, nickname){
+function player(socket, session, id, name, nickname){
 	this.socket = socket;
 	this.id = id;
 	this.name = name;
@@ -603,10 +601,10 @@ function gameLoop(){
 	var date = new Date();
 	var time = date.getTime();
 	var gap = time - server_data.time;
-	server_data.lobby_chat_timer-=gap;
-	if(server_data.lobby_chat_timer<0) {
-		server_data.lobby_chat_timer = server_data.chat_timer_reset;
-		console.log('lobby_chat : '+server_data.lobby_chat.length);
+	server_data.db_timer-=gap;
+	if(server_data.db_timer<0) {
+		server_data.db_timer = server_data.db_timer_reset;
+		client.query('SELECT 1',function(error, result, fields){});
 	}
 	
 	// console.log('Loop start!!');
@@ -659,9 +657,26 @@ function quoridor_init(){
 	io.sockets.in('quoridor').emit('quoridor_init');
 }
 
-var quoridor_join = function(socket){
-	socket.join('quoridor');
-	socket.set('room', 'quoridor');
+var quoridor_join = function(socket, session, room){
+	if(room==1) socket.join('quoridor1');
+	else if(room==2) socket.join('quoridor2');
+	else if(room==3) socket.join('quoridor3');
+	else return false;
+	
+	client.query('SELECT * from member where token = ?', session, function(error, result, fields){
+		if(error){
+			response.redirect('/lobby_redirect/0');
+		}else{
+			if(result.length>0){
+				var id = result[0].id;
+				var name = result[0].name;
+				var nickname = result[0].nickname;
+				quoridor.quoridor_add_gallery(new player(socket, session, id, name, nickname), room);
+			}else{
+				response.redirect('/lobby_redirect/0');
+			}
+		}
+	});
 	
 	var index = quoridor.push(new player(socket.id, 'player'+playerID));
 	

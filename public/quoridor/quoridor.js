@@ -55,7 +55,7 @@ $(document).unload(function(){
 $(document).ready(function(){
 	socket = io.connect();
 	var session = $.cookie("session");
-	socket.emit('join_quoridor', session);
+	socket.emit('join_quoridor1', {session: session, room: 1});
 	
 	var canvas = document.getElementById('canvas');
 	
@@ -142,8 +142,8 @@ function onPageLoadComplete()
 	
 	var player1_img = new Image();
 	var player2_img = new Image();
-	player1_img.src = "quoridor/img/player1.png";
-	player2_img.src = "quoridor/img/player2.png";
+	player1_img.src = "../quoridor/img/player1.png";
+	player2_img.src = "../quoridor/img/player2.png";
 	player.player1 = new Object(player1_img);
 	player.player2 = new Object(player2_img);
 	player.player1.SetPosition(24, 24+74*4);
