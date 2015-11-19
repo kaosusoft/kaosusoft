@@ -10,12 +10,14 @@
 			$(document).ready(function(){
 				<% if(data==0){ %>
 					alert('잘못된 접근입니다.');
+					location = '/lobby';
 				<% }else if(data==1){ %>
-					alert('패스워드가 일치하지 않습니다.');
+					alert('장시간 미응답으로 연결이 종료되었습니다.');
+					window.close();
 				<% }else{ %>
 					alert('로그인 오류입니다.');
+					location = '/lobby';
 				<% } %>
-				location = '/lobby';
 			});
 		</script>
 	</head>

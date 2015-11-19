@@ -43,7 +43,6 @@ var quoridor_gallery = [];
 
 var socket = undefined;
 
-
 function chat_input(){
 	var session = $.cookie("session");
 	if($('#chat').val().length>0){
@@ -63,7 +62,7 @@ $(document).unload(function(){
 $(document).ready(function(){
 	socket = io.connect();
 	var session = $.cookie("session");
-	socket.emit('join_quoridor', {session: session, room: room});
+	socket.emit('quoridor_join', {session: session, room: room});
 	
 	var canvas = document.getElementById('canvas');
 	
@@ -87,6 +86,11 @@ $(document).ready(function(){
 		// }
 	// }
 	
+	$(window).unload(function(){
+		var sess = $.cookie("session");
+		socket.emit('quoridor_exit', {session: sess, room: room});
+	});
+	
 	$('#chatb').click(function(){
 		chat_input();
 	});
@@ -94,7 +98,11 @@ $(document).ready(function(){
 	// $('#gg').click(function(){
 		// socket.emit('quoridor_gg');
 	// });
-// 	
+	
+	socket.on('expire_send', function(){
+		socket.emit('expire_receive');
+	});
+	
 	socket.on('quoridor_gallery', function(data){
 		quoridor_gallery = data;
 	});

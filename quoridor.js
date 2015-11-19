@@ -1,7 +1,7 @@
 var web = require('./web.js');
 
 
-// ************************* Tic Tac Toe *************************** //
+// ************************* Quoridor *************************** //
 
 var quoridor_server = [];
 
@@ -33,6 +33,8 @@ function quoridor_room(){
 					];
 	this.quoridor_turn = 0;
 	this.quoridor_delay = 0;
+	this.quoridor_expire_max = 10000;
+	this.quoridor_expire = this.quoridor_expire_max;
 }
 
 exports.quoridor_room_init = function(room){
@@ -47,7 +49,6 @@ exports.quoridor_room_init = function(room){
 		quoridor_server[room].quoridor_turn = 0;
 		quoridor_server[room].quoridor_delay = 0;
 	}
-	
 };
 
 exports.quoridor_add_gallery = function(player, room){
@@ -65,8 +66,24 @@ exports.quoridor_add_gallery = function(player, room){
 	}
 };
 
+var oldtime = 0;
+
 exports.quoridorLoop = function(time){
-	
+	var gap = time - oldtime;
+	for(var i=0; i<3; i++){
+		for(var j in quoridor_server[i].quoridor_gallery){
+			quoridor_server[i].quoridor_gallery[j].expire -= gap;
+			if(quoridor_server[i].quoridor_gallery[j].expire<0) {
+				quoridor_server[i].quoridor_gallery[j].expire_max+=1;
+				quoridor_server[i].quoridor_gallery[j].expire = quoridor_server[i].quoridor_gallery[j].expire_time;
+			}
+			if(quoridor_server[i].quoridor_gallery[j].expire_max>2) {
+				quoridor_server[i].quoridor_gallery.splice(j,1);
+				break;
+			}
+		}
+	}
+	oldtime = time;
 };
 
 exports.quoridorLog = function(room){
@@ -111,5 +128,26 @@ exports.quoridorChatInput = function(session, str, room){
 			quoridor_server[room-1].quoridor_chat.shift();
 		};
 		return quoridor_server[room-1].quoridor_chat;
+	}
+};
+
+exports.quoridorExpire = function(socket){
+	for(var j=0; j<3; j++){
+		for(var i in quoridor_server[j].quoridor_gallery){
+			if(quoridor_server[j].quoridor_gallery[i].socket.id == socket.id){
+				quoridor_server[j].quoridor_gallery[i].expire = quoridor_server[j].quoridor_gallery[i].expire_time;
+				quoridor_server[j].quoridor_gallery[i].expire_max = 0;
+			}
+		}
+	}
+};
+
+exports.quoridorExit = function(session, room){
+	for(var i in quoridor_server[room-1].quoridor_gallery){
+		if(quoridor_server[room-1].quoridor_gallery[i].session == session){
+			console.log(quoridor_server[room-1].quoridor_gallery[i].nickname+' 삭제!');
+			quoridor_server[room-1].quoridor_gallery.splice(i,1);
+			break;
+		}
 	}
 };

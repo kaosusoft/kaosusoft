@@ -64,7 +64,8 @@ app.get('/', function(request, response){
 								test : test,
 								result : 1,
 								name: result[0].name,
-								nickname: result[0].nickname
+								nickname: result[0].nickname,
+								member : member_count
 							}
 						}));
 					});
@@ -447,12 +448,12 @@ io.sockets.on('connection', function(socket){
 							socket.emit('join_error');
 						}else{
 							socket.emit('join_success');
+							memberCount();
 						}
 					});
 				}
 			}
 		});
-
 	});
 	socket.on('name_confirms', function(data){
 		client.query('SELECT * from member where name = ?', data, function(error, result, fields){
@@ -521,7 +522,7 @@ io.sockets.on('connection', function(socket){
 		});
 	});
 	
-	socket.on('join_quoridor', function(data){
+	socket.on('quoridor_join', function(data){
 		quoridor_join(socket, data.session, data.room);
 	});
 	
@@ -553,16 +554,38 @@ io.sockets.on('connection', function(socket){
 		// quoridor_gg(socket);
 	// });
 	
+	socket.on('quoridor_exit', function(data){
+		quoridor.quoridorExit(data.session, data.room);
+		var roomname = 'quoridor'+data.room;
+		socket.leave(roomname);
+	});
+	
+	socket.on('expire_receive', function(){
+		quoridor.quoridorExpire(socket);
+	});
+	
 	socket.on('disconnect_lobby', function(){
 		socket.leave('lobby');
 	});
 	
 	socket.on('disconnect', function(){
-		
+		// console.log('삭제!');
+		// quoridor.quoridorExit(socket);
 	});
 });
 
 // ************************* All *********************************** //
+
+var member_count = 0;
+memberCount();
+
+function memberCount(){
+	client.query('SELECT * from member', function(error, result, fields){
+		member_count = result.length;
+		console.log('현재 회원수는 '+member_count+'명입니다.');
+	});
+	return member_count;
+}
 
 function kaosu_data(){
 	this.db_timer_reset = 600000;
@@ -595,8 +618,13 @@ function player(socket, session, id, name, nickname){
 	this.name = name;
 	this.session = session;
 	this.nickname = nickname;
-	this.expire = 10000;
+	this.expire_time = 10000;
+	this.expire = this.expire_time;
+	this.expire_max = 0;
 }
+
+var expire_init_timer_max = 5000;
+var expire_init_timer = expire_init_timer_max;
 
 function gameLoop(){
 	var date = new Date();
@@ -608,6 +636,12 @@ function gameLoop(){
 		console.log('lobby_chat : '+server_data.lobby_chat.length+' - '+(date.getHours()%12)+'시 '+date.getMinutes()+'분');
 		client.query('SELECT 1', function(error, result, fields){
 		});
+	}
+	
+	expire_init_timer -= gap;
+	if(expire_init_timer<0){
+		expire_init_timer = expire_init_timer_max;
+		io.sockets.emit('expire_send');
 	}
 	
 	// console.log('Loop start!!');
