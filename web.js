@@ -526,6 +526,10 @@ io.sockets.on('connection', function(socket){
 		quoridor_join(socket, data.session, data.room);
 	});
 	
+	socket.on('quoridor_player_ask', function(data){
+		quoridor_player_ask(socket, data.session, data.room);
+	});
+	
 	// socket.on('quoridor_move', function(data){
 		// quoridor_move(socket, data);
 	// });
@@ -558,6 +562,10 @@ io.sockets.on('connection', function(socket){
 		quoridor.quoridorExit(data.session, data.room);
 		var roomname = 'quoridor'+data.room;
 		socket.leave(roomname);
+		var gameData = quoridor.quoridorGameData(data.room);
+		io.sockets.in(roomname).emit('quoridor_data', gameData);
+		var gallery = quoridor.quoridorGallery(data.room);
+		io.sockets.in(roomname).emit('quoridor_gallery', gallery);
 	});
 	
 	socket.on('expire_receive', function(){
@@ -663,7 +671,7 @@ function gameLoop(){
 	server_data.time = server_data.date.getTime();
 }
 
-setInterval(gameLoop, 1000);
+setInterval(gameLoop, 500);
 
 
 // ************************* Quoridor ****************************** //
@@ -711,10 +719,13 @@ var quoridor_join = function(socket, session, room){
 				quoridor.quoridor_add_gallery(new player(socket, session, id, name, nickname), room);
 				quoridor.quoridorLog(room);
 				var gallery = quoridor.quoridorGallery(room);
+				var gameData = quoridor.quoridorGameData(room);
+				gameData.myid = id;
 				console.log(gallery);
 				var roomname = 'quoridor'+room;
 				io.sockets.in(roomname).emit('quoridor_gallery', gallery);
 				socket.emit('quoridor_chat', quoridor.quoridorChat(room));
+				socket.emit('quoridor_data', gameData);
 			}else{
 				response.redirect('/lobby_redirect/0');
 			}
@@ -739,6 +750,31 @@ var quoridor_join = function(socket, session, room){
 	// else if(quoridor_stat == 2) socket.emit('quoridor_message', 2, "Message : " +quoridor[1].name + "'s turn.");
 // 	
 	// socket.emit('quoridor_map', quoridorMap);
+};
+
+var quoridor_player_ask = function(socket, session, room){
+	if(room!=1 && room!=2 && room!=3) {response.redirect('/lobby_redirect/0'); return false;}
+	
+	client.query('SELECT * from member where token = ?', session, function(error, result, fields){
+		if(error){
+			response.redirect('/lobby_redirect/0');
+		}else{
+			if(result.length>0){
+				var id = result[0].id;
+				var name = result[0].name;
+				var nickname = result[0].nickname;
+				console.log(nickname+'플레이어가 대전신청!');
+				var flag = quoridor.quoridor_add_player(id, room);
+				if(flag) console.log(nickname+'플레이어 대전신청 접수완료!');
+				else console.log(nickname+'플레이어 대전신청 접수실패!');
+				var gameData = quoridor.quoridorGameData(room);
+				var roomname = 'quoridor'+room;
+				io.sockets.in(roomname).emit('quoridor_data', gameData);
+			}else{
+				response.redirect('/lobby_redirect/0');
+			}
+		}
+	});
 };
 
 var quoridor_move = function(socket, data){

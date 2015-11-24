@@ -6,6 +6,10 @@ function Object(img)
 	return this;
 }
 
+Object.prototype.Draw = function(context, x, y){
+	context.drawImage(this.img, x, y);
+};
+
 Object.prototype.Render = function(context)
 {
 	context.drawImage(this.img, this.x, this.y);

@@ -1,6 +1,3 @@
-var web = require('./web.js');
-
-
 // ************************* Quoridor *************************** //
 
 var quoridor_server = [];
@@ -32,6 +29,7 @@ function quoridor_room(){
 					[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 					];
 	this.quoridor_turn = 0;
+	this.quoridor_permission = 0;
 	this.quoridor_delay = 0;
 	this.quoridor_expire_max = 10000;
 	this.quoridor_expire = this.quoridor_expire_max;
@@ -51,18 +49,46 @@ exports.quoridor_room_init = function(room){
 	}
 };
 
+exports.quoridor_add_player = function(id, room){
+	if(quoridor_server[room-1].quoridor_player.length>1) return false;
+	for(var i in quoridor_server[room-1].quoridor_gallery){
+		if(quoridor_server[room-1].quoridor_gallery[i].id == id){
+			var flag = true;
+			for(var j in quoridor_server[room-1].quoridor_player){
+				if(quoridor_server[room-1].quoridor_player[j].id == id) flag = false;
+			}
+			if(flag) {
+				quoridor_server[room-1].quoridor_player.push(quoridor_server[room-1].quoridor_gallery[i]);
+				str = '';
+				for(var j in quoridor_server[room-1].quoridor_player){
+					if(j!=0) str += '님과 ';
+					str += quoridor_server[room-1].quoridor_player[j].nickname;
+				}
+				console.log('현재 대전자는 '+str+'님입니다.');
+				return true;
+			}else{
+				
+				return false;
+			}
+		}else{
+			
+		}
+	}
+	return false;
+};
+
 exports.quoridor_add_gallery = function(player, room){
 	if(room==1 || room==2 || room==3){
 		for(var i=0; i<3; i++){
 			for(var j in quoridor_server[i].quoridor_gallery){
 				if(quoridor_server[i].quoridor_gallery[j].id == player.id){
 					quoridor_server[i].quoridor_gallery.splice(j,1);
-					console.log(player.nickname+'님이 기존에 갤러리에 속해 있으므로 탈퇴됩니다.');
+					console.log(player.nickname+'님이 갤러리에 속해 있으므로 탈퇴됩니다.');
 				}
 			}
 		}
 		quoridor_server[room-1].quoridor_gallery.push(player);
-		console.log(player.nickname+'님이 기존에 갤러리에 추가되어 갤러리는 총 '+quoridor_server[room-1].quoridor_gallery.length+'명입니다.');
+		console.log(player.nickname+'님이 갤러리에 추가되어 갤러리는 총 '+quoridor_server[room-1].quoridor_gallery.length+'명입니다.');
 	}
 };
 
@@ -101,6 +127,22 @@ function chat_piece(nickname, str){
 	this.str = str;
 }
 
+exports.quoridorGameData = function(room){
+	var data = [];
+	for(var i in quoridor_server[room-1].quoridor_player){
+		data.push(new player(quoridor_server[room-1].quoridor_player[i].id, quoridor_server[room-1].quoridor_player[i].name, quoridor_server[room-1].quoridor_player[i].nickname));
+	}
+	var fight_ask = false;
+	if(data.length<2) fight_ask = true;
+	var gameData = {
+		player: data,
+		map: quoridor_server[room-1].quoridor_map,
+		fight_ask: fight_ask,
+		myid : 0
+	};
+	return gameData;
+};
+
 exports.quoridorGallery = function(room){
 	var gallery = [];
 	for(var i in quoridor_server[room-1].quoridor_gallery){
@@ -124,7 +166,7 @@ exports.quoridorChatInput = function(session, str, room){
 	if(index == -1) return uoridor_server[room-1].quoridor_chat;
 	else {
 		quoridor_server[room-1].quoridor_chat.push(new chat_piece(quoridor_server[room-1].quoridor_gallery[index].nickname, str));
-		while(quoridor_server[room-1].quoridor_chat.length>17){
+		while(quoridor_server[room-1].quoridor_chat.length>16){
 			quoridor_server[room-1].quoridor_chat.shift();
 		};
 		return quoridor_server[room-1].quoridor_chat;
@@ -145,7 +187,15 @@ exports.quoridorExpire = function(socket){
 exports.quoridorExit = function(session, room){
 	for(var i in quoridor_server[room-1].quoridor_gallery){
 		if(quoridor_server[room-1].quoridor_gallery[i].session == session){
-			console.log(quoridor_server[room-1].quoridor_gallery[i].nickname+' 삭제!');
+			var id = quoridor_server[room-1].quoridor_gallery[i].id;
+			for(var j in quoridor_server[room-1].quoridor_player){
+				if(quoridor_server[room-1].quoridor_player[j].id == id){
+					quoridor_server[room-1].quoridor_player.splice(j,1);
+					console.log(quoridor_server[room-1].quoridor_gallery[i].nickname+' 대전자에서 삭제!');
+					break;
+				}
+			}
+			console.log(quoridor_server[room-1].quoridor_gallery[i].nickname+' 갤러리에서 삭제!');
 			quoridor_server[room-1].quoridor_gallery.splice(i,1);
 			break;
 		}

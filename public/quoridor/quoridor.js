@@ -1,11 +1,25 @@
+var test = false;
+var FIGHT_ASK_X = 226;
+var FIGHT_ASK_Y = 303;
+var FIGHT_ASK_WIDTH = 180;
+var FIGHT_ASK_HEIGHT = 90;
+var fight_ask_move = false;
+var can_fight_ask = false;
+var can_fight_ask_process = false;
+
+var myid = 0;
+
 var player = {
 	name: '',
 	player1: undefined,
 	player2: undefined
 };
 
-var isCanPlay = false;
-var playerNum = -1;
+var server_player = [];
+
+
+// var isCanPlay = false;
+// var playerNum = -1;
 
 var map = [
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -26,9 +40,9 @@ var map = [
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 ];
-// 
-// var mouseX = 0;
-// var mouseY = 0;
+
+var mouseX = 0;
+var mouseY = 0;
 // 
 // var message = '';
 // var messageColor = "#000000";
@@ -66,19 +80,19 @@ $(document).ready(function(){
 	
 	var canvas = document.getElementById('canvas');
 	
-	// $(canvas).mousedown(function(e){
-		// mouseX = e.pageX - $(this).offset().left;
-		// mouseY = e.pageY - $(this).offset().top;
-// 		
-		// mouseClick();
-	// });
-// 	
-	// $(canvas).mousemove(function(e){
-		// mouseX = e.pageX - $(this).offset().left;
-		// mouseY = e.pageY - $(this).offset().top;
-// 		
-		// mouseMove();
-	// });
+	$(canvas).mousedown(function(e){
+		mouseX = e.pageX - $(this).offset().left;
+		mouseY = e.pageY - $(this).offset().top;
+		
+		mouseClick();
+	});
+	
+	$(canvas).mousemove(function(e){
+		mouseX = e.pageX - $(this).offset().left;
+		mouseY = e.pageY - $(this).offset().top;
+		
+		mouseMove();
+	});
 	// if(window.localStorage){
 		// if(localStorage.getItem('quoridor_name') != null){
 			// $('#name').val(localStorage.getItem('quoridor_name'));
@@ -107,6 +121,21 @@ $(document).ready(function(){
 		quoridor_gallery = data;
 	});
 	
+	socket.on('quoridor_data', function(data){
+		server_player = data.player;
+		map = data.map;
+		can_fight_ask = data.fight_ask;
+		if(data.myid>0){
+			myid = data.myid;
+		}
+		for(var i in server_player){
+			if(myid == server_player[i].id){
+				can_fight_ask = false;
+				break;
+			}
+		}
+	});
+	
 	socket.on('quoridor_chat', function(data){
 		chat = data;
 	});
@@ -126,17 +155,17 @@ $(document).ready(function(){
 		// message_win = data;
 	// });
 // 	
-	// socket.on('quoridor_map', function(data){
-		// map = data;
-		// for(var i=1; i<17; i+=2){
-			// for(var j=1; j<17; j+=2){
-				// if((map[i-1][j]==3 && map[i][j-1]==3) || (map[i-1][j]==3 && map[i][j+1]==3) ||
-				// (map[i+1][j]==3 && map[i][j-1]==3) || (map[i+1][j]==3 && map[i][j+1]==3)){
-					// map[i][j] = 3;
-				// }
-			// }
-		// }
-	// });
+	socket.on('quoridor_map', function(data){
+		map = data;
+		for(var i=1; i<17; i+=2){
+			for(var j=1; j<17; j+=2){
+				if((map[i-1][j]==3 && map[i][j-1]==3) || (map[i-1][j]==3 && map[i][j+1]==3) ||
+				(map[i+1][j]==3 && map[i][j-1]==3) || (map[i+1][j]==3 && map[i][j+1]==3)){
+					map[i][j] = 3;
+				}
+			}
+		}
+	});
 // 	
 	// socket.on('quoridor_init', function(){
 		// isCanPlay = false;
@@ -162,11 +191,17 @@ function onPageLoadComplete()
 	player2_img.src = "../quoridor/img/player2.png";
 	player.player1 = new Object(player1_img);
 	player.player2 = new Object(player2_img);
-	player.player1.SetPosition(24, 24+74*4);
-	player.player2.SetPosition(24+74*8, 24+74*4);
+	player.player1.SetPosition(26, 85+67*4);
+	player.player2.SetPosition(26+67*8, 85+67*4);
 }
 
-// function mouseClick(){
+function mouseClick(){
+	if(can_fight_ask && !can_fight_ask_process && fight_ask_move && mouseX > FIGHT_ASK_X && mouseX < FIGHT_ASK_X+FIGHT_ASK_WIDTH && mouseY > FIGHT_ASK_Y && mouseY < FIGHT_ASK_Y+FIGHT_ASK_HEIGHT){
+		can_fight_ask_process = true;
+		var session = $.cookie("session");
+		socket.emit('quoridor_player_ask', {session: session, room: room});
+	}
+	
 	// // setTimeout(chatFocus, 100);
 	// if(!isCanPlay) return;
 	// var positionY = Math.floor(mousePosition/17);
@@ -205,13 +240,18 @@ function onPageLoadComplete()
 			// }
 		// }
 	// }
-// }
-// 
+}
+
 // var chatFocus = function(){
 	// $('#chat').focus();
 // };
 // 
-// function mouseMove(){
+function mouseMove(){
+	if(can_fight_ask && !can_fight_ask_process&& mouseX > FIGHT_ASK_X && mouseX < FIGHT_ASK_X+FIGHT_ASK_WIDTH && mouseY > FIGHT_ASK_Y && mouseY < FIGHT_ASK_Y+FIGHT_ASK_HEIGHT){
+		fight_ask_move = true;
+	}else{
+		fight_ask_move = false;
+	}
 	// var positionX = mouseX - 24;
 	// var positionY = mouseY - 24;
 	// if(positionX>=0 && positionX<642){
@@ -247,7 +287,7 @@ function onPageLoadComplete()
 		// mousePosition = -1;
 	// }
 // 	
-// }
+}
 
 function Update()
 {
@@ -457,9 +497,9 @@ function Render()
 	
 	Context.fillStyle = "#DDDDDD";
 	
-	var redPosition1 = -1;
-	var redPosition2 = -1;
-	var redPosition3 = -1;
+	// var redPosition1 = -1;
+	// var redPosition2 = -1;
+	// var redPosition3 = -1;
 	
 	// var positionY = Math.floor(mousePosition/17);
 	// var positionX = mousePosition - positionY*17;
@@ -481,6 +521,60 @@ function Render()
 		// }
 	// }
 // 	
+
+	// 타일(Tile)
+	for(var i=0; i<9; i++){
+		for(var j=0; j<9; j++){
+			if(j==0) Context.fillStyle = "#AAAADD";
+			else if(j==8) Context.fillStyle = "#AADDAA";
+			else Context.fillStyle = "#DDDDDD";
+			switch(map[2*i][2*j]){
+				case 1: {
+					Context.fillStyle = "#88DD88";
+					player.player1.Draw(Context, 26+(67*j), 85+(67*i));
+					break;
+				}
+				case 2: {
+					Context.fillStyle = "#8888DD";
+					player.player2.Draw(Context, 26+(67*j), 85+(67*i));
+					break;
+				}
+			}
+			Context.fillRect(26+(67*j), 85+(67*i), 45, 45);
+		}
+	}
+	
+	// 세로 벽(Vertical Wall)
+	for(var i=0; i<9; i++){
+		for(var j=0; j<8; j++){
+			Context.fillStyle = "#DDDDDD";
+			switch(map[2*i][2*j+1]){
+				case 3: Context.fillStyle = "#776e65"; break;
+			}
+			Context.fillRect(73+(67*j), 85+(67*i), 18, 45);
+		}
+	}
+	// 가로 벽(Horizon Wall)
+	for(var i=0; i<8; i++){
+		for(var j=0; j<9; j++){
+			Context.fillStyle = "#DDDDDD";
+			switch(map[2*i+1][2*j]){
+				case 3: Context.fillStyle = "#776e65"; break;
+			}
+			Context.fillRect(26+(67*j), 132+(67*i), 45, 18);
+		}
+	}
+	// 벽 사이
+	for(var i=0; i<8; i++){
+		for(var j=0; j<8; j++){
+			Context.fillStyle = "#DDDDDD";
+			switch(map[2*i+1][2*j+1]){
+				case 3: Context.fillStyle = "#776e65"; break;
+			}
+			Context.fillRect(73+(67*j), 132+(67*i), 18, 18);
+		}
+	}
+
 	// for(var i=0; i<9; i++){
 		// for(var j=0; j<9; j++){
 			// if(j==0) Context.fillStyle = "#AAAADD";
@@ -544,6 +638,47 @@ function Render()
 		// }
 	// }
 // 	
+
+	// 전광판
+	player.player1.Draw(Context, 227, 10);
+	player.player2.Draw(Context, 361, 10);
+	Context.fillStyle = "#000000";
+	Context.font = '24px Nanum';
+	Context.textAlign = 'center';
+	Context.textBaseLine = "top";
+	Context.fillText("VS", 318, 50);
+
+	if(server_player.length > 0){
+		Context.font = '15px Nanum';
+		Context.textAlign = 'center';
+		Context.fillText(server_player[0].nickname, 251, 75);
+		if(server_player.length > 1){
+			Context.fillText(server_player[1].nickname, 385, 75);
+		}
+	}
+	if(can_fight_ask){
+		Context.fillStyle = "#000000";
+		Context.globalAlpha = 0.9;
+		Context.fillRect(26, 85, 581, 581);
+		if(fight_ask_move) Context.fillStyle = "#ff8888";
+		else Context.fillStyle = "#bbada0";
+		Context.fillRect(FIGHT_ASK_X, FIGHT_ASK_Y, FIGHT_ASK_WIDTH, FIGHT_ASK_HEIGHT);
+		if(can_fight_ask_process){
+			Context.fillStyle = "#000000";
+			Context.font = '24px Nanum';
+			Context.textAlign = 'center';
+			Context.textBaseLine = "top";
+			Context.fillText("대전 신청중..", 316, 353);
+		}else{
+			Context.fillStyle = "#000000";
+			Context.font = '24px Nanum';
+			Context.textAlign = 'center';
+			Context.textBaseLine = "top";
+			Context.fillText("대전 신청", 316, 353);
+		}
+	}
+	Context.globalAlpha = 1;
+
 	// player.player1.Render(Context);
 	// player.player2.Render(Context);
 	
@@ -551,9 +686,11 @@ function Render()
 	Context.fillStyle = "#000000";
 	Context.font = '15px Nanum';
 	Context.textBaseLine = "top";
+	Context.textAlign = 'center';
 	
 	Context.fillText("Connect List", 710, 110);
 	for(var i in quoridor_gallery){
+		Context.textAlign = 'left';
 		// if(i==0) Context.fillStyle = "#00FF00";
 		// else if(i==1) Context.fillStyle = "#0000FF";
 		// else Context.fillStyle = "#000000";
@@ -562,7 +699,7 @@ function Render()
 			// Context.fillText('...', 790, 130+20*i);
 			// break;
 		// }
-		Context.fillText(quoridor_gallery[i].nickname, 790, 130+20*i);
+		Context.fillText(quoridor_gallery[i].nickname, 640, 130+20*i);
 		// Context.fillStyle = "#000000";
 		// if(playerList[i] == player.name) Context.fillText('You --> ', 725, 130+20*i);	
 	}
@@ -571,10 +708,12 @@ function Render()
 	// Context.fillText(message, 700, 40);
 // 	
 	Context.font = '12px Nanum';
+	Context.textAlign = 'left';
+	Context.fillText('------------------------------------', 630, 340);
 	for(var i in chat){
 		Context.fillStyle = "#000000";
 		var str = chat[i].nickname+' : '+chat[i].str;
-		Context.fillText(str, 675, 360+20*i);
+		Context.fillText(str, 630, 360+20*i);
 	}
 	
 	// Context.font = '96px Arial';
@@ -588,6 +727,12 @@ function Render()
 	// }
 // 	
 	// player.object.Render(Context);
+	if(test){
+		Context.fillStyle = "#000000";
+		Context.fillRect(10, 10, 10, 10);
+	}
+	
+	Context.fillText(myid, 10, 10);
 }
 
 function gameLoop()
