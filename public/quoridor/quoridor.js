@@ -16,6 +16,10 @@ var player = {
 };
 
 var server_player = [];
+var server_turn = 0;
+var server_count = 0;
+var server_point1 = 0;
+var server_point2 = 0;
 
 
 // var isCanPlay = false;
@@ -117,6 +121,10 @@ $(document).ready(function(){
 		socket.emit('expire_receive');
 	});
 	
+	socket.on('quoridor_message', function(str){
+		
+	});
+	
 	socket.on('quoridor_gallery', function(data){
 		quoridor_gallery = data;
 	});
@@ -125,6 +133,10 @@ $(document).ready(function(){
 		server_player = data.player;
 		map = data.map;
 		can_fight_ask = data.fight_ask;
+		server_turn = data.turn;
+		server_point1 = data.point1;
+		server_point2 = data.point2;
+		server_count = data.count;
 		if(data.myid>0){
 			myid = data.myid;
 		}
@@ -646,7 +658,7 @@ function Render()
 	Context.font = '24px Nanum';
 	Context.textAlign = 'center';
 	Context.textBaseLine = "top";
-	Context.fillText("VS", 318, 50);
+	Context.fillText("VS", 318, 40);
 
 	if(server_player.length > 0){
 		Context.font = '15px Nanum';
@@ -656,6 +668,32 @@ function Render()
 			Context.fillText(server_player[1].nickname, 385, 75);
 		}
 	}
+	
+	Context.fillStyle = "#000000";
+	Context.font = '48px Nanum';
+	Context.textAlign = 'center';
+	Context.textBaseLine = "top";
+	Context.fillText(server_point1, 168, 56);
+	
+	Context.fillStyle = "#000000";
+	Context.font = '48px Nanum';
+	Context.textAlign = 'center';
+	Context.textBaseLine = "top";
+	Context.fillText(server_point2, 468, 56);
+	
+	if(server_turn == 0){
+		
+	}else if(server_turn==1){
+		
+	}else if(server_turn==2 || server_turn==3){
+		Context.fillStyle = "#000000";
+		Context.font = '16px Nanum';
+		Context.textAlign = 'center';
+		Context.textBaseLine = "top";
+		var tic = Math.floor(server_count/1000);
+		Context.fillText(tic, 318, 75);
+	}
+	
 	if(can_fight_ask){
 		Context.fillStyle = "#000000";
 		Context.globalAlpha = 0.9;
@@ -731,8 +769,6 @@ function Render()
 		Context.fillStyle = "#000000";
 		Context.fillRect(10, 10, 10, 10);
 	}
-	
-	Context.fillText(myid, 10, 10);
 }
 
 function gameLoop()

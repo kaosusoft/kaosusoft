@@ -10,7 +10,7 @@ var utf8 = require('utf8');
 var easyimage = require('easyimage');
 var uuid = require('node-uuid');
 var util = require('./util.js');
-var quoridor = require('./quoridor.js'); // Tic Tac Toe
+var quoridor = require('./quoridor.js'); // Quoridor
 
 var test = false; // 테스트중이면 true, 진짜는 false 
 
@@ -750,6 +750,17 @@ var quoridor_join = function(socket, session, room){
 	// else if(quoridor_stat == 2) socket.emit('quoridor_message', 2, "Message : " +quoridor[1].name + "'s turn.");
 // 	
 	// socket.emit('quoridor_map', quoridorMap);
+};
+
+exports.quoridor_player_message = function(room){
+	var roomname = 'quoridor'+room;
+	io.sockets.in(roomname).emit('quoridor_chat', quoridor.quoridorChat(room));
+};
+
+exports.quoridor_player_update = function(room){
+	var gameData = quoridor.quoridorGameData(room);
+	var roomname = 'quoridor'+room;
+	io.sockets.in(roomname).emit('quoridor_data', gameData);
 };
 
 var quoridor_player_ask = function(socket, session, room){
