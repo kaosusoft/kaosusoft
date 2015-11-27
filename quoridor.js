@@ -177,6 +177,8 @@ exports.quoridorMove = function(id, data){
 						quoridor_server[room-1].quoridor_turn = 3;
 						quoridor_server[room-1].quoridor_count = quoridor_server[room-1].quoridor_count_playerThink;
 						console.log('이동 성공!'+old_x+'/'+old_y+'/'+new_x+'/'+new_y+'/'+quoridor_server[room-1].quoridor_turn);
+						quoridorChatInputSystem('Blue 플레이어의 턴입니다.', room);
+						web.quoridor_player_message(room);
 						web.quoridor_player_update(room);
 					}
 					end_flag = true;
@@ -191,13 +193,16 @@ exports.quoridorMove = function(id, data){
 				if(quoridor_server[room-1].quoridor_map[i][j] == 2) {
 					old_x = j;
 					old_y = i;
-					var can_move = isCanMove(room, old_x, old_y, new_x, new_y, 2);
+					var can_move = isCanMove(room, new_x, new_y, 2);
 					if(can_move){
 						quoridor_server[room-1].quoridor_map[old_y][old_x]=0;
 						quoridor_server[room-1].quoridor_map[new_y][new_x]=2;
 						quoridor_server[room-1].quoridor_turn = 2;
-						quoridor_server[i].quoridor_count = quoridor_server[i].quoridor_count_playerThink;
-						web.quoridor_player_update(i+1);
+						quoridor_server[room-1].quoridor_count = quoridor_server[room-1].quoridor_count_playerThink;
+						console.log('이동 성공!'+old_x+'/'+old_y+'/'+new_x+'/'+new_y+'/'+quoridor_server[room-1].quoridor_turn);
+						quoridorChatInputSystem('Green 플레이어의 턴입니다.', room);
+						web.quoridor_player_message(room);
+						web.quoridor_player_update(room);
 					}
 					end_flag = true;
 					break;
@@ -206,63 +211,84 @@ exports.quoridorMove = function(id, data){
 			if(end_flag) break;
 		}
 	}
+};
+
+exports.quoridorWall = function(id, data){
+	var room = data.room;
+	var positionX = data.x;
+	var positionY = data.y;
 	
-	// if(quoridor_stat == 1 && socket.id == quoridor[0].id){
-		// for(var i=0; i<17; i++){
-			// for(var j=0; j<17; j++){
-				// if(quoridorMap[i][j] == 1) {
-					// quoridorMap[i][j] = 0;
-					// break;
-				// }
-			// }
-		// }
-		// quoridorMap[data.y][data.x] = 1;
-		// io.sockets.in('quoridor').emit('quoridor_map', quoridorMap);
-		// io.sockets.in('quoridor').emit('quoridor_init');
-		// var flag = false;
-		// for(var i=0; i<17; i++){
-			// if(quoridorMap[i][16] == 1){
-				// flag = true;
-				// break;
-			// }
-		// }
-		// if(flag){
-			// quoridor_stat = 0;
-			// io.sockets.in('quoridor').emit('quoridor_message_win', 1);
-		// }else{
-			// quoridor_stat = 2;
-			// io.sockets.in('quoridor').emit('quoridor_message', 2, "Message : " +quoridor[1].name + "'s turn.");
-			// io.sockets.sockets[quoridor[1].id].emit('quoridor_permission', 2);
-		// }
-	// }else if(quoridor_stat == 2 && socket.id == quoridor[1].id){
-		// for(var i=0; i<17; i++){
-			// for(var j=0; j<17; j++){
-				// if(quoridorMap[i][j] == 2) {
-					// quoridorMap[i][j] = 0;
-					// break;
-				// }
-			// }
-		// }
-		// quoridorMap[data.y][data.x] = 2;
-		// io.sockets.in('quoridor').emit('quoridor_map', quoridorMap);
-		// io.sockets.in('quoridor').emit('quoridor_init');
-		// var flag = false;
-		// for(var i=0; i<17; i++){
-			// if(quoridorMap[i][0] == 2){
-				// flag = true;
-				// break;
-			// }
-		// }
-		// if(flag){
-			// quoridor_stat = 0;
-			// io.sockets.in('quoridor').emit('quoridor_message_win', 2);
-		// }else{
-			// quoridor_stat = 1;
-			// io.sockets.in('quoridor').emit('quoridor_message', 1, "Message : " +quoridor[0].name + "'s turn.");
-			// io.sockets.sockets[quoridor[0].id].emit('quoridor_permission', 1);
-		// }
-	// }
+	if(quoridor_server[room-1].quoridor_player.length<2) return;
 	
+	if(quoridor_server[room-1].quoridor_turn == 2 && quoridor_server[room-1].quoridor_player[0].id == id){
+		if(positionY%2 == 0){
+			if(positionX%2 == 1){
+				//세로
+				if(isCanWall(room, data.x, data.y)){
+					quoridor_server[room-1].quoridor_map[data.y][data.x] = 3;
+					quoridor_server[room-1].quoridor_map[data.y+1][data.x] = 3;
+					quoridor_server[room-1].quoridor_map[data.y+2][data.x] = 3;
+					quoridor_server[room-1].quoridor_turn = 3;
+					quoridor_server[room-1].quoridor_count = quoridor_server[room-1].quoridor_count_playerThink;
+					quoridorChatInputSystem('Blue 플레이어의 턴입니다.', room);
+					web.quoridor_player_message(room);
+					web.quoridor_player_update(room);
+				}
+			}else{
+				return;
+			}
+		}else{
+			if(positionX%2 == 0){
+				//가로
+				if(isCanWall(room, data.x, data.y)){
+					quoridor_server[room-1].quoridor_map[data.y][data.x] = 3;
+					quoridor_server[room-1].quoridor_map[data.y][data.x+1] = 3;
+					quoridor_server[room-1].quoridor_map[data.y][data.x+2] = 3;
+					quoridor_server[room-1].quoridor_turn = 3;
+					quoridor_server[room-1].quoridor_count = quoridor_server[room-1].quoridor_count_playerThink;
+					quoridorChatInputSystem('Blue 플레이어의 턴입니다.', room);
+					web.quoridor_player_message(room);
+					web.quoridor_player_update(room);
+				}
+			}else{
+				return;
+			}
+		}
+	}else if(quoridor_server[room-1].quoridor_turn == 3 && quoridor_server[room-1].quoridor_player[1].id == id){
+		if(positionY%2 == 0){
+			if(positionX%2 == 1){
+				//세로
+				if(isCanWall(room, data.x, data.y)){
+					quoridor_server[room-1].quoridor_map[data.y][data.x] = 3;
+					quoridor_server[room-1].quoridor_map[data.y+1][data.x] = 3;
+					quoridor_server[room-1].quoridor_map[data.y+2][data.x] = 3;
+					quoridor_server[room-1].quoridor_turn = 2;
+					quoridor_server[room-1].quoridor_count = quoridor_server[room-1].quoridor_count_playerThink;
+					quoridorChatInputSystem('Green 플레이어의 턴입니다.', room);
+					web.quoridor_player_message(room);
+					web.quoridor_player_update(room);
+				}
+			}else{
+				return;
+			}
+		}else{
+			if(positionX%2 == 0){
+				//가로
+				if(isCanWall(room, data.x, data.y)){
+					quoridor_server[room-1].quoridor_map[data.y][data.x] = 3;
+					quoridor_server[room-1].quoridor_map[data.y][data.x+1] = 3;
+					quoridor_server[room-1].quoridor_map[data.y][data.x+2] = 3;
+					quoridor_server[room-1].quoridor_turn = 2;
+					quoridor_server[room-1].quoridor_count = quoridor_server[room-1].quoridor_count_playerThink;
+					quoridorChatInputSystem('Green 플레이어의 턴입니다.', room);
+					web.quoridor_player_message(room);
+					web.quoridor_player_update(room);
+				}
+			}else{
+				return;
+			}
+		}
+	}
 };
 
 var quoridorChatInputSystem = function(str, room){
@@ -399,6 +425,34 @@ exports.quoridorLoop = function(time){
 			web.quoridor_player_message(i+1);
 			web.quoridor_player_update(i+1);
 		}
+		
+		if(quoridor_server[i].quoridor_turn == 4 && quoridor_server[i].quoridor_count<=0){
+			while(quoridor_server[i].quoridor_player.length>0){
+				quoridor_server[i].quoridor_player.shift();
+			}
+			quoridor_room_init(i+1, true);
+			web.quoridor_player_update(i+1);
+		}
+		
+		if(quoridor_server[i].quoridor_turn == 2 || quoridor_server[i].quoridor_turn == 3){
+			for(var j=0; j<9; j++){
+				if(quoridor_server[i].quoridor_map[j*2][0] == 2){
+					quoridor_server[i].quoridor_turn = 4;
+					quoridor_server[i].quoridor_count = quoridor_server[i].quoridor_count_nextGame;
+					quoridorChatInputSystem('Blue 플레이어의 승리입니다.', i+1);
+					quoridorChatInputSystem('5초후에 방이 초기화됩니다.', i+1);
+					web.quoridor_player_message(i+1);
+					web.quoridor_player_update(i+1);
+				}else if(quoridor_server[i].quoridor_map[j*2][16] == 1){
+					quoridor_server[i].quoridor_turn = 4;
+					quoridor_server[i].quoridor_count = quoridor_server[i].quoridor_count_nextGame;
+					quoridorChatInputSystem('Green 플레이어의 승리입니다.', i+1);
+					quoridorChatInputSystem('5초후에 방이 초기화됩니다.', i+1);
+					web.quoridor_player_message(i+1);
+					web.quoridor_player_update(i+1);
+				}
+			}
+		}
 	}
 	
 	oldtime = time;
@@ -492,4 +546,105 @@ function isCanMove(room, new_x, new_y, playerNum){
 		}
 	}
 	return false;
+}
+
+function isCanWall(room, positionX, positionY){
+	if(positionY%2 == 0){
+		if(positionX%2 == 1){
+			if(positionY>15) return false;
+			if(quoridor_server[room-1].quoridor_map[positionY][positionX] == 3) return false;
+			if(quoridor_server[room-1].quoridor_map[positionY+1][positionX] == 3) return false;
+			if(quoridor_server[room-1].quoridor_map[positionY+2][positionX] == 3) return false;
+			if(isCanWall2(room, 1, positionX, positionY, false) && isCanWall2(room, 2, positionX, positionY, false)){
+				return true;
+			}else{
+				return false;
+			}
+		}else{
+			return false;
+		}
+	}else{
+		if(positionX%2 == 0){
+			if(positionX>15) return false;
+			if(quoridor_server[room-1].quoridor_map[positionY][positionX] == 3) return false;
+			if(quoridor_server[room-1].quoridor_map[positionY][positionX+1] == 3) return false;
+			if(quoridor_server[room-1].quoridor_map[positionY][positionX+2] == 3) return false;
+			if(isCanWall2(room, 1, positionX, positionY, true) && isCanWall2(room, 2, positionX, positionY, true)){
+				return true;
+			}else{
+				return false;
+			}
+		}else{
+			return false;
+		}
+	}
+	
+	return false;
+}
+
+function isCanWall2(room, player, positionX, positionY, flag){
+	var fakeMap = [
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	];
+	
+	for(var i=0; i<17; i++){
+		for(var j=0; j<17; j++){
+			if(quoridor_server[room-1].quoridor_map[i][j] == 3) fakeMap[i][j] = 3;
+			else if(quoridor_server[room-1].quoridor_map[i][j] == ((player==1)?2:1)) fakeMap[i][j] = 0;
+			else if(quoridor_server[room-1].quoridor_map[i][j] == player) fakeMap[i][j] = player;
+		}
+	}
+	fakeMap[positionY][positionX] = 3;
+	if(flag){
+		fakeMap[positionY][positionX+1] = 3;
+		fakeMap[positionY][positionX+2] = 3;
+	}else{
+		fakeMap[positionY+1][positionX] = 3;
+		fakeMap[positionY+2][positionX] = 3;
+	}
+	
+	while(true){
+		var flag = true;
+		for(var i=0; i<17; i+=2){
+			for(var j=0; j<17; j+=2){
+				if(fakeMap[i][j]==player){
+					if(j>0 && fakeMap[i][j-1]==0 && fakeMap[i][j-2]==0){
+						fakeMap[i][j-2] = player;
+						if(player==2 && j-2==0) return true;
+						flag = false;
+					}
+					if(j<16 && fakeMap[i][j+1]==0 && fakeMap[i][j+2]==0){
+						fakeMap[i][j+2] = player;
+						if(player==1 && j+2==16) return true;
+						flag = false;
+					}
+					if(i>0 && fakeMap[i-1][j]==0 && fakeMap[i-2][j]==0){
+						fakeMap[i-2][j] = player;
+						flag = false;
+					}
+					if(i<16 && fakeMap[i+1][j]==0 && fakeMap[i+2][j]==0){
+						fakeMap[i+2][j] = player;
+						flag = false;
+					}
+				}
+			}
+		}
+		if(flag) return false;
+	}
 }

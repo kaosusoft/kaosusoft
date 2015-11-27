@@ -798,80 +798,11 @@ var quoridor_move = function(socket, data){
 			if(result.length>0){
 				var id = result[0].id;
 				quoridor.quoridorMove(id, data);
-				
-				// var name = result[0].name;
-				// var nickname = result[0].nickname;
-				// quoridor.quoridor_add_gallery(new player(socket, session, id, name, nickname), room);
-				// quoridor.quoridorLog(room);
-				// var gallery = quoridor.quoridorGallery(room);
-				// var gameData = quoridor.quoridorGameData(room);
-				// gameData.myid = id;
-				// console.log(gallery);
-				// var roomname = 'quoridor'+room;
-				// io.sockets.in(roomname).emit('quoridor_gallery', gallery);
-				// socket.emit('quoridor_chat', quoridor.quoridorChat(room));
-				// socket.emit('quoridor_data', gameData);
 			}else{
 				response.redirect('/lobby_redirect/0');
 			}
 		}
 	});
-	
-	// if(quoridor_stat == 1 && socket.id == quoridor[0].id){
-		// for(var i=0; i<17; i++){
-			// for(var j=0; j<17; j++){
-				// if(quoridorMap[i][j] == 1) {
-					// quoridorMap[i][j] = 0;
-					// break;
-				// }
-			// }
-		// }
-		// quoridorMap[data.y][data.x] = 1;
-		// io.sockets.in('quoridor').emit('quoridor_map', quoridorMap);
-		// io.sockets.in('quoridor').emit('quoridor_init');
-		// var flag = false;
-		// for(var i=0; i<17; i++){
-			// if(quoridorMap[i][16] == 1){
-				// flag = true;
-				// break;
-			// }
-		// }
-		// if(flag){
-			// quoridor_stat = 0;
-			// io.sockets.in('quoridor').emit('quoridor_message_win', 1);
-		// }else{
-			// quoridor_stat = 2;
-			// io.sockets.in('quoridor').emit('quoridor_message', 2, "Message : " +quoridor[1].name + "'s turn.");
-			// io.sockets.sockets[quoridor[1].id].emit('quoridor_permission', 2);
-		// }
-	// }else if(quoridor_stat == 2 && socket.id == quoridor[1].id){
-		// for(var i=0; i<17; i++){
-			// for(var j=0; j<17; j++){
-				// if(quoridorMap[i][j] == 2) {
-					// quoridorMap[i][j] = 0;
-					// break;
-				// }
-			// }
-		// }
-		// quoridorMap[data.y][data.x] = 2;
-		// io.sockets.in('quoridor').emit('quoridor_map', quoridorMap);
-		// io.sockets.in('quoridor').emit('quoridor_init');
-		// var flag = false;
-		// for(var i=0; i<17; i++){
-			// if(quoridorMap[i][0] == 2){
-				// flag = true;
-				// break;
-			// }
-		// }
-		// if(flag){
-			// quoridor_stat = 0;
-			// io.sockets.in('quoridor').emit('quoridor_message_win', 2);
-		// }else{
-			// quoridor_stat = 1;
-			// io.sockets.in('quoridor').emit('quoridor_message', 1, "Message : " +quoridor[0].name + "'s turn.");
-			// io.sockets.sockets[quoridor[0].id].emit('quoridor_permission', 1);
-		// }
-	// }
 };
 
 var quoridor_move_admin = function(socket, data){
@@ -926,6 +857,22 @@ var quoridor_move_admin = function(socket, data){
 
 var quoridor_wall = function(socket, data){
 	console.log('벽설치!');
+	
+	var session = data.session;
+	
+	client.query('SELECT * from member where token = ?', session, function(error, result, fields){
+		if(error){
+			response.redirect('/lobby_redirect/0');
+		}else{
+			if(result.length>0){
+				var id = result[0].id;
+				quoridor.quoridorWall(id, data);
+			}else{
+				response.redirect('/lobby_redirect/0');
+			}
+		}
+	});
+	
 	// if(quoridor_stat == 1 && socket.id == quoridor[0].id){
 		// quoridorMap[data.y1][data.x1] = 3;
 		// quoridorMap[data.y2][data.x2] = 3;

@@ -147,7 +147,9 @@ $(document).ready(function(){
 				}
 			}
 		}else{
+			can_fight_ask_process = false;
 			can_fight_ask = false;
+			can_play = false;
 			for(var i in server_player){
 				if(server_player[i].id == myid){
 					can_play = true;
@@ -251,12 +253,8 @@ function mouseClick(){
 				socket.emit('quoridor_wall', {
 					session: session,
 					room: room,
-					x1: positionX,
-					y1: positionY,
-					x2: positionX,
-					y2: positionY+1,
-					x3: positionX,
-					y3: positionY+2
+					x: positionX,
+					y: positionY
 				});
 			}
 		}else{
@@ -277,12 +275,8 @@ function mouseClick(){
 				socket.emit('quoridor_wall', {
 					session: session,
 					room: room,
-					x1: positionX,
-					y1: positionY,
-					x2: positionX+1,
-					y2: positionY,
-					x3: positionX+2,
-					y3: positionY
+					x: positionX,
+					y: positionY
 				});
 			}
 		}
@@ -430,106 +424,106 @@ function isCanMove(mousePosition){
 	return false;
 }
 
-// function isCanWall2(player, positionX, positionY, flag){
-	// var fakeMap = [
-	// [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	// [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	// [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	// [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	// [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	// [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	// [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	// [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	// [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	// [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	// [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	// [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	// [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	// [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	// [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	// [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	// [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-	// ];
-// 	
-	// for(var i=0; i<17; i++){
-		// for(var j=0; j<17; j++){
-			// if(map[i][j] == 3) fakeMap[i][j] = 3;
-			// else if(map[i][j] == ((player==1)?2:1)) fakeMap[i][j] = 0;
-			// else if(map[i][j] == player) fakeMap[i][j] = player;
-		// }
-	// }
-	// fakeMap[positionY][positionX] = 3;
-	// if(flag){
-		// fakeMap[positionY][positionX+1] = 3;
-		// fakeMap[positionY][positionX+2] = 3;
-	// }else{
-		// fakeMap[positionY+1][positionX] = 3;
-		// fakeMap[positionY+2][positionX] = 3;
-	// }
-// 	
-	// while(true){
-		// var flag = true;
-		// for(var i=0; i<17; i+=2){
-			// for(var j=0; j<17; j+=2){
-				// if(fakeMap[i][j]==player){
-					// if(j>0 && fakeMap[i][j-1]==0 && fakeMap[i][j-2]==0){
-						// fakeMap[i][j-2] = player;
-						// if(player==2 && j-2==0) return true;
-						// flag = false;
-					// }
-					// if(j<16 && fakeMap[i][j+1]==0 && fakeMap[i][j+2]==0){
-						// fakeMap[i][j+2] = player;
-						// if(player==1 && j+2==16) return true;
-						// flag = false;
-					// }
-					// if(i>0 && fakeMap[i-1][j]==0 && fakeMap[i-2][j]==0){
-						// fakeMap[i-2][j] = player;
-						// flag = false;
-					// }
-					// if(i<16 && fakeMap[i+1][j]==0 && fakeMap[i+2][j]==0){
-						// fakeMap[i+2][j] = player;
-						// flag = false;
-					// }
-				// }
-			// }
-		// }
-		// if(flag) return false;
-	// }
-// }
+function isCanWall2(player, positionX, positionY, flag){
+	var fakeMap = [
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	];
+	
+	for(var i=0; i<17; i++){
+		for(var j=0; j<17; j++){
+			if(map[i][j] == 3) fakeMap[i][j] = 3;
+			else if(map[i][j] == ((player==1)?2:1)) fakeMap[i][j] = 0;
+			else if(map[i][j] == player) fakeMap[i][j] = player;
+		}
+	}
+	fakeMap[positionY][positionX] = 3;
+	if(flag){
+		fakeMap[positionY][positionX+1] = 3;
+		fakeMap[positionY][positionX+2] = 3;
+	}else{
+		fakeMap[positionY+1][positionX] = 3;
+		fakeMap[positionY+2][positionX] = 3;
+	}
+	
+	while(true){
+		var flag = true;
+		for(var i=0; i<17; i+=2){
+			for(var j=0; j<17; j+=2){
+				if(fakeMap[i][j]==player){
+					if(j>0 && fakeMap[i][j-1]==0 && fakeMap[i][j-2]==0){
+						fakeMap[i][j-2] = player;
+						if(player==2 && j-2==0) return true;
+						flag = false;
+					}
+					if(j<16 && fakeMap[i][j+1]==0 && fakeMap[i][j+2]==0){
+						fakeMap[i][j+2] = player;
+						if(player==1 && j+2==16) return true;
+						flag = false;
+					}
+					if(i>0 && fakeMap[i-1][j]==0 && fakeMap[i-2][j]==0){
+						fakeMap[i-2][j] = player;
+						flag = false;
+					}
+					if(i<16 && fakeMap[i+1][j]==0 && fakeMap[i+2][j]==0){
+						fakeMap[i+2][j] = player;
+						flag = false;
+					}
+				}
+			}
+		}
+		if(flag) return false;
+	}
+}
 
 function isCanWall(mousePosition){
-	// var positionY = Math.floor(mousePosition/17);
-	// var positionX = mousePosition - positionY*17;
-	// if(positionY%2 == 0){
-		// if(positionX%2 == 1){
-			// if(positionY>15) return false;
-			// if(map[positionY][positionX] == 3) return false;
-			// if(map[positionY+1][positionX] == 3) return false;
-			// if(map[positionY+2][positionX] == 3) return false;
-			// if(isCanWall2(1, positionX, positionY, false) && isCanWall2(2, positionX, positionY, false)){
-				// return true;
-			// }else{
-				// return false;
-			// }
-		// }else{
-			// return false;
-		// }
-	// }else{
-		// if(positionX%2 == 0){
-			// if(positionX>15) return false;
-			// if(map[positionY][positionX] == 3) return false;
-			// if(map[positionY][positionX+1] == 3) return false;
-			// if(map[positionY][positionX+2] == 3) return false;
-			// if(isCanWall2(1, positionX, positionY, true) && isCanWall2(2, positionX, positionY, true)){
-				// return true;
-			// }else{
-				// return false;
-			// }
-		// }else{
-			// return false;
-		// }
-	// }
-// 	
+	var positionY = Math.floor(mousePosition/17);
+	var positionX = mousePosition - positionY*17;
+	if(positionY%2 == 0){
+		if(positionX%2 == 1){
+			if(positionY>15) return false;
+			if(map[positionY][positionX] == 3) return false;
+			if(map[positionY+1][positionX] == 3) return false;
+			if(map[positionY+2][positionX] == 3) return false;
+			if(isCanWall2(1, positionX, positionY, false) && isCanWall2(2, positionX, positionY, false)){
+				return true;
+			}else{
+				return false;
+			}
+		}else{
+			return false;
+		}
+	}else{
+		if(positionX%2 == 0){
+			if(positionX>15) return false;
+			if(map[positionY][positionX] == 3) return false;
+			if(map[positionY][positionX+1] == 3) return false;
+			if(map[positionY][positionX+2] == 3) return false;
+			if(isCanWall2(1, positionX, positionY, true) && isCanWall2(2, positionX, positionY, true)){
+				return true;
+			}else{
+				return false;
+			}
+		}else{
+			return false;
+		}
+	}
+	
 	return false;
 }
 
@@ -544,30 +538,30 @@ function Render()
 	
 	Context.fillStyle = "#DDDDDD";
 	
-	// var redPosition1 = -1;
-	// var redPosition2 = -1;
-	// var redPosition3 = -1;
+	var redPosition1 = -1;
+	var redPosition2 = -1;
+	var redPosition3 = -1;
 	
-	// var positionY = Math.floor(mousePosition/17);
-	// var positionX = mousePosition - positionY*17;
-	// if(positionY%2 == 0){
-		// if(positionX%2 == 1){
-			// if(isCanWall(mousePosition)){
-				// redPosition1 = mousePosition;
-				// redPosition2 = mousePosition+17;
-				// redPosition3 = mousePosition+34;
-			// }
-		// }
-	// }else{
-		// if(positionX%2 == 0){
-			// if(isCanWall(mousePosition)){
-				// redPosition1 = mousePosition;
-				// redPosition2 = mousePosition+1;
-				// redPosition3 = mousePosition+2;
-			// }
-		// }
-	// }
-// 	
+	var positionY = Math.floor(mousePosition/17);
+	var positionX = mousePosition - positionY*17;
+	if(positionY%2 == 0){
+		if(positionX%2 == 1){
+			if(isCanWall(mousePosition)){
+				redPosition1 = mousePosition;
+				redPosition2 = mousePosition+17;
+				redPosition3 = mousePosition+34;
+			}
+		}
+	}else{
+		if(positionX%2 == 0){
+			if(isCanWall(mousePosition)){
+				redPosition1 = mousePosition;
+				redPosition2 = mousePosition+1;
+				redPosition3 = mousePosition+2;
+			}
+		}
+	}
+	
 
 	// 타일(Tile)
 	for(var i=0; i<9; i++){
@@ -575,9 +569,11 @@ function Render()
 			if(j==0) Context.fillStyle = "#AAAADD";
 			else if(j==8) Context.fillStyle = "#AADDAA";
 			else Context.fillStyle = "#DDDDDD";
+			
+			if(can_play && server_turn>1 && server_turn == Number(myPosition)+2 && i*34 + j*2 == mousePosition && isCanMove(mousePosition)) {
+				Context.fillStyle = "#FF0000";
+			}
 			Context.fillRect(26+(67*j), 85+(67*i), 45, 45);
-			Context.fillStyle = "#888888";
-			Context.fillText(map[2*i][2*j], 26+(67*j), 95+(67*i));
 			switch(map[2*i][2*j]){
 				case 1: {
 					Context.fillStyle = "#88DD88";
@@ -597,102 +593,45 @@ function Render()
 	for(var i=0; i<9; i++){
 		for(var j=0; j<8; j++){
 			Context.fillStyle = "#DDDDDD";
+			if(can_play && server_turn>1 && server_turn == Number(myPosition)+2) {
+				var num = i*34 + j*2 + 1;
+				if(num == redPosition1 || num == redPosition2 || num == redPosition3) Context.fillStyle = "#FF0000";
+			}
 			switch(map[2*i][2*j+1]){
 				case 3: Context.fillStyle = "#776e65"; break;
 			}
 			Context.fillRect(73+(67*j), 85+(67*i), 18, 45);
-			Context.fillStyle = "#888888";
-			Context.fillText(map[2*i][2*j+1], 73+(67*j), 95+(67*i));
 		}
 	}
 	// 가로 벽(Horizon Wall)
 	for(var i=0; i<8; i++){
 		for(var j=0; j<9; j++){
 			Context.fillStyle = "#DDDDDD";
+			if(can_play && server_turn>1 && server_turn == Number(myPosition)+2) {
+				var num = i*34 + j*2 + 17;
+				if(num == redPosition1 || num == redPosition2 || num == redPosition3) Context.fillStyle = "#FF0000";
+			}
+			
 			switch(map[2*i+1][2*j]){
 				case 3: Context.fillStyle = "#776e65"; break;
 			}
 			Context.fillRect(26+(67*j), 132+(67*i), 45, 18);
-			Context.fillStyle = "#888888";
-			Context.fillText(map[2*i+1][2*j], 26+(67*j), 142+(67*i));
 		}
 	}
 	// 벽 사이
 	for(var i=0; i<8; i++){
 		for(var j=0; j<8; j++){
 			Context.fillStyle = "#DDDDDD";
+			if(can_play && server_turn>1 && server_turn == Number(myPosition)+2) {
+				var num = i*34 + j*2 + 18;
+				if(num == redPosition1 || num == redPosition2) Context.fillStyle = "#FF0000";
+			}
 			switch(map[2*i+1][2*j+1]){
 				case 3: Context.fillStyle = "#776e65"; break;
 			}
 			Context.fillRect(73+(67*j), 132+(67*i), 18, 18);
-			Context.fillStyle = "#888888";
-			Context.fillText(map[2*i+1][2*j+1], 73+(67*j), 142+(67*i));
 		}
 	}
-
-	// for(var i=0; i<9; i++){
-		// for(var j=0; j<9; j++){
-			// if(j==0) Context.fillStyle = "#AAAADD";
-			// else if(j==8) Context.fillStyle = "#AADDAA";
-			// else Context.fillStyle = "#DDDDDD";
-			// if(isCanPlay && i*34 + j*2 == mousePosition && isCanMove(mousePosition)) Context.fillStyle = "#FF0000";
-			// switch(map[2*i][2*j]){
-				// case 1: {
-					// if(isCanPlay && playerNum==1) Context.fillStyle = "#88DD88";
-					// player.player1.SetPosition(24+(74*j), 24+(74*i)); 
-					// break;
-				// }
-				// // Context.fillStyle = "#00FF00"; break;
-				// case 2: {
-					// if(isCanPlay && playerNum==2) Context.fillStyle = "#8888DD";
-					// player.player2.SetPosition(24+(74*j), 24+(74*i));
-					// break;
-				// } 
-				// // Context.fillStyle = "#0000FF"; break;
-			// }
-// 
-			// Context.fillRect(24+(74*j), 24+(74*i), 50, 50);
-		// }
-	// }
-// 	
-	// for(var i=0; i<9; i++){
-		// for(var j=0; j<8; j++){
-			// Context.fillStyle = "#DDDDDD";
-			// if(isCanPlay && i*34 + j*2 + 1 == redPosition1) Context.fillStyle = "#FF0000";
-			// else if(isCanPlay && i*34 + j*2 + 1 == redPosition2) Context.fillStyle = "#FF0000";
-			// else if(isCanPlay && i*34 + j*2 + 1 == redPosition3) Context.fillStyle = "#FF0000";
-			// switch(map[2*i][2*j+1]){
-				// case 3: Context.fillStyle = "#776e65"; break;
-			// }
-			// Context.fillRect(76+(74*j), 24+(74*i), 20, 50);
-		// }
-	// }
-// 	
-	// for(var i=0; i<8; i++){
-		// for(var j=0; j<9; j++){
-			// Context.fillStyle = "#DDDDDD";
-			// if(isCanPlay && i*34 + j*2 + 17 == redPosition1) Context.fillStyle = "#FF0000";
-			// else if(isCanPlay && i*34 + j*2 + 17 == redPosition2) Context.fillStyle = "#FF0000";
-			// else if(isCanPlay && i*34 + j*2 + 17 == redPosition3) Context.fillStyle = "#FF0000";
-			// switch(map[2*i+1][2*j]){
-				// case 3: Context.fillStyle = "#776e65"; break;
-			// }
-			// Context.fillRect(24+(74*j), 76+(74*i), 50, 20);
-		// }
-	// }
-// 	
-	// for(var i=0; i<8; i++){
-		// for(var j=0; j<8; j++){
-			// Context.fillStyle = "#DDDDDD";
-			// if(isCanPlay && i*34 + j*2 + 18 == redPosition1) Context.fillStyle = "#FF0000";
-			// else if(isCanPlay && i*34 + j*2 + 18 == redPosition2) Context.fillStyle = "#FF0000";
-			// switch(map[2*i+1][2*j+1]){
-				// case 3: Context.fillStyle = "#776e65"; break;
-			// }
-			// Context.fillRect(76+(74*j), 76+(74*i), 20, 20);
-		// }
-	// }
-// 	
 
 	// 전광판
 	player.player1.Draw(Context, 227, 10);
@@ -813,16 +752,16 @@ function Render()
 		Context.fillRect(10, 10, 10, 10);
 	}
 	
-	Context.fillStyle = "#000000";
-	Context.fillText(myid, 40, 10);
-	Context.fillText(myPosition, 40, 25);
-	Context.fillText(can_play, 40, 40);
-	var positionX = mouseX-26;
-	var positionY = mouseY-85;
-	Context.fillText(positionX, 40, 55);
-	Context.fillText(positionY, 100, 55);
-	Context.fillText(mousePosition, 40, 70);
-	Context.fillText(server_turn, 40, 85);
+	// Context.fillStyle = "#000000";
+	// Context.fillText(myid, 40, 10);
+	// Context.fillText(myPosition, 40, 25);
+	// Context.fillText(can_play, 40, 40);
+	// var positionX = mouseX-26;
+	// var positionY = mouseY-85;
+	// Context.fillText(positionX, 40, 55);
+	// Context.fillText(positionY, 100, 55);
+	// Context.fillText(mousePosition, 40, 70);
+	// Context.fillText(server_turn, 40, 85);
 	// Context.fillText(myPosition, 100, 85);
 	
 }
