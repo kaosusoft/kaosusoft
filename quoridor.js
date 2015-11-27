@@ -34,11 +34,13 @@ function quoridor_room(){
 	this.quoridor_count = 0;
 	this.quoridor_count_fightReady = 5000;
 	this.quoridor_count_playerThink = 20000;
+	this.quoridor_count_nextGame = 5000;
 	// turn
 	// 0 - 참가자 신청단계 : 2명이 다 차면 1로 넘어감. 카운트 시작.
 	// 1 - 대결 시작 준비단계 : 카운트를 5초 세서 대결이 시작되서 2로 넘어감. 카운트 시작
 	// 2 - 1번 플레이어 턴 : 카운트가 다 되면 턴이 넘어감. 명령이 들어와도 턴이 넘어감. 카운트 시작.
 	// 3 - 2번 플레이어 턴 : 2로 돌아감.
+	// 4 - 게임 끝. 카운트 시작.
 	this.quoridor_point1 = 0;
 	this.quoridor_point2 = 0;
 	this.quoridor_permission = 0;
@@ -149,6 +151,118 @@ exports.quoridorGallery = function(room){
 
 exports.quoridorChat = function(room){
 	return quoridor_server[room-1].quoridor_chat;
+};
+
+exports.quoridorMove = function(id, data){
+	var room = data.room;
+	
+	if(quoridor_server[room-1].quoridor_player.length<2) return;
+	
+	var old_x = -1;
+	var old_y = -1;
+	var new_x = data.x;
+	var new_y = data.y;
+	var end_flag = false;
+	
+	if(quoridor_server[room-1].quoridor_turn == 2 && quoridor_server[room-1].quoridor_player[0].id == id){
+		for(var i=0; i<17; i++){
+			for(var j=0; j<17; j++){
+				if(quoridor_server[room-1].quoridor_map[i][j] == 1) {
+					old_x = j;
+					old_y = i;
+					var can_move = isCanMove(room, new_x, new_y, 1);
+					if(can_move){
+						quoridor_server[room-1].quoridor_map[old_y][old_x]=0;
+						quoridor_server[room-1].quoridor_map[new_y][new_x]=1;
+						quoridor_server[room-1].quoridor_turn = 3;
+						quoridor_server[room-1].quoridor_count = quoridor_server[room-1].quoridor_count_playerThink;
+						console.log('이동 성공!'+old_x+'/'+old_y+'/'+new_x+'/'+new_y+'/'+quoridor_server[room-1].quoridor_turn);
+						web.quoridor_player_update(room);
+					}
+					end_flag = true;
+					break;
+				}
+			}
+			if(end_flag) break;
+		}
+	}else if(quoridor_server[room-1].quoridor_turn == 3 && quoridor_server[room-1].quoridor_player[1].id == id){
+		for(var i=0; i<17; i++){
+			for(var j=0; j<17; j++){
+				if(quoridor_server[room-1].quoridor_map[i][j] == 2) {
+					old_x = j;
+					old_y = i;
+					var can_move = isCanMove(room, old_x, old_y, new_x, new_y, 2);
+					if(can_move){
+						quoridor_server[room-1].quoridor_map[old_y][old_x]=0;
+						quoridor_server[room-1].quoridor_map[new_y][new_x]=2;
+						quoridor_server[room-1].quoridor_turn = 2;
+						quoridor_server[i].quoridor_count = quoridor_server[i].quoridor_count_playerThink;
+						web.quoridor_player_update(i+1);
+					}
+					end_flag = true;
+					break;
+				}
+			}
+			if(end_flag) break;
+		}
+	}
+	
+	// if(quoridor_stat == 1 && socket.id == quoridor[0].id){
+		// for(var i=0; i<17; i++){
+			// for(var j=0; j<17; j++){
+				// if(quoridorMap[i][j] == 1) {
+					// quoridorMap[i][j] = 0;
+					// break;
+				// }
+			// }
+		// }
+		// quoridorMap[data.y][data.x] = 1;
+		// io.sockets.in('quoridor').emit('quoridor_map', quoridorMap);
+		// io.sockets.in('quoridor').emit('quoridor_init');
+		// var flag = false;
+		// for(var i=0; i<17; i++){
+			// if(quoridorMap[i][16] == 1){
+				// flag = true;
+				// break;
+			// }
+		// }
+		// if(flag){
+			// quoridor_stat = 0;
+			// io.sockets.in('quoridor').emit('quoridor_message_win', 1);
+		// }else{
+			// quoridor_stat = 2;
+			// io.sockets.in('quoridor').emit('quoridor_message', 2, "Message : " +quoridor[1].name + "'s turn.");
+			// io.sockets.sockets[quoridor[1].id].emit('quoridor_permission', 2);
+		// }
+	// }else if(quoridor_stat == 2 && socket.id == quoridor[1].id){
+		// for(var i=0; i<17; i++){
+			// for(var j=0; j<17; j++){
+				// if(quoridorMap[i][j] == 2) {
+					// quoridorMap[i][j] = 0;
+					// break;
+				// }
+			// }
+		// }
+		// quoridorMap[data.y][data.x] = 2;
+		// io.sockets.in('quoridor').emit('quoridor_map', quoridorMap);
+		// io.sockets.in('quoridor').emit('quoridor_init');
+		// var flag = false;
+		// for(var i=0; i<17; i++){
+			// if(quoridorMap[i][0] == 2){
+				// flag = true;
+				// break;
+			// }
+		// }
+		// if(flag){
+			// quoridor_stat = 0;
+			// io.sockets.in('quoridor').emit('quoridor_message_win', 2);
+		// }else{
+			// quoridor_stat = 1;
+			// io.sockets.in('quoridor').emit('quoridor_message', 1, "Message : " +quoridor[0].name + "'s turn.");
+			// io.sockets.sockets[quoridor[0].id].emit('quoridor_permission', 1);
+		// }
+	// }
+	
 };
 
 var quoridorChatInputSystem = function(str, room){
@@ -289,3 +403,93 @@ exports.quoridorLoop = function(time){
 	
 	oldtime = time;
 };
+
+function isCanMove(room, new_x, new_y, playerNum){
+	var positionY = new_y;
+	var positionX = new_x;
+	var map = quoridor_server[room-1].quoridor_map;
+	if(positionY%2 == 0 && positionX%2 == 0){
+		if(positionX>0){
+			if(map[positionY][positionX-2] == playerNum && map[positionY][positionX-1] == 0 &&
+				map[positionY][positionX] == 0) return true;
+		}
+		if(positionX<16){
+			if(map[positionY][positionX+2] == playerNum && map[positionY][positionX+1] == 0 &&
+				map[positionY][positionX] == 0) return true;
+		}
+		if(positionY>0){
+			if(map[positionY-2][positionX] == playerNum && map[positionY-1][positionX] == 0 &&
+				map[positionY][positionX] == 0) return true;
+		}
+		if(positionY<16){
+			if(map[positionY+2][positionX] == playerNum && map[positionY+1][positionX] == 0 &&
+				map[positionY][positionX] == 0) return true;
+		}
+		var otherNum = (playerNum==1)?2:1;
+		if(positionX>2){
+			if(map[positionY][positionX-4] == playerNum && map[positionY][positionX-3] == 0 &&
+				map[positionY][positionX-2] == otherNum && map[positionY][positionX-1] == 0) return true;
+		}
+		if(positionX<14){
+			if(map[positionY][positionX+4] == playerNum && map[positionY][positionX+3] == 0 &&
+				map[positionY][positionX+2] == otherNum && map[positionY][positionX+1] == 0) return true;
+		}
+		if(positionY>2){
+			if(map[positionY-4][positionX] == playerNum && map[positionY-3][positionX] == 0 &&
+				map[positionY-2][positionX] == otherNum && map[positionY-1][positionX] == 0) return true;
+		}
+		if(positionY<14){
+			if(map[positionY+4][positionX] == playerNum && map[positionY+3][positionX] == 0 &&
+				map[positionY+2][positionX] == otherNum && map[positionY+1][positionX] == 0) return true;
+		}
+		if(positionX>0 && positionY>0){
+			if(map[positionY-2][positionX-2] == playerNum && map[positionY-2][positionX-1] == 0 &&
+				map[positionY-2][positionX] == otherNum && map[positionY-1][positionX] == 0) {
+					if(positionX<16 && map[positionY-2][positionX+1] == 3) return true;
+					else if(positionX==16) return true;
+				}
+			if(map[positionY-2][positionX-2] == playerNum && map[positionY-1][positionX-2] == 0 &&
+				map[positionY][positionX-2] == otherNum && map[positionY][positionX-1] == 0) {
+					if(positionY<16 && map[positionY+1][positionX-2] == 3) return true;
+					else if(positionY==16) return true;
+				}
+		}
+		if(positionX>0 && positionY<16){
+			if(map[positionY+2][positionX-2] == playerNum && map[positionY+2][positionX-1] == 0 &&
+				map[positionY+2][positionX] == otherNum && map[positionY+1][positionX] == 0) {
+					if(positionX<16 && map[positionY+2][positionX+1] == 3) return true;
+					else if(positionX==16) return true;
+				}
+			if(map[positionY+2][positionX-2] == playerNum && map[positionY+1][positionX-2] == 0 &&
+				map[positionY][positionX-2] == otherNum && map[positionY][positionX-1] == 0) {
+					if(positionY>0 && map[positionY-1][positionX-2] == 3) return true;
+					else if(positionY==0) return true;
+				}
+		}
+		if(positionX<16 && positionY>0){
+			if(map[positionY-2][positionX+2] == playerNum && map[positionY-2][positionX+1] == 0 &&
+				map[positionY-2][positionX] == otherNum && map[positionY-1][positionX] == 0) {
+					if(positionX>0 && map[positionY-2][positionX-1] == 3) return true;
+					else if(positionX==0) return true;
+				}
+			if(map[positionY-2][positionX+2] == playerNum && map[positionY-1][positionX+2] == 0 &&
+				map[positionY][positionX+2] == otherNum && map[positionY][positionX+1] == 0) {
+					if(positionY<16 && map[positionY+1][positionX+2] == 3) return true;
+					else if(positionY==16) return true;
+				}
+		}
+		if(positionX<16 && positionY<16){
+			if(map[positionY+2][positionX+2] == playerNum && map[positionY+2][positionX+1] == 0 &&
+				map[positionY+2][positionX] == otherNum && map[positionY+1][positionX] == 0) {
+					if(positionX>0 && map[positionY+2][positionX-1] == 3) return true;
+					else if(positionX==0) return true;
+				}
+			if(map[positionY+2][positionX+2] == playerNum && map[positionY+1][positionX+2] == 0 &&
+				map[positionY][positionX+2] == otherNum && map[positionY][positionX+1] == 0) {
+					if(positionY>0 && map[positionY-1][positionX+2] == 3) return true;
+					else if(positionY==0) return true;
+				}
+		}
+	}
+	return false;
+}

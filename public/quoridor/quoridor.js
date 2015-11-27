@@ -23,9 +23,10 @@ var server_count = 0;
 var server_point1 = 0;
 var server_point2 = 0;
 
+var testVar = 0;
+
 
 // var isCanPlay = false;
-// var playerNum = -1;
 
 var map = [
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -57,7 +58,7 @@ var chat = [];
 
 // var playerList = [];
 // 
-// var mousePosition = -1;
+var mousePosition = -1;
 
 var quoridor_gallery = [];
 
@@ -150,7 +151,7 @@ $(document).ready(function(){
 			for(var i in server_player){
 				if(server_player[i].id == myid){
 					can_play = true;
-					myPosition = i+1; 
+					myPosition = i;
 				}
 			}
 		}
@@ -235,43 +236,57 @@ function mouseClick(){
 	}
 	
 	// // setTimeout(chatFocus, 100);
-	// if(!isCanPlay) return;
-	// var positionY = Math.floor(mousePosition/17);
-	// var positionX = mousePosition - positionY*17;
-	// if(positionY%2 == 0){
-		// if(positionX%2 == 1){
-			// if(isCanWall(mousePosition)){
-				// socket.emit('quoridor_wall', {
-					// x1: positionX,
-					// y1: positionY,
-					// x2: positionX,
-					// y2: positionY+1,
-					// x3: positionX,
-					// y3: positionY+2
-				// });
-			// }
-		// }else{
-			// if(isCanMove(mousePosition)){
-				// socket.emit('quoridor_move', {
-					// x: positionX,
-					// y: positionY
-				// });
-			// }
-		// }
-	// }else{
-		// if(positionX%2 == 0){
-			// if(isCanWall(mousePosition)){
-				// socket.emit('quoridor_wall', {
-					// x1: positionX,
-					// y1: positionY,
-					// x2: positionX+1,
-					// y2: positionY,
-					// x3: positionX+2,
-					// y3: positionY
-				// });
-			// }
-		// }
-	// }
+	if(!can_play) return;
+	if(server_turn == 2 && myPosition == 0){
+	}else if(server_turn == 3 && myPosition == 1){
+	}else{
+		return;
+	}
+	var positionY = Math.floor(mousePosition/17);
+	var positionX = mousePosition - positionY*17;
+	if(positionY%2 == 0){
+		if(positionX%2 == 1){
+			if(isCanWall(mousePosition)){
+				var session = $.cookie("session");
+				socket.emit('quoridor_wall', {
+					session: session,
+					room: room,
+					x1: positionX,
+					y1: positionY,
+					x2: positionX,
+					y2: positionY+1,
+					x3: positionX,
+					y3: positionY+2
+				});
+			}
+		}else{
+			if(isCanMove(mousePosition)){
+				var session = $.cookie("session");
+				socket.emit('quoridor_move', {
+					session: session,
+					room: room,
+					x: positionX,
+					y: positionY
+				});
+			}
+		}
+	}else{
+		if(positionX%2 == 0){
+			if(isCanWall(mousePosition)){
+				var session = $.cookie("session");
+				socket.emit('quoridor_wall', {
+					session: session,
+					room: room,
+					x1: positionX,
+					y1: positionY,
+					x2: positionX+1,
+					y2: positionY,
+					x3: positionX+2,
+					y3: positionY
+				});
+			}
+		}
+	}
 }
 
 // var chatFocus = function(){
@@ -284,41 +299,40 @@ function mouseMove(){
 	}else{
 		fight_ask_move = false;
 	}
-	// var positionX = mouseX - 24;
-	// var positionY = mouseY - 24;
-	// if(positionX>=0 && positionX<642){
-		// if(positionY>=0 && positionY<642){
-			// mousePosition = -1;
-			// while(positionX>=0){
-				// if(positionX<50){
-					// mousePosition++;
-					// break;
-				// }else if(positionX<74){
-					// mousePosition+=2;
-					// break;
-				// }else{
-					// mousePosition+=2;
-					// positionX-=74;
-				// }
-			// }
-			// while(positionY>=0){
-				// if(positionY<50){
-					// break;
-				// }else if(positionY<74){
-					// mousePosition+=17;
-					// break;
-				// }else{
-					// mousePosition+=34;
-					// positionY-=74;
-				// }
-			// }
-		// }else{
-			// mousePosition = -1;
-		// }
-	// }else{
-		// mousePosition = -1;
-	// }
-// 	
+	var positionX = mouseX - 26;
+	var positionY = mouseY - 85;
+	if(positionX>=0 && positionX<580){
+		if(positionY>=0 && positionY<580){
+			mousePosition = -1;
+			while(positionX>=0){
+				if(positionX<46){
+					mousePosition++;
+					break;
+				}else if(positionX<66){
+					mousePosition+=2;
+					break;
+				}else{
+					mousePosition+=2;
+					positionX-=67;
+				}
+			}
+			while(positionY>=0){
+				if(positionY<46){
+					break;
+				}else if(positionY<66){
+					mousePosition+=17;
+					break;
+				}else{
+					mousePosition+=34;
+					positionY-=67;
+				}
+			}
+		}else{
+			mousePosition = -1;
+		}
+	}else{
+		mousePosition = -1;
+	}
 }
 
 function Update()
@@ -326,95 +340,96 @@ function Update()
 
 }
 
-// function isCanMove(mousePosition){
-	// var positionY = Math.floor(mousePosition/17);
-	// var positionX = mousePosition - positionY*17;
-	// if(positionY%2 == 0 && positionX%2 == 0){
-		// if(positionX>0){
-			// if(map[positionY][positionX-2] == playerNum && map[positionY][positionX-1] == 0 &&
-				// map[positionY][positionX] == 0) return true;
-		// }
-		// if(positionX<16){
-			// if(map[positionY][positionX+2] == playerNum && map[positionY][positionX+1] == 0 &&
-				// map[positionY][positionX] == 0) return true;
-		// }
-		// if(positionY>0){
-			// if(map[positionY-2][positionX] == playerNum && map[positionY-1][positionX] == 0 &&
-				// map[positionY][positionX] == 0) return true;
-		// }
-		// if(positionY<16){
-			// if(map[positionY+2][positionX] == playerNum && map[positionY+1][positionX] == 0 &&
-				// map[positionY][positionX] == 0) return true;
-		// }
-		// var otherNum = (playerNum==1)?2:1;
-		// if(positionX>2){
-			// if(map[positionY][positionX-4] == playerNum && map[positionY][positionX-3] == 0 &&
-				// map[positionY][positionX-2] == otherNum && map[positionY][positionX-1] == 0) return true;
-		// }
-		// if(positionX<14){
-			// if(map[positionY][positionX+4] == playerNum && map[positionY][positionX+3] == 0 &&
-				// map[positionY][positionX+2] == otherNum && map[positionY][positionX+1] == 0) return true;
-		// }
-		// if(positionY>2){
-			// if(map[positionY-4][positionX] == playerNum && map[positionY-3][positionX] == 0 &&
-				// map[positionY-2][positionX] == otherNum && map[positionY-1][positionX] == 0) return true;
-		// }
-		// if(positionY<14){
-			// if(map[positionY+4][positionX] == playerNum && map[positionY+3][positionX] == 0 &&
-				// map[positionY+2][positionX] == otherNum && map[positionY+1][positionX] == 0) return true;
-		// }
-		// if(positionX>0 && positionY>0){
-			// if(map[positionY-2][positionX-2] == playerNum && map[positionY-2][positionX-1] == 0 &&
-				// map[positionY-2][positionX] == otherNum && map[positionY-1][positionX] == 0) {
-					// if(positionX<16 && map[positionY-2][positionX+1] == 3) return true;
-					// else if(positionX==16) return true;
-				// }
-			// if(map[positionY-2][positionX-2] == playerNum && map[positionY-1][positionX-2] == 0 &&
-				// map[positionY][positionX-2] == otherNum && map[positionY][positionX-1] == 0) {
-					// if(positionY<16 && map[positionY+1][positionX-2] == 3) return true;
-					// else if(positionY==16) return true;
-				// }
-		// }
-		// if(positionX>0 && positionY<16){
-			// if(map[positionY+2][positionX-2] == playerNum && map[positionY+2][positionX-1] == 0 &&
-				// map[positionY+2][positionX] == otherNum && map[positionY+1][positionX] == 0) {
-					// if(positionX<16 && map[positionY+2][positionX+1] == 3) return true;
-					// else if(positionX==16) return true;
-				// }
-			// if(map[positionY+2][positionX-2] == playerNum && map[positionY+1][positionX-2] == 0 &&
-				// map[positionY][positionX-2] == otherNum && map[positionY][positionX-1] == 0) {
-					// if(positionY>0 && map[positionY-1][positionX-2] == 3) return true;
-					// else if(positionY==0) return true;
-				// }
-		// }
-		// if(positionX<16 && positionY>0){
-			// if(map[positionY-2][positionX+2] == playerNum && map[positionY-2][positionX+1] == 0 &&
-				// map[positionY-2][positionX] == otherNum && map[positionY-1][positionX] == 0) {
-					// if(positionX>0 && map[positionY-2][positionX-1] == 3) return true;
-					// else if(positionX==0) return true;
-				// }
-			// if(map[positionY-2][positionX+2] == playerNum && map[positionY-1][positionX+2] == 0 &&
-				// map[positionY][positionX+2] == otherNum && map[positionY][positionX+1] == 0) {
-					// if(positionY<16 && map[positionY+1][positionX+2] == 3) return true;
-					// else if(positionY==16) return true;
-				// }
-		// }
-		// if(positionX<16 && positionY<16){
-			// if(map[positionY+2][positionX+2] == playerNum && map[positionY+2][positionX+1] == 0 &&
-				// map[positionY+2][positionX] == otherNum && map[positionY+1][positionX] == 0) {
-					// if(positionX>0 && map[positionY+2][positionX-1] == 3) return true;
-					// else if(positionX==0) return true;
-				// }
-			// if(map[positionY+2][positionX+2] == playerNum && map[positionY+1][positionX+2] == 0 &&
-				// map[positionY][positionX+2] == otherNum && map[positionY][positionX+1] == 0) {
-					// if(positionY>0 && map[positionY-1][positionX+2] == 3) return true;
-					// else if(positionY==0) return true;
-				// }
-		// }
-	// }
-	// return false;
-// }
-// 
+function isCanMove(mousePosition){
+	var positionY = Math.floor(mousePosition/17);
+	var positionX = mousePosition - positionY*17;
+	var playerNum = Number(myPosition)+1;
+	if(positionY%2 == 0 && positionX%2 == 0){
+		if(positionX>0){
+			if(map[positionY][positionX-2] == playerNum && map[positionY][positionX-1] == 0 &&
+				map[positionY][positionX] == 0) return true;
+		}
+		if(positionX<16){
+			if(map[positionY][positionX+2] == playerNum && map[positionY][positionX+1] == 0 &&
+				map[positionY][positionX] == 0) return true;
+		}
+		if(positionY>0){
+			if(map[positionY-2][positionX] == playerNum && map[positionY-1][positionX] == 0 &&
+				map[positionY][positionX] == 0) return true;
+		}
+		if(positionY<16){
+			if(map[positionY+2][positionX] == playerNum && map[positionY+1][positionX] == 0 &&
+				map[positionY][positionX] == 0) return true;
+		}
+		var otherNum = (playerNum==1)?2:1;
+		if(positionX>2){
+			if(map[positionY][positionX-4] == playerNum && map[positionY][positionX-3] == 0 &&
+				map[positionY][positionX-2] == otherNum && map[positionY][positionX-1] == 0) return true;
+		}
+		if(positionX<14){
+			if(map[positionY][positionX+4] == playerNum && map[positionY][positionX+3] == 0 &&
+				map[positionY][positionX+2] == otherNum && map[positionY][positionX+1] == 0) return true;
+		}
+		if(positionY>2){
+			if(map[positionY-4][positionX] == playerNum && map[positionY-3][positionX] == 0 &&
+				map[positionY-2][positionX] == otherNum && map[positionY-1][positionX] == 0) return true;
+		}
+		if(positionY<14){
+			if(map[positionY+4][positionX] == playerNum && map[positionY+3][positionX] == 0 &&
+				map[positionY+2][positionX] == otherNum && map[positionY+1][positionX] == 0) return true;
+		}
+		if(positionX>0 && positionY>0){
+			if(map[positionY-2][positionX-2] == playerNum && map[positionY-2][positionX-1] == 0 &&
+				map[positionY-2][positionX] == otherNum && map[positionY-1][positionX] == 0) {
+					if(positionX<16 && map[positionY-2][positionX+1] == 3) return true;
+					else if(positionX==16) return true;
+				}
+			if(map[positionY-2][positionX-2] == playerNum && map[positionY-1][positionX-2] == 0 &&
+				map[positionY][positionX-2] == otherNum && map[positionY][positionX-1] == 0) {
+					if(positionY<16 && map[positionY+1][positionX-2] == 3) return true;
+					else if(positionY==16) return true;
+				}
+		}
+		if(positionX>0 && positionY<16){
+			if(map[positionY+2][positionX-2] == playerNum && map[positionY+2][positionX-1] == 0 &&
+				map[positionY+2][positionX] == otherNum && map[positionY+1][positionX] == 0) {
+					if(positionX<16 && map[positionY+2][positionX+1] == 3) return true;
+					else if(positionX==16) return true;
+				}
+			if(map[positionY+2][positionX-2] == playerNum && map[positionY+1][positionX-2] == 0 &&
+				map[positionY][positionX-2] == otherNum && map[positionY][positionX-1] == 0) {
+					if(positionY>0 && map[positionY-1][positionX-2] == 3) return true;
+					else if(positionY==0) return true;
+				}
+		}
+		if(positionX<16 && positionY>0){
+			if(map[positionY-2][positionX+2] == playerNum && map[positionY-2][positionX+1] == 0 &&
+				map[positionY-2][positionX] == otherNum && map[positionY-1][positionX] == 0) {
+					if(positionX>0 && map[positionY-2][positionX-1] == 3) return true;
+					else if(positionX==0) return true;
+				}
+			if(map[positionY-2][positionX+2] == playerNum && map[positionY-1][positionX+2] == 0 &&
+				map[positionY][positionX+2] == otherNum && map[positionY][positionX+1] == 0) {
+					if(positionY<16 && map[positionY+1][positionX+2] == 3) return true;
+					else if(positionY==16) return true;
+				}
+		}
+		if(positionX<16 && positionY<16){
+			if(map[positionY+2][positionX+2] == playerNum && map[positionY+2][positionX+1] == 0 &&
+				map[positionY+2][positionX] == otherNum && map[positionY+1][positionX] == 0) {
+					if(positionX>0 && map[positionY+2][positionX-1] == 3) return true;
+					else if(positionX==0) return true;
+				}
+			if(map[positionY+2][positionX+2] == playerNum && map[positionY+1][positionX+2] == 0 &&
+				map[positionY][positionX+2] == otherNum && map[positionY][positionX+1] == 0) {
+					if(positionY>0 && map[positionY-1][positionX+2] == 3) return true;
+					else if(positionY==0) return true;
+				}
+		}
+	}
+	return false;
+}
+
 // function isCanWall2(player, positionX, positionY, flag){
 	// var fakeMap = [
 	// [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -481,8 +496,8 @@ function Update()
 		// if(flag) return false;
 	// }
 // }
-// 
-// function isCanWall(mousePosition){
+
+function isCanWall(mousePosition){
 	// var positionY = Math.floor(mousePosition/17);
 	// var positionX = mousePosition - positionY*17;
 	// if(positionY%2 == 0){
@@ -515,8 +530,8 @@ function Update()
 		// }
 	// }
 // 	
-	// return false;
-// }
+	return false;
+}
 
 function Render()
 {
@@ -560,6 +575,9 @@ function Render()
 			if(j==0) Context.fillStyle = "#AAAADD";
 			else if(j==8) Context.fillStyle = "#AADDAA";
 			else Context.fillStyle = "#DDDDDD";
+			Context.fillRect(26+(67*j), 85+(67*i), 45, 45);
+			Context.fillStyle = "#888888";
+			Context.fillText(map[2*i][2*j], 26+(67*j), 95+(67*i));
 			switch(map[2*i][2*j]){
 				case 1: {
 					Context.fillStyle = "#88DD88";
@@ -572,7 +590,6 @@ function Render()
 					break;
 				}
 			}
-			Context.fillRect(26+(67*j), 85+(67*i), 45, 45);
 		}
 	}
 	
@@ -584,6 +601,8 @@ function Render()
 				case 3: Context.fillStyle = "#776e65"; break;
 			}
 			Context.fillRect(73+(67*j), 85+(67*i), 18, 45);
+			Context.fillStyle = "#888888";
+			Context.fillText(map[2*i][2*j+1], 73+(67*j), 95+(67*i));
 		}
 	}
 	// 가로 벽(Horizon Wall)
@@ -594,6 +613,8 @@ function Render()
 				case 3: Context.fillStyle = "#776e65"; break;
 			}
 			Context.fillRect(26+(67*j), 132+(67*i), 45, 18);
+			Context.fillStyle = "#888888";
+			Context.fillText(map[2*i+1][2*j], 26+(67*j), 142+(67*i));
 		}
 	}
 	// 벽 사이
@@ -604,6 +625,8 @@ function Render()
 				case 3: Context.fillStyle = "#776e65"; break;
 			}
 			Context.fillRect(73+(67*j), 132+(67*i), 18, 18);
+			Context.fillStyle = "#888888";
+			Context.fillText(map[2*i+1][2*j+1], 73+(67*j), 142+(67*i));
 		}
 	}
 
@@ -791,9 +814,17 @@ function Render()
 	}
 	
 	Context.fillStyle = "#000000";
-	Context.fillText(myPosition, 40, 50);
-	Context.fillText(myid, 40, 30);
-	Context.fillText(can_play, 40, 70);
+	Context.fillText(myid, 40, 10);
+	Context.fillText(myPosition, 40, 25);
+	Context.fillText(can_play, 40, 40);
+	var positionX = mouseX-26;
+	var positionY = mouseY-85;
+	Context.fillText(positionX, 40, 55);
+	Context.fillText(positionY, 100, 55);
+	Context.fillText(mousePosition, 40, 70);
+	Context.fillText(server_turn, 40, 85);
+	// Context.fillText(myPosition, 100, 85);
+	
 }
 
 function gameLoop()
