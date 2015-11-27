@@ -6,6 +6,8 @@ var FIGHT_ASK_HEIGHT = 90;
 var fight_ask_move = false;
 var can_fight_ask = false;
 var can_fight_ask_process = false;
+var can_play = false;
+var myPosition = 0;
 
 var myid = 0;
 
@@ -131,9 +133,27 @@ $(document).ready(function(){
 	
 	socket.on('quoridor_data', function(data){
 		server_player = data.player;
+		if(data.myid>0){
+			myid = data.myid;
+		}
 		map = data.map;
-		can_fight_ask = data.fight_ask;
 		server_turn = data.turn;
+		if(server_turn==0 && server_player.length<2){
+			can_fight_ask = true;
+			for(var i in server_player){
+				if(server_player[i].id == myid){
+					can_fight_ask = false;
+				}
+			}
+		}else{
+			can_fight_ask = false;
+			for(var i in server_player){
+				if(server_player[i].id == myid){
+					can_play = true;
+					myPosition = i+1; 
+				}
+			}
+		}
 		server_point1 = data.point1;
 		server_point2 = data.point2;
 		server_count = data.count;
@@ -769,6 +789,11 @@ function Render()
 		Context.fillStyle = "#000000";
 		Context.fillRect(10, 10, 10, 10);
 	}
+	
+	Context.fillStyle = "#000000";
+	Context.fillText(myPosition, 40, 50);
+	Context.fillText(myid, 40, 30);
+	Context.fillText(can_play, 40, 70);
 }
 
 function gameLoop()

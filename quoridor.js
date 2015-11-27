@@ -127,12 +127,9 @@ exports.quoridorGameData = function(room){
 	for(var i in quoridor_server[room-1].quoridor_player){
 		data.push(new player(quoridor_server[room-1].quoridor_player[i].id, quoridor_server[room-1].quoridor_player[i].name, quoridor_server[room-1].quoridor_player[i].nickname));
 	}
-	var fight_ask = false;
-	if(data.length<2) fight_ask = true;
 	var gameData = {
 		player: data,
 		map: quoridor_server[room-1].quoridor_map,
-		fight_ask: fight_ask,
 		myid : 0,
 		turn : quoridor_server[room-1].quoridor_turn,
 		point1 : quoridor_server[room-1].quoridor_point1,
