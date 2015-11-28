@@ -22,6 +22,7 @@ var server_turn = 0;
 var server_count = 0;
 var server_point1 = 0;
 var server_point2 = 0;
+var server_system_chat = undefined;
 
 var testVar = 0;
 
@@ -134,6 +135,7 @@ $(document).ready(function(){
 	
 	socket.on('quoridor_data', function(data){
 		server_player = data.player;
+		server_system_chat = data.system;
 		if(data.myid>0){
 			myid = data.myid;
 		}
@@ -573,6 +575,11 @@ function Render()
 			if(can_play && server_turn>1 && server_turn == Number(myPosition)+2 && i*34 + j*2 == mousePosition && isCanMove(mousePosition)) {
 				Context.fillStyle = "#FF0000";
 			}
+			if(map[2*i][2*j]==1) {
+				Context.fillStyle = "#AADDAA";
+			}else if(map[2*i][2*j]==2){
+				Context.fillStyle = "#AAAADD";
+			}
 			Context.fillRect(26+(67*j), 85+(67*i), 45, 45);
 			switch(map[2*i][2*j]){
 				case 1: {
@@ -711,15 +718,20 @@ function Render()
 	Context.fillText("Connect List", 710, 110);
 	for(var i in quoridor_gallery){
 		Context.textAlign = 'left';
-		// if(i==0) Context.fillStyle = "#00FF00";
-		// else if(i==1) Context.fillStyle = "#0000FF";
-		// else Context.fillStyle = "#000000";
-// 		
-		// if(i>9) {
-			// Context.fillText('...', 790, 130+20*i);
-			// break;
-		// }
-		Context.fillText(quoridor_gallery[i].nickname, 640, 130+20*i);
+		if(server_player.length>0 && server_player[0].nickname == quoridor_gallery[i].nickname){
+			Context.fillStyle = "#00FF00";
+		}else if(server_player.length>1 && server_player[1].nickname == quoridor_gallery[i].nickname){
+			Context.fillStyle = "#0000FF";
+		}else{
+			Context.fillStyle = "#000000";
+		}
+		if(i<7) {
+			Context.fillText(quoridor_gallery[i].nickname, 640, 130+20*i);
+		}else if(i<13){
+			Context.fillText(quoridor_gallery[i].nickname, 750, 130+20*i);
+		}else{
+			
+		}
 		// Context.fillStyle = "#000000";
 		// if(playerList[i] == player.name) Context.fillText('You --> ', 725, 130+20*i);	
 	}
@@ -727,9 +739,32 @@ function Render()
 	// Context.fillStyle = messageColor;
 	// Context.fillText(message, 700, 40);
 // 	
+	Context.fillStyle = "#000000";
 	Context.font = '12px Nanum';
 	Context.textAlign = 'left';
-	Context.fillText('------------------------------------', 630, 340);
+	Context.fillText('--------------System----------------', 630, 280);
+	if(server_system_chat != undefined){
+		switch(server_system_chat.type){
+			case 0:{Context.fillStyle = "#000000"; break;}
+			case 1:{Context.fillStyle = "#000000"; break;}
+			case 2:{Context.fillStyle = "#000000"; break;}
+			case 3:{Context.fillStyle = "#000000"; break;}
+			case 4:{Context.fillStyle = "#00FF00"; break;}
+			case 5:{Context.fillStyle = "#0000FF"; break;}
+		}
+		Context.fillText(server_system_chat.str, 630, 300);
+		switch(server_system_chat.type){
+			case 0:{Context.fillStyle = "#000000"; break;}
+			case 1:{Context.fillStyle = "#000000"; break;}
+			case 2:{Context.fillStyle = "#00FF00"; break;}
+			case 3:{Context.fillStyle = "#0000FF"; break;}
+			case 4:{Context.fillStyle = "#000000"; break;}
+			case 5:{Context.fillStyle = "#000000"; break;}
+		}		
+		Context.fillText(server_system_chat.str2, 630, 320);
+	}
+	Context.fillStyle = "#000000";
+	Context.fillText('---------------Chat-----------------', 630, 340);
 	for(var i in chat){
 		Context.fillStyle = "#000000";
 		var str = chat[i].nickname+' : '+chat[i].str;

@@ -721,7 +721,6 @@ var quoridor_join = function(socket, session, room){
 				var gallery = quoridor.quoridorGallery(room);
 				var gameData = quoridor.quoridorGameData(room);
 				gameData.myid = id;
-				console.log(gallery);
 				var roomname = 'quoridor'+room;
 				io.sockets.in(roomname).emit('quoridor_gallery', gallery);
 				socket.emit('quoridor_chat', quoridor.quoridorChat(room));
@@ -774,10 +773,7 @@ var quoridor_player_ask = function(socket, session, room){
 				var id = result[0].id;
 				var name = result[0].name;
 				var nickname = result[0].nickname;
-				console.log(nickname+'플레이어가 대전신청!');
 				var flag = quoridor.quoridor_add_player(id, room);
-				if(flag) console.log(nickname+'플레이어 대전신청 접수완료!');
-				else console.log(nickname+'플레이어 대전신청 접수실패!');
 				var gameData = quoridor.quoridorGameData(room);
 				var roomname = 'quoridor'+room;
 				io.sockets.in(roomname).emit('quoridor_data', gameData);
@@ -856,8 +852,6 @@ var quoridor_move_admin = function(socket, data){
 };
 
 var quoridor_wall = function(socket, data){
-	console.log('벽설치!');
-	
 	var session = data.session;
 	
 	client.query('SELECT * from member where token = ?', session, function(error, result, fields){
