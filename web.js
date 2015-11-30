@@ -37,6 +37,8 @@ var app = express();
 app.use(express.cookieParser());
 app.use(express.limit('10mb'));
 app.use(express.bodyParser({uploadDir: __dirname+'/public/upload/multipart'}));
+app.use(express.json());
+app.use(express.urlencoded());
 app.use(app.router);
 app.use(express.static(__dirname+'/public'));
 
@@ -605,9 +607,6 @@ function kaosu_data(){
 
 var server_data = new kaosu_data();
 
-// var lobby_chat = [];
-// var date = new Date();
-
 function chat_piece(name, str){
 	this.name = name;
 	this.str = str;
@@ -641,7 +640,7 @@ function gameLoop(){
 	server_data.db_timer-=gap;
 	if(server_data.db_timer<0) {
 		server_data.db_timer = server_data.db_timer_reset;
-		console.log('lobby_chat : '+server_data.lobby_chat.length+' - '+(date.getHours()%12)+'시 '+date.getMinutes()+'분');
+		console.log('lobby_chat : '+server_data.lobby_chat.length+' - '+date.getMonth()+'월 '+date.getDate()+'일 '+date.getHours()+'시 '+date.getMinutes()+'분');
 		client.query('SELECT 1', function(error, result, fields){
 		});
 	}
@@ -652,21 +651,8 @@ function gameLoop(){
 		io.sockets.emit('expire_send');
 	}
 	
-	// console.log('Loop start!!');
-	
 	quoridor.quoridorLoop(time);
-	// if(quoridor_stat == 0 && quoridor.length>1){
-		// if(quoridor_ready<6000){
-			// quoridor_ready += 1000;
-			// io.sockets.in('quoridor').emit('quoridor_message', 0, "Message : " +Math.floor((6000-quoridor_ready)/1000) + " sec.");
-		// }else{
-			// quoridor_init();
-			// quoridor_stat = 1;
-			// io.sockets.in('quoridor').emit('quoridor_message', 1, "Message : " +quoridor[0].name + "'s turn.");
-			// io.sockets.sockets[quoridor[0].id].emit('quoridor_permission', 1);
-			// io.sockets.in('quoridor').emit('quoridor_message_win', 0);
-		// }
-	// }
+
 	server_data.date = new Date();
 	server_data.time = server_data.date.getTime();
 }
@@ -730,25 +716,6 @@ var quoridor_join = function(socket, session, room){
 			}
 		}
 	});
-	
-	// var index = quoridor.push(new player(socket.id, 'player'+playerID));
-// 	
-	// socket.playerName = quoridor[index-1].name;
-	// playerID++;
-// 	
-	// socket.emit('join_success', socket.playerName);
-// 	
-	// var list = [];
-	// for(var i in quoridor){
-		// list.push(quoridor[i].name);
-	// }
-	// io.sockets.in('quoridor').emit('quoridor_list_all', list);
-// 	
-	// if(quoridor_stat == 0) socket.emit('quoridor_message', 0, "Wait other player");
-	// else if(quoridor_stat == 1) socket.emit('quoridor_message', 1, "Message : " +quoridor[0].name + "'s turn.");
-	// else if(quoridor_stat == 2) socket.emit('quoridor_message', 2, "Message : " +quoridor[1].name + "'s turn.");
-// 	
-	// socket.emit('quoridor_map', quoridorMap);
 };
 
 exports.quoridor_player_message = function(room){
@@ -801,56 +768,6 @@ var quoridor_move = function(socket, data){
 	});
 };
 
-var quoridor_move_admin = function(socket, data){
-	if(quoridor_stat == 1){
-		if(quoridorMap[data.y][data.x]==2) return;
-		for(var i=0; i<17; i++){
-			for(var j=0; j<17; j++){
-				if(quoridorMap[i][j] == 1) {
-					quoridorMap[i][j] = 0;
-					break;
-				}
-			}
-		}
-		quoridorMap[data.y][data.x] = 1;
-		io.sockets.in('quoridor').emit('quoridor_map', quoridorMap);
-		var flag = false;
-		for(var i=0; i<17; i++){
-			if(quoridorMap[i][16] == 1){
-				flag = true;
-				break;
-			}
-		}
-		if(flag){
-			quoridor_stat = 0;
-			io.sockets.in('quoridor').emit('quoridor_message_win', 1);
-		}
-	}else if(quoridor_stat == 2){
-		if(quoridorMap[data.y][data.x]==1) return;
-		for(var i=0; i<17; i++){
-			for(var j=0; j<17; j++){
-				if(quoridorMap[i][j] == 2) {
-					quoridorMap[i][j] = 0;
-					break;
-				}
-			}
-		}
-		quoridorMap[data.y][data.x] = 2;
-		io.sockets.in('quoridor').emit('quoridor_map', quoridorMap);
-		var flag = false;
-		for(var i=0; i<17; i++){
-			if(quoridorMap[i][0] == 2){
-				flag = true;
-				break;
-			}
-		}
-		if(flag){
-			quoridor_stat = 0;
-			io.sockets.in('quoridor').emit('quoridor_message_win', 2);
-		}
-	}
-};
-
 var quoridor_wall = function(socket, data){
 	var session = data.session;
 	
@@ -866,57 +783,6 @@ var quoridor_wall = function(socket, data){
 			}
 		}
 	});
-	
-	// if(quoridor_stat == 1 && socket.id == quoridor[0].id){
-		// quoridorMap[data.y1][data.x1] = 3;
-		// quoridorMap[data.y2][data.x2] = 3;
-		// quoridorMap[data.y3][data.x3] = 3;
-		// io.sockets.in('quoridor').emit('quoridor_map', quoridorMap);
-		// io.sockets.in('quoridor').emit('quoridor_init');
-		// quoridor_stat = 2;
-		// io.sockets.in('quoridor').emit('quoridor_message', 2, "Message : " +quoridor[1].name + "'s turn.");
-		// io.sockets.sockets[quoridor[1].id].emit('quoridor_permission', 2);
-	// }else if(quoridor_stat == 2 && socket.id == quoridor[1].id){
-		// quoridorMap[data.y1][data.x1] = 3;
-		// quoridorMap[data.y2][data.x2] = 3;
-		// quoridorMap[data.y3][data.x3] = 3;
-		// io.sockets.in('quoridor').emit('quoridor_map', quoridorMap);
-		// io.sockets.in('quoridor').emit('quoridor_init');
-		// quoridor_stat = 1;
-		// io.sockets.in('quoridor').emit('quoridor_message', 1, "Message : " +quoridor[0].name + "'s turn.");
-		// io.sockets.sockets[quoridor[0].id].emit('quoridor_permission', 1);
-	// }
-};
-
-var quoridor_wall_admin = function(socket, data){
-	if(quoridor_stat > 0){
-		if(quoridorMap[data.y1][data.x1] == 0)	quoridorMap[data.y1][data.x1] = 3;
-		else if(quoridorMap[data.y1][data.x1] == 3) quoridorMap[data.y1][data.x1] = 0;
-		io.sockets.in('quoridor').emit('quoridor_map', quoridorMap);
-	}
-};
-
-var quoridor_change = function(socket, data){
-	while(true){
-		for(var i=0; i<quoridor.length; i++){
-			if(quoridor[i].name == data){
-				data = data+'.';
-				continue;
-			}
-		}
-		break;
-	}
-	for(var i=0; i<quoridor.length; i++){
-		if(quoridor[i].id == socket.id){
-			quoridor[i].name = data;
-			var list = [];
-			for(var i in quoridor){
-				list.push(quoridor[i].name);
-			}
-			io.sockets.in('quoridor').emit('quoridor_list_all', list);
-			socket.emit('join_success', data);
-		}
-	}
 };
 
 var quoridor_chat_input = function(socket, data){
@@ -994,26 +860,6 @@ var quoridor_disconnect = function(socket){
 	io.sockets.in('quoridor').emit('quoridor_list_all', list);
 };
 
-// function gameLoop(){
-	// if(quoridor_stat == 0 && quoridor.length>1){
-		// if(quoridor_ready<6000){
-			// quoridor_ready += 1000;
-			// io.sockets.in('quoridor').emit('quoridor_message', 0, "Message : " +Math.floor((6000-quoridor_ready)/1000) + " sec.");
-		// }else{
-			// quoridor_init();
-			// quoridor_stat = 1;
-			// io.sockets.in('quoridor').emit('quoridor_message', 1, "Message : " +quoridor[0].name + "'s turn.");
-			// io.sockets.sockets[quoridor[0].id].emit('quoridor_permission', 1);
-			// io.sockets.in('quoridor').emit('quoridor_message_win', 0);
-		// }
-	// }
-// }
-
-// setInterval(gameLoop, 1000);
-
-
-
-// console.log(date.getTime());
 var day;
 switch(server_data.date.getDay()){
 	case 0: day='일';break;
@@ -1025,5 +871,9 @@ switch(server_data.date.getDay()){
 	case 6: day='토';break;
 }
 
-console.log((server_data.date.getMonth()+1)+'월 '+server_data.date.getDate()+'일 '
-+day+'요일 '+(server_data.date.getHours()%12)+'시 '+server_data.date.getMinutes()+'분');
+timeLog();
+
+function timeLog(){
+	console.log((server_data.date.getMonth()+1)+'월 '+server_data.date.getDate()+'일 '
++day+'요일 '+(server_data.date.getHours())+'시 '+server_data.date.getMinutes()+'분');
+}
