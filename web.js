@@ -3,12 +3,14 @@ var express = require('express');
 var http = require('http');
 var fs = require('fs');
 var ejs = require('ejs');
-var nodemailer = require('nodemailer');
+// var nodemailer = require('nodemailer');
 var crypto = require('crypto');
 var mysql = require('mysql');
 var utf8 = require('utf8');
-var easyimage = require('easyimage');
+// var easyimage = require('easyimage');
 var uuid = require('node-uuid');
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
 var util = require('./util.js');
 var quoridor = require('./quoridor.js'); // Quoridor
 
@@ -34,13 +36,16 @@ if(test){
 
 var app = express();
 
-app.use(express.cookieParser());
-app.use(express.limit('10mb'));
-app.use(express.bodyParser({uploadDir: __dirname+'/public/upload/multipart'}));
-app.use(express.json());
-app.use(express.urlencoded());
-app.use(app.router);
-app.use(express.static(__dirname+'/public'));
+// app.use(express.cookieParser());
+app.use(cookieParser());
+// app.use(express.limit('10mb'));
+// app.use(express.bodyParser({uploadDir: __dirname+'/public/upload/multipart'}));
+// app.use(express.urlencoded());
+// app.use(express.json());
+// app.use(app.router);
+// app.set('view engine', 'ejs');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 
 app.get('/', function(request, response){
 	if(request.cookies.session == undefined){
@@ -79,6 +84,24 @@ app.get('/', function(request, response){
 	}
 });
 
+app.use(express.static(__dirname+'/public'));
+
+app.get('/kaosu', function(request, response){
+	fs.readFile(__dirname+'/public/index.html', 'utf8',  function(error, data){
+		response.send(ejs.render(data, {
+			data: {
+				test : test,
+				result : 1,
+				name: 'kaosu',
+				nickname: '가오수',
+				member : 1
+			}
+		}));
+		console.log('1');
+		// response.send(data.toString());
+	});
+});
+
 app.get('/bad_access', function(request, response){
 	fs.readFile(__dirname+'/public/bad_access.html', function(error, data){
 		response.send(data.toString());
@@ -97,7 +120,7 @@ app.get('/join', function(request, response){
 });
 
 app.get('/login_error/:id', function(request, response){
-	var id = request.param('id');
+	var id = request.params.id;
 	fs.readFile(__dirname+'/public/index_redirect.html', 'utf8', function(error, data){
 		response.send(ejs.render(data, {
 			data: id
@@ -164,7 +187,7 @@ app.get('/lobby', function(request, response){
 });
 
 app.get('/lobby_error/:id', function(request, response){
-	var id = request.param('id');
+	var id = request.params.id;
 	fs.readFile(__dirname+'/public/lobby_redirect.html', 'utf8', function(error, data){
 		response.send(ejs.render(data, {
 			data: id
@@ -173,7 +196,7 @@ app.get('/lobby_error/:id', function(request, response){
 });
 
 app.get('/game_quoridor/:room', function(request, response){
-	var room = request.param('room');
+	var room = request.params.room;
 	if(room!='1' && room!='2' && room!='3'){
 		response.redirect('/lobby_error/0');
 		return;
@@ -260,86 +283,85 @@ app.get('/game_quoridor/:room', function(request, response){
 // });
 
 
+// app.get('/upload', function(request, response){
+	// fs.readFile(__dirname+'/public/upload/index.html', 'utf8', function(error, data){
+		// client.query('select * from myfile2 order by _id asc', function(error, results){
+			// response.send(ejs.render(data, {
+				// data: results
+			// }));
+		// });
+	// });
+// });
 
-app.get('/upload', function(request, response){
-	fs.readFile(__dirname+'/public/upload/index.html', 'utf8', function(error, data){
-		client.query('select * from myfile2 order by _id asc', function(error, results){
-			response.send(ejs.render(data, {
-				data: results
-			}));
-		});
-	});
-});
-
-app.get('/download/:id', function(request, response){
-	client.query('select * from myfile2 where _id=?', request.param('id'), function(error, result, fields){
-		if(result.length>0){
-			var file = __dirname + '/public/upload/multipart/'+result[0].name;
-			response.download(file, utf8.encode(result[0].comment));
-		}
-	});
+// app.get('/download/:id', function(request, response){
+	// client.query('select * from myfile2 where _id=?', request.param('id'), function(error, result, fields){
+		// if(result.length>0){
+			// var file = __dirname + '/public/upload/multipart/'+result[0].name;
+			// response.download(file, utf8.encode(result[0].comment));
+		// }
+	// });
 	// var file = __dirname + '/public/upload/multipart/'+request.param('name');
 	// response.download(file, request.param('name'));
 	// response.download(file, utf8.encode(request.param('name')));
-});
+// });
 
-app.post('/upload', function(request, response){
-	// var comment = request.param('comment');
-	var file = request.files.image;
-	
-	if(file){
-		var name = file.name;
-		var comment = name;
-		var path = file.path;
-		var addPath = Date.now()+'_'+name;
-		var addThumbPath = 'thumb_'+addPath;
-		var outputPath = __dirname + '/public/upload/multipart/'+addPath;
-		var outputThumbPath = __dirname + '/public/upload/multipart/'+addThumbPath;
-		
-		fs.rename(path, outputPath, function(error){
-			easyimage.thumbnail({
-				src: outputPath,
-				dst: outputThumbPath,
-				width:100, height:100,
-				x:0, y:0
-			}, function(err, img){
-				if(err) console.log("err");
-				response.redirect('/upload');
-			});
-			client.query('insert into myfile2 (name, comment) values (?, ?)', [addPath, comment], function(){
-				response.redirect('/upload');
-			});
-		});
-	}else{
-		response.send(404);
-	}
-});
+// app.post('/upload', function(request, response){
+	// // var comment = request.param('comment');
+	// var file = request.files.image;
+// 	
+	// if(file){
+		// var name = file.name;
+		// var comment = name;
+		// var path = file.path;
+		// var addPath = Date.now()+'_'+name;
+		// var addThumbPath = 'thumb_'+addPath;
+		// var outputPath = __dirname + '/public/upload/multipart/'+addPath;
+		// var outputThumbPath = __dirname + '/public/upload/multipart/'+addThumbPath;
+// 		
+		// fs.rename(path, outputPath, function(error){
+			// easyimage.thumbnail({
+				// src: outputPath,
+				// dst: outputThumbPath,
+				// width:100, height:100,
+				// x:0, y:0
+			// }, function(err, img){
+				// if(err) console.log("err");
+				// response.redirect('/upload');
+			// });
+			// client.query('insert into myfile2 (name, comment) values (?, ?)', [addPath, comment], function(){
+				// response.redirect('/upload');
+			// });
+		// });
+	// }else{
+		// response.send(404);
+	// }
+// });
 
-app.get('/uploadshow/:id', function(request, response){
-	client.query('select * from myfile2 where _id=?', request.param('id'), function(error, result, fields){
-		if(result.length>0){
-			fs.readFile(__dirname+'/public/upload/multipart/'+result[0].name, function(error, data){
-				response.writeHead(200, {'Content-Type':'image/png'});
-				response.end(data);
-			});
-		}
-	});
-});
+// app.get('/uploadshow/:id', function(request, response){
+	// client.query('select * from myfile2 where _id=?', request.param('id'), function(error, result, fields){
+		// if(result.length>0){
+			// fs.readFile(__dirname+'/public/upload/multipart/'+result[0].name, function(error, data){
+				// response.writeHead(200, {'Content-Type':'image/png'});
+				// response.end(data);
+			// });
+		// }
+	// });
+// });
 
-app.get('/uploaddelete/:id', function(request, response){
-	client.query('select * from myfile2 where _id=?', request.param('id'), function(error, result, fields){
-		if(result.length>0){
-			fs.unlink(__dirname + '/public/upload/multipart/'+result[0].name, function(error){
-				client.query('delete from myfile2 where _id=?', request.param('id'), function(){
-					response.redirect('/upload');
-				});
-				fs.unlink(__dirname + '/public/upload/multipart/thumb_'+result[0].name, function(error){
-					
-				});
-			});
-		}
-	});
-});
+// app.get('/uploaddelete/:id', function(request, response){
+	// client.query('select * from myfile2 where _id=?', request.param('id'), function(error, result, fields){
+		// if(result.length>0){
+			// fs.unlink(__dirname + '/public/upload/multipart/'+result[0].name, function(error){
+				// client.query('delete from myfile2 where _id=?', request.param('id'), function(){
+					// response.redirect('/upload');
+				// });
+				// fs.unlink(__dirname + '/public/upload/multipart/thumb_'+result[0].name, function(error){
+// 					
+				// });
+			// });
+		// }
+	// });
+// });
 
 
 
