@@ -18,10 +18,21 @@
 		<script type="text/javascript" src="jquery.cookie.js"></script>
 		<script>
 			var socket = undefined;
+
+			$(document).unload(function(){
+				if (socket != undefined) socket.disconnect();
+			});
 			
 			$(document).ready(function(){
 				socket = io.connect();
-				socket.emit('join_lobby');
+				
+				var session = $.cookie("session");
+				socket.emit('join_lobby', {session: session});
+				
+				$(window).unload(function(){
+					var sess = $.cookie("session");
+					socket.emit('disconnect_lobby', {session: sess});
+				});
 				
 				socket.on('lobby_chat_update', function(data){
 					if(data.length > 0){
@@ -29,7 +40,15 @@
 						for(var i=0; i<data.length; i++){
 							addChat(data[i].name, data[i].str);
 						}
-						// alert(lobby_chat);
+					}
+				});
+				
+				socket.on('lobby_player_update', function(data){
+					if(data.length > 0){
+						$('.inner_player').remove();
+						for(var i=0; i<data.length; i++){
+							addPlayer(data[i].nickname);
+						}
 					}
 				});
 				
@@ -50,23 +69,23 @@
 				
 				$('#server1_1').click(function(){
 					<% if(data.test==true){ %>
-						window.open('http://127.0.0.1:8002/game_quoridor/1', 'child', 'width=960, height=1024, scrollbars=yes', true);
+						window.open('http://127.0.0.1:8002/game_quoridor/1', 'quoridor', 'width=960, height=1024, scrollbars=yes', true);
 					<% }else{ %>
-						window.open('http://kaosu.kr/game_quoridor/1', 'child', 'width=960, height=1024, scrollbars=yes', true);
+						window.open('http://kaosu.kr/game_quoridor/1', 'quoridor', 'width=960, height=1024, scrollbars=yes', true);
 					<% } %>
 				});
 				$('#server1_2').click(function(){
 					<% if(data.test==true){ %>
-						window.open('http://127.0.0.1:8002/game_quoridor/2', 'child', 'width=960, height=1024, scrollbars=yes', true);
+						window.open('http://127.0.0.1:8002/game_quoridor/2', 'quoridor', 'width=960, height=1024, scrollbars=yes', true);
 					<% }else{ %>
-						window.open('http://kaosu.kr/game_quoridor/2', 'child', 'width=960, height=1024, scrollbars=yes', true);
+						window.open('http://kaosu.kr/game_quoridor/2', 'quoridor', 'width=960, height=1024, scrollbars=yes', true);
 					<% } %>
 				});
 				$('#server1_3').click(function(){
 					<% if(data.test==true){ %>
-						window.open('http://127.0.0.1:8002/game_quoridor/3', 'child', 'width=960, height=1024, scrollbars=yes', true);
+						window.open('http://127.0.0.1:8002/game_quoridor/3', 'quoridor', 'width=960, height=1024, scrollbars=yes', true);
 					<% }else{ %>
-						window.open('http://kaosu.kr/game_quoridor/3', 'child', 'width=960, height=1024, scrollbars=yes', true);
+						window.open('http://kaosu.kr/game_quoridor/3', 'quoridor', 'width=960, height=1024, scrollbars=yes', true);
 					<% } %>
 				});
 				$('#server2_1').click(function(){
@@ -92,11 +111,6 @@
 					chat_input();
 				});
 			});
-				
-			$(document).unload(function(){
-				socket.emit('disconnect_lobby');
-				if (socket != undefined) socket.disconnect();
-			});
 			
 			function chat_input(){
 				var str = $('.input_chat').val();
@@ -117,21 +131,47 @@
 				if(name == nickname){
 					label.css({
 						fontWeight: 'bold',
-						color: '#000000'
+						color: '#000000',
+						paddingLeft: '5px'
 					});
 				}else if(name == "관리자"){
 					label.css({
 						fontWeight: 'bold',
-						color: '#ff0000'
+						color: '#ff0000',
+						paddingLeft: '5px'
 					});
 				}else{
 					label.css({
-						color: '#000000'
+						color: '#000000',
+						paddingLeft: '5px'
 					});
 				}
 				label.appendTo(chat);
-				chat.appendTo($('.div_lobby_chat_body'));
-				$('.div_lobby_chat_body').scrollTop($('.div_lobby_chat_body').prop('scrollHeight'));
+				chat.appendTo($('.div_lobby_chat_message'));
+				$('.div_lobby_chat_message').scrollTop($('.div_lobby_chat_message').prop('scrollHeight'));
+			}
+			
+			function addPlayer(nickname){
+				var mynickname = $('#label_nickname').html();
+				var player = $('<div></div>').addClass('inner_player');
+				var label = $('<label></label>').addClass('label_player');
+				if(mynickname == nickname){
+					label.html(nickname+'(나)');
+					label.css({
+						fontWeight: 'bold',
+						color: '#ff0000',
+						paddingLeft: '5px'
+					});
+				}else{
+					label.html(nickname);
+					label.css({
+						color: '#000000',
+						paddingLeft: '5px'
+					});
+				}
+				label.appendTo(player);
+				player.appendTo($('.div_lobby_chat_person'));
+				$('.div_lobby_chat_person').scrollTop($('.div_lobby_chat_person').prop('scrollHeight'));
 			}
 		</script>
 	</head>
@@ -207,7 +247,11 @@
 					</div>
 				</div>
 				<div class="div_lobby_chat">
-					<div class="div_lobby_chat_body" style="overflow:auto">
+					<div class="div_lobby_chat_body">
+						<div class="div_lobby_chat_message" style="overflow:auto">
+						</div>
+						<div class="div_lobby_chat_person" style="overflow:auto">
+						</div>
 					</div>
 					<div class="div_lobby_chat_input">
 						<input class="input_chat" onkeydown="javascript:if (event.keyCode == 13) chat_input()"/>

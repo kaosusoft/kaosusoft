@@ -240,7 +240,7 @@ body {
 
 .div_lobby_chat{
 	width: 500px;
-	height: 200px;
+	height: 250px;
 	margin-bottom: 20px;
 	border: 4px solid #B97A57;
 	border-radius: 5px;
@@ -248,14 +248,33 @@ body {
 
 .div_lobby_chat_body{
 	position: absolute;
-	width: 500px;
-	height: 160px;
+	width: 490px;
+	height: 200px;
+}
+
+.div_lobby_chat_message{
+	position: absolute;
+	width: 340px;
+	height: 200px;
 	padding: 5px;
+	border-bottom: 4px solid #B97A57;
+	border-right: 4px solid #B97A57;
+	border-radius: 5px;
+}
+.div_lobby_chat_person{
+	position: absolute;
+	width: 135px;
+	height: 200px;
+	margin-left: 350px;
+	padding: 5px;
+	border-bottom: 4px solid #B97A57;
+	border-left: 4px solid #B97A57;
+	border-radius: 5px;
 }
 
 .div_lobby_chat_input{
 	position: absolute;
-	margin-top: 170px;
+	margin-top: 220px;
 	width: 500px;
 	height: 30px;
 }

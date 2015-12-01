@@ -12,6 +12,7 @@ var uuid = require('node-uuid');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var util = require('./util.js');
+var mPlayer = require('./player.js'); // Player
 var quoridor = require('./quoridor.js'); // Quoridor
 
 var test = false; // 테스트중이면 true, 진짜는 false 
@@ -393,9 +394,8 @@ io.sockets.on('connection', function(socket){
 // 		
 	// });
 	
-	socket.on('join_lobby', function(){
-		socket.join('lobby');
-		socket.emit('lobby_chat_update', server_data.lobby_chat);
+	socket.on('join_lobby', function(data){
+		lobby_join(socket, data);
 	});
 	
 	socket.on('lobby_chat_add', function(data){
@@ -600,8 +600,10 @@ io.sockets.on('connection', function(socket){
 		quoridor.quoridorExpire(socket);
 	});
 	
-	socket.on('disconnect_lobby', function(){
+	socket.on('disconnect_lobby', function(data){
+		mPlayer.disconnectPlayer(data);
 		socket.leave('lobby');
+		io.sockets.in('lobby').emit('lobby_player_update', mPlayer.getLobbyPlayerSimple());
 	});
 	
 	socket.on('disconnect', function(){
@@ -691,6 +693,27 @@ exports.lobbyGamePlayerUpdate = function(){
 	var quoridorPlayer = quoridor.quoridorPlayerNum();
 	io.sockets.in('lobby').emit('lobby_game_player_update', {
 		quoridor: quoridorPlayer
+	});
+};
+
+var lobby_join = function(socket, data){
+	socket.join('lobby');
+	
+	client.query('SELECT * from member where token = ?', data.session, function(error, result, fields){
+		if(error){
+			response.redirect('/lobby_redirect/0');
+		}else{
+			if(result.length>0){
+				var id = result[0].id;
+				var name = result[0].name;
+				var nickname = result[0].nickname;
+				mPlayer.lobbyPlayerAdd(new player(socket, data.session, id, name, nickname));
+				socket.emit('lobby_chat_update', server_data.lobby_chat);
+				io.sockets.in('lobby').emit('lobby_player_update', mPlayer.getLobbyPlayerSimple());
+			}else{
+				response.redirect('/lobby_redirect/0');
+			}
+		}
 	});
 };
 
