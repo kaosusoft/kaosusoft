@@ -34,8 +34,8 @@ function quoridor_room(){
 	this.quoridor_turn = 0;
 	this.quoridor_count = 0;
 	this.quoridor_count_fightReady = 5000;
-	this.quoridor_count_playerThink = 20000;
-	this.quoridor_count_nextGame = 5000;
+	this.quoridor_count_playerThink = 30000;
+	this.quoridor_count_nextGame = 10000;
 	// turn
 	// 0 - 참가자 신청단계 : 2명이 다 차면 1로 넘어감. 카운트 시작.
 	// 1 - 대결 시작 준비단계 : 카운트를 5초 세서 대결이 시작되서 2로 넘어감. 카운트 시작
@@ -44,6 +44,8 @@ function quoridor_room(){
 	// 4 - 게임 끝. 카운트 시작.
 	this.quoridor_point1 = 0;
 	this.quoridor_point2 = 0;
+	this.quoridor_limit_wall1 = 10;
+	this.quoridor_limit_wall2 = 10;
 	this.quoridor_permission = 0;
 	this.quoridor_expire_max = 10000;
 	this.quoridor_expire = this.quoridor_expire_max;
@@ -58,9 +60,11 @@ function quoridor_room_init(room, init){
 		}
 		quoridor_server[room-1].quoridor_map[8][0] = 1;
 		quoridor_server[room-1].quoridor_map[8][16] = 2;
-		quoridor_server[room-1].quoridor_turn = 0;
 		quoridor_server[room-1].quoridor_count = 0;
+		quoridor_server[room-1].quoridor_limit_wall1 = 10;
+		quoridor_server[room-1].quoridor_limit_wall2 = 10;
 		if(init){
+			quoridor_server[room-1].quoridor_turn = 0;
 			quoridor_server[room-1].quoridor_point1 = 0;
 			quoridor_server[room-1].quoridor_point2 = 0;
 		}
@@ -77,6 +81,7 @@ exports.quoridor_add_player = function(id, room){
 			}
 			if(flag) {
 				quoridor_server[room-1].quoridor_player.push(quoridor_server[room-1].quoridor_gallery[i]);
+				web.lobbyGamePlayerUpdate();
 				return true;
 			}else{
 				
@@ -126,6 +131,14 @@ function system_chat_piece(type, str, str2){
 	// 1 : 
 }
 
+exports.quoridorPlayerNum = function(){
+	return {
+		room1: quoridor_server[0].quoridor_player.length,
+		room2: quoridor_server[1].quoridor_player.length,
+		room3: quoridor_server[2].quoridor_player.length
+	};
+};
+
 exports.quoridorGameData = function(room){
 	var data = [];
 	for(var i in quoridor_server[room-1].quoridor_player){
@@ -139,6 +152,8 @@ exports.quoridorGameData = function(room){
 		turn : quoridor_server[room-1].quoridor_turn,
 		point1 : quoridor_server[room-1].quoridor_point1,
 		point2 : quoridor_server[room-1].quoridor_point2,
+		wall1 : quoridor_server[room-1].quoridor_limit_wall1,
+		wall2 : quoridor_server[room-1].quoridor_limit_wall2,
 		count : quoridor_server[room-1].quoridor_count
 	};
 	return gameData;
@@ -224,6 +239,7 @@ exports.quoridorWall = function(id, data){
 	if(quoridor_server[room-1].quoridor_player.length<2) return;
 	
 	if(quoridor_server[room-1].quoridor_turn == 2 && quoridor_server[room-1].quoridor_player[0].id == id){
+		if(quoridor_server[room-1].quoridor_limit_wall1<=0) return;
 		if(positionY%2 == 0){
 			if(positionX%2 == 1){
 				//세로
@@ -233,6 +249,7 @@ exports.quoridorWall = function(id, data){
 					quoridor_server[room-1].quoridor_map[data.y+2][data.x] = 3;
 					quoridor_server[room-1].quoridor_turn = 3;
 					quoridor_server[room-1].quoridor_count = quoridor_server[room-1].quoridor_count_playerThink;
+					quoridor_server[room-1].quoridor_limit_wall1-=1;
 					var str = '게임이 진행중입니다.';
 					var str2 = 'Blue 플레이어의 턴입니다.';
 					quoridorSystemChatInput(room, 3, str, str2);
@@ -250,6 +267,7 @@ exports.quoridorWall = function(id, data){
 					quoridor_server[room-1].quoridor_map[data.y][data.x+2] = 3;
 					quoridor_server[room-1].quoridor_turn = 3;
 					quoridor_server[room-1].quoridor_count = quoridor_server[room-1].quoridor_count_playerThink;
+					quoridor_server[room-1].quoridor_limit_wall1-=1;
 					var str = '게임이 진행중입니다.';
 					var str2 = 'Green 플레이어의 턴입니다.';
 					quoridorSystemChatInput(room, 2, str, str2);
@@ -260,6 +278,7 @@ exports.quoridorWall = function(id, data){
 			}
 		}
 	}else if(quoridor_server[room-1].quoridor_turn == 3 && quoridor_server[room-1].quoridor_player[1].id == id){
+		if(quoridor_server[room-1].quoridor_limit_wall2<=0) return;
 		if(positionY%2 == 0){
 			if(positionX%2 == 1){
 				//세로
@@ -269,6 +288,7 @@ exports.quoridorWall = function(id, data){
 					quoridor_server[room-1].quoridor_map[data.y+2][data.x] = 3;
 					quoridor_server[room-1].quoridor_turn = 2;
 					quoridor_server[room-1].quoridor_count = quoridor_server[room-1].quoridor_count_playerThink;
+					quoridor_server[room-1].quoridor_limit_wall2-=1;
 					var str = '게임이 진행중입니다.';
 					var str2 = 'Green 플레이어의 턴입니다.';
 					quoridorSystemChatInput(room, 2, str, str2);
@@ -286,6 +306,7 @@ exports.quoridorWall = function(id, data){
 					quoridor_server[room-1].quoridor_map[data.y][data.x+2] = 3;
 					quoridor_server[room-1].quoridor_turn = 2;
 					quoridor_server[room-1].quoridor_count = quoridor_server[room-1].quoridor_count_playerThink;
+					quoridor_server[room-1].quoridor_limit_wall2-=1;
 					var str = '게임이 진행중입니다.';
 					var str2 = 'Blue 플레이어의 턴입니다.';
 					quoridorSystemChatInput(room, 3, str, str2);
@@ -346,11 +367,12 @@ exports.quoridorExit = function(session, room){
 			for(var j in quoridor_server[room-1].quoridor_player){
 				if(quoridor_server[room-1].quoridor_player[j].id == id){
 					quoridor_server[room-1].quoridor_player.splice(j,1);
+					web.lobbyGamePlayerUpdate();
 					if(quoridor_server[room-1].quoridor_turn>0){
 						quoridor_room_init(room, true);
 					}
 					var str = quoridor_server[room-1].quoridor_gallery[i].nickname+' 플레이어가 대전을 포기하였습니다.';
-					quoridorSystemChatInput(room, 0, str, '');
+					quoridorSystemChatInput(room, 0, str, '대전신청 접수중입니다.');
 					web.quoridor_player_update(room);
 					break;
 				}
@@ -374,6 +396,19 @@ exports.quoridorLoop = function(time){
 			}
 			if(quoridor_server[i].quoridor_gallery[j].expire_max>2) {
 				quoridor_server[i].quoridor_gallery.splice(j,1);
+				for(var k in quoridor_server[i].quoridor_player){
+					if(quoridor_server[i].quoridor_player[k].id == quoridor_gallery[j].id){
+						quoridor_server[i].quoridor_player.splice(k,1);
+						web.lobbyGamePlayerUpdate();
+						if(quoridor_server[i].quoridor_turn>0){
+							quoridor_room_init(i+1, true);
+						}
+						var str = quoridor_server[i].quoridor_gallery[j].nickname+' 플레이어가 대전을 포기하였습니다.';
+						quoridorSystemChatInput(i+1, 0, str, '대전신청 접수중입니다.');
+						web.quoridor_player_update(i+1);
+						break;
+					}
+				}
 				break;
 			}
 		}
@@ -413,7 +448,7 @@ exports.quoridorLoop = function(time){
 			quoridor_server[i].quoridor_turn = 2;
 			quoridor_server[i].quoridor_count = quoridor_server[i].quoridor_count_playerThink;
 			var str = '게임이 진행중입니다.';
-			var str2 = 'Green 플레이어의 턴입니다.';;
+			var str2 = 'Green 플레이어의 턴입니다.';
 			quoridorSystemChatInput(i+1, 2, str, str2);
 			web.quoridor_player_update(i+1);
 		}
@@ -422,7 +457,7 @@ exports.quoridorLoop = function(time){
 			quoridor_server[i].quoridor_turn = 3;
 			quoridor_server[i].quoridor_count = quoridor_server[i].quoridor_count_playerThink;
 			var str = '게임이 진행중입니다.';
-			var str2 = 'Blue 플레이어의 턴입니다.';;
+			var str2 = 'Blue 플레이어의 턴입니다.';
 			quoridorSystemChatInput(i+1, 3, str, str2);
 			web.quoridor_player_update(i+1);
 		}
@@ -431,34 +466,73 @@ exports.quoridorLoop = function(time){
 			quoridor_server[i].quoridor_turn = 2;
 			quoridor_server[i].quoridor_count = quoridor_server[i].quoridor_count_playerThink;
 			var str = '게임이 진행중입니다.';
-			var str2 = 'Green 플레이어의 턴입니다.';;
+			var str2 = 'Green 플레이어의 턴입니다.';
 			quoridorSystemChatInput(i+1, 2, str, str2);
 			web.quoridor_player_update(i+1);
 		}
 		
 		if(quoridor_server[i].quoridor_turn == 4 && quoridor_server[i].quoridor_count<=0){
-			while(quoridor_server[i].quoridor_player.length>0){
-				quoridor_server[i].quoridor_player.shift();
+			var point1 = quoridor_server[i].quoridor_point1;
+			var point2 = quoridor_server[i].quoridor_point2;
+			if(point1>1 || point2>1){
+				while(quoridor_server[i].quoridor_player.length>0){
+					quoridor_server[i].quoridor_player.shift();
+				}
+				web.lobbyGamePlayerUpdate();
+				var str = '게임 준비중입니다.';
+				var str2 = '대전신청 접수중입니다.';
+				quoridorSystemChatInput(i+1, 0, str, str2);
+				web.quoridor_player_update(i+1);
+				quoridor_room_init(i+1, true);
+			}else{
+				quoridor_server[i].quoridor_player.reverse();
+				var point1 = quoridor_server[i].quoridor_point1;
+				var point2 = quoridor_server[i].quoridor_point2;
+				quoridor_server[i].quoridor_point1 = point2;
+				quoridor_server[i].quoridor_point2 = point1;
+				quoridor_room_init(i+1, false);
+				quoridor_server[i].quoridor_turn = 1;
+				quoridor_server[i].quoridor_count = 0;
+				var str = '게임이 진행중입니다.';
+				var str2 = 'Green 플레이어의 턴입니다.';
+				quoridorSystemChatInput(i+1, 2, str, str2);
+				web.quoridor_player_update(i+1);
 			}
-			quoridor_room_init(i+1, true);
+			
 			web.quoridor_player_update(i+1);
 		}
 		
 		if(quoridor_server[i].quoridor_turn == 2 || quoridor_server[i].quoridor_turn == 3){
 			for(var j=0; j<9; j++){
 				if(quoridor_server[i].quoridor_map[j*2][0] == 2){
+					var point1 = quoridor_server[i].quoridor_point1;
+					var point2 = quoridor_server[i].quoridor_point2+1;
 					quoridor_server[i].quoridor_turn = 4;
 					quoridor_server[i].quoridor_count = quoridor_server[i].quoridor_count_nextGame;
 					var str = 'Blue 플레이어의 승리입니다.';
-					var str2 = '5초후에 방이 초기화됩니다.';;
-					quoridorSystemChatInput(i+1, 5, str, str2);
+					var str2 = '10초후에 방이 초기화됩니다.';
+					var str3 = '10초후 진영이 바뀌어 '+(point1+point2+1)+'차전이 시작됩니다.';
+					if(point2>1){
+						quoridorSystemChatInput(i+1, 5, str, str2);
+					}else{
+						quoridorSystemChatInput(i+1, 5, str, str3);
+					}
+					quoridor_server[i].quoridor_point2 = point2;
 					web.quoridor_player_update(i+1);
 				}else if(quoridor_server[i].quoridor_map[j*2][16] == 1){
+					var point1 = quoridor_server[i].quoridor_point1+1;
+					var point2 = quoridor_server[i].quoridor_point2;
 					quoridor_server[i].quoridor_turn = 4;
 					quoridor_server[i].quoridor_count = quoridor_server[i].quoridor_count_nextGame;
 					var str = 'Green 플레이어의 승리입니다.';
-					var str2 = '5초후에 방이 초기화됩니다.';;
-					quoridorSystemChatInput(i+1, 4, str, str2);
+					var str2 = '10초후에 방이 초기화됩니다.';
+					var str3 = '10초후 진영이 바뀌어 '+(point1+point2+1)+'차전이 시작됩니다.';
+					if(point1>1){
+						quoridorSystemChatInput(i+1, 4, str, str2);
+					}else{
+						quoridorSystemChatInput(i+1, 4, str, str3);
+					}
+					quoridor_server[i].quoridor_point1 = point1;
 					web.quoridor_player_update(i+1);
 				}
 			}

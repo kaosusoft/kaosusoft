@@ -33,6 +33,13 @@
 					}
 				});
 				
+				socket.on('lobby_game_player_update', function(data){
+					var quoridor_player = data.quoridor;
+					$('#server1_1 > .label_serverperson').text('('+quoridor_player.room1+'/2)');
+					$('#server1_2 > .label_serverperson').text('('+quoridor_player.room2+'/2)');
+					$('#server1_3 > .label_serverperson').text('('+quoridor_player.room3+'/2)');
+				});
+				
 				socket.on('lobby_chat_error', function(){
 					alert('잘못된 채팅입니다.');
 				});
@@ -43,23 +50,23 @@
 				
 				$('#server1_1').click(function(){
 					<% if(data.test==true){ %>
-						window.open('http://127.0.0.1:8002/game_quoridor/1', 'child', 'width=960, height=1024', true);
+						window.open('http://127.0.0.1:8002/game_quoridor/1', 'child', 'width=960, height=1024, scrollbars=yes', true);
 					<% }else{ %>
-						window.open('http://kaosu.kr/game_quoridor/1', 'child', 'width=960, height=1024', true);
+						window.open('http://kaosu.kr/game_quoridor/1', 'child', 'width=960, height=1024, scrollbars=yes', true);
 					<% } %>
 				});
 				$('#server1_2').click(function(){
 					<% if(data.test==true){ %>
-						window.open('http://127.0.0.1:8002/game_quoridor/2', 'child', 'width=960, height=1024', true);
+						window.open('http://127.0.0.1:8002/game_quoridor/2', 'child', 'width=960, height=1024, scrollbars=yes', true);
 					<% }else{ %>
-						window.open('http://kaosu.kr/game_quoridor/2', 'child', 'width=960, height=1024', true);
+						window.open('http://kaosu.kr/game_quoridor/2', 'child', 'width=960, height=1024, scrollbars=yes', true);
 					<% } %>
 				});
 				$('#server1_3').click(function(){
 					<% if(data.test==true){ %>
-						window.open('http://127.0.0.1:8002/game_quoridor/3', 'child', 'width=960, height=1024', true);
+						window.open('http://127.0.0.1:8002/game_quoridor/3', 'child', 'width=960, height=1024, scrollbars=yes', true);
 					<% }else{ %>
-						window.open('http://kaosu.kr/game_quoridor/3', 'child', 'width=960, height=1024', true);
+						window.open('http://kaosu.kr/game_quoridor/3', 'child', 'width=960, height=1024, scrollbars=yes', true);
 					<% } %>
 				});
 				$('#server2_1').click(function(){
@@ -144,15 +151,15 @@
 					<div class="div_server">
 						<div id="server1_1" class="div_servergo">
 							<label class="label_servername">서버1</label>
-							<label class="label_serverperson">(0/2)</label>
+							<label class="label_serverperson">(<%= data.qNum1 %>/2)</label>
 						</div>
 						<div id="server1_2" class="div_servergo">
 							<label class="label_servername">서버2</label>
-							<label class="label_serverperson">(0/2)</label>
+							<label class="label_serverperson">(<%= data.qNum2 %>/2)</label>
 						</div>
 						<div id="server1_3" class="div_servergo">
 							<label class="label_servername">서버3</label>
-							<label class="label_serverperson">(0/2)</label>
+							<label class="label_serverperson">(<%= data.qNum3 %>/2)</label>
 						</div>
 					</div>
 					<div class="div_gameinfo">
@@ -164,15 +171,15 @@
 					<div class="div_server">
 						<div id="server2_1" class="div_servergo">
 							<label class="label_servername">서버1</label>
-							<label class="label_serverperson">(0/8)</label>
+							<label class="label_serverperson">(0/1)</label>
 						</div>
 						<div id="server2_2" class="div_servergo">
 							<label class="label_servername">서버2</label>
-							<label class="label_serverperson">(0/8)</label>
+							<label class="label_serverperson">(0/1)</label>
 						</div>
 						<div id="server2_3" class="div_servergo">
 							<label class="label_servername">서버3</label>
-							<label class="label_serverperson">(0/8)</label>
+							<label class="label_serverperson">(0/1)</label>
 						</div>
 					</div>
 					<div class="div_gameinfo">

@@ -23,6 +23,8 @@ var server_count = 0;
 var server_point1 = 0;
 var server_point2 = 0;
 var server_system_chat = undefined;
+var server_limit_wall1 = 0;
+var server_limit_wall2 = 0;
 
 var testVar = 0;
 
@@ -161,6 +163,8 @@ $(document).ready(function(){
 		}
 		server_point1 = data.point1;
 		server_point2 = data.point2;
+		server_limit_wall1 = data.wall1;
+		server_limit_wall2 = data.wall2;
 		server_count = data.count;
 		if(data.myid>0){
 			myid = data.myid;
@@ -251,6 +255,8 @@ function mouseClick(){
 	if(positionY%2 == 0){
 		if(positionX%2 == 1){
 			if(isCanWall(mousePosition)){
+				if(server_turn == 2 && server_limit_wall1<=0) return;
+				if(server_turn == 3 && server_limit_wall2<=0) return;
 				var session = $.cookie("session");
 				socket.emit('quoridor_wall', {
 					session: session,
@@ -273,6 +279,8 @@ function mouseClick(){
 	}else{
 		if(positionX%2 == 0){
 			if(isCanWall(mousePosition)){
+				if(server_turn == 2 && server_limit_wall1<=0) return;
+				if(server_turn == 3 && server_limit_wall2<=0) return;
 				var session = $.cookie("session");
 				socket.emit('quoridor_wall', {
 					session: session,
@@ -602,7 +610,10 @@ function Render()
 			Context.fillStyle = "#DDDDDD";
 			if(can_play && server_turn>1 && server_turn == Number(myPosition)+2) {
 				var num = i*34 + j*2 + 1;
-				if(num == redPosition1 || num == redPosition2 || num == redPosition3) Context.fillStyle = "#FF0000";
+				if(num == redPosition1 || num == redPosition2 || num == redPosition3) {
+					if(server_turn==2 && server_limit_wall1>0) Context.fillStyle = "#FF0000";
+					else if(server_turn==3 && server_limit_wall2>0) Context.fillStyle = "#FF0000";
+				}
 			}
 			switch(map[2*i][2*j+1]){
 				case 3: Context.fillStyle = "#776e65"; break;
@@ -616,7 +627,10 @@ function Render()
 			Context.fillStyle = "#DDDDDD";
 			if(can_play && server_turn>1 && server_turn == Number(myPosition)+2) {
 				var num = i*34 + j*2 + 17;
-				if(num == redPosition1 || num == redPosition2 || num == redPosition3) Context.fillStyle = "#FF0000";
+				if(num == redPosition1 || num == redPosition2 || num == redPosition3) {
+					if(server_turn==2 && server_limit_wall1>0) Context.fillStyle = "#FF0000";
+					else if(server_turn==3 && server_limit_wall2>0) Context.fillStyle = "#FF0000";
+				}
 			}
 			
 			switch(map[2*i+1][2*j]){
@@ -631,7 +645,10 @@ function Render()
 			Context.fillStyle = "#DDDDDD";
 			if(can_play && server_turn>1 && server_turn == Number(myPosition)+2) {
 				var num = i*34 + j*2 + 18;
-				if(num == redPosition1 || num == redPosition2) Context.fillStyle = "#FF0000";
+				if(num == redPosition1 || num == redPosition2) {
+					if(server_turn==2 && server_limit_wall1>0) Context.fillStyle = "#FF0000";
+					else if(server_turn==3 && server_limit_wall2>0) Context.fillStyle = "#FF0000";
+				}
 			}
 			switch(map[2*i+1][2*j+1]){
 				case 3: Context.fillStyle = "#776e65"; break;
@@ -669,18 +686,34 @@ function Render()
 	Context.textAlign = 'center';
 	Context.textBaseLine = "top";
 	Context.fillText(server_point2, 468, 56);
-	
+
 	if(server_turn == 0){
 		
 	}else if(server_turn==1){
 		
 	}else if(server_turn==2 || server_turn==3){
-		Context.fillStyle = "#000000";
-		Context.font = '16px Nanum';
-		Context.textAlign = 'center';
-		Context.textBaseLine = "top";
 		var tic = Math.floor(server_count/1000);
+		Context.fillStyle = "#000000";
+		Context.font = '24px Nanum';
+		Context.textAlign = 'center';
+		if(tic <= 10) {
+			var fontSize = 34-tic;
+			Context.fillStyle = "#FF0000";
+			Context.font = fontSize+'px Nanum';
+		}
+		Context.textBaseLine = "top";
 		Context.fillText(tic, 318, 75);
+		
+		if(server_limit_wall1>0) Context.fillStyle = "#000000";
+		else Context.fillStyle = "#FF0000";
+		Context.font = '16px Nanum';
+		Context.textAlign = 'right';
+		Context.fillText('남은 벽 x '+server_limit_wall1, 183, 76);
+		if(server_limit_wall2>0) Context.fillStyle = "#000000";
+		else Context.fillStyle = "#FF0000";
+		Context.font = '16px Nanum';
+		Context.textAlign = 'left';
+		Context.fillText('남은 벽 x '+server_limit_wall2, 453, 76);
 	}
 	
 	if(can_fight_ask){

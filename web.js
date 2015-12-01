@@ -168,13 +168,17 @@ app.get('/lobby', function(request, response){
 			}else{
 				if(result.length>0){
 					fs.readFile(__dirname+'/public/lobby.html', 'utf8',  function(error, data){
+						var playerNum = quoridor.quoridorPlayerNum();
 						var maxAge = 7 * 24 * 60 * 60 * 1000;
 						response.cookie('session', result[0].token, {maxAge: maxAge});
 						response.send(ejs.render(data, {
 							data: {
 								test : test,
 								name: result[0].name,
-								nickname: result[0].nickname
+								nickname: result[0].nickname,
+								qNum1: playerNum.room1,
+								qNum2: playerNum.room2,
+								qNum3: playerNum.room3
 							}
 						}));
 					});
@@ -681,6 +685,15 @@ function gameLoop(){
 
 setInterval(gameLoop, 500);
 
+// ************************** Lobby ******************************** //
+
+exports.lobbyGamePlayerUpdate = function(){
+	var quoridorPlayer = quoridor.quoridorPlayerNum();
+	io.sockets.in('lobby').emit('lobby_game_player_update', {
+		quoridor: quoridorPlayer
+	});
+};
+
 
 // ************************* Quoridor ****************************** //
 
@@ -725,7 +738,6 @@ var quoridor_join = function(socket, session, room){
 				var name = result[0].name;
 				var nickname = result[0].nickname;
 				quoridor.quoridor_add_gallery(new player(socket, session, id, name, nickname), room);
-				quoridor.quoridorLog(room);
 				var gallery = quoridor.quoridorGallery(room);
 				var gameData = quoridor.quoridorGameData(room);
 				gameData.myid = id;
