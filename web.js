@@ -1,8 +1,9 @@
 var socketio = require('socket.io');
 var express = require('express');
 var http = require('http');
-var fs = require('fs');
+// var fs = require('fs');
 var ejs = require('ejs');
+var path = require('path');
 // var nodemailer = require('nodemailer');
 var crypto = require('crypto');
 var mysql = require('mysql');
@@ -37,26 +38,23 @@ if(test){
 
 var app = express();
 
-// app.use(express.cookieParser());
 app.use(cookieParser());
 // app.use(express.limit('10mb'));
 // app.use(express.bodyParser({uploadDir: __dirname+'/public/upload/multipart'}));
-// app.use(express.urlencoded());
-// app.use(express.json());
 // app.use(app.router);
-// app.set('view engine', 'ejs');
+app.set('views', __dirname + '/public'); 
+app.set('view engine', 'ejs');
+app.engine('html', require('ejs').renderFile);
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({extended: false}));
 
 app.get('/', function(request, response){
 	if(request.cookies.session == undefined){
-		fs.readFile(__dirname+'/public/index.html', 'utf8',  function(error, data){
-			response.send(ejs.render(data, {
-				data: {
-					test : test,
-					result : 0
-				}
-			}));
+		response.render('index.html', {
+			data: {
+				test : test,
+				result : 0
+			}
 		});
 	}else{		
 		client.query('SELECT * from member where token = ?', request.cookies.session, function(error, result, fields){
@@ -64,18 +62,16 @@ app.get('/', function(request, response){
 				response.redirect('/logout');
 			}else{
 				if(result.length>0){
-					fs.readFile(__dirname+'/public/index.html', 'utf8',  function(error, data){
-						var maxAge = 7 * 24 * 60 * 60 * 1000;
-						response.cookie('session', result[0].token, {maxAge: maxAge});
-						response.send(ejs.render(data, {
-							data: {
-								test : test,
-								result : 1,
-								name: result[0].name,
-								nickname: result[0].nickname,
-								member : member_count
-							}
-						}));
+					var maxAge = 7 * 24 * 60 * 60 * 1000;
+					response.cookie('session', result[0].token, {maxAge: maxAge});
+					response.render('index.html', {
+						data: {
+							test : test,
+							result : 1,
+							name: result[0].name,
+							nickname: result[0].nickname,
+							member : member_count
+						}
 					});
 				}else{
 					response.redirect('/logout');
@@ -88,25 +84,19 @@ app.get('/', function(request, response){
 app.use(express.static(__dirname+'/public'));
 
 app.get('/kaosu', function(request, response){
-	fs.readFile(__dirname+'/public/index.html', 'utf8',  function(error, data){
-		response.send(ejs.render(data, {
-			data: {
-				test : test,
-				result : 1,
-				name: 'kaosu',
-				nickname: '가오수',
-				member : 1
-			}
-		}));
-		console.log('1');
-		// response.send(data.toString());
+	response.render('index.html', {
+		data: {
+			test : test,
+			result : 1,
+			name: 'kaosu',
+			nickname: '가오수',
+			member : 1
+		}
 	});
 });
 
 app.get('/bad_access', function(request, response){
-	fs.readFile(__dirname+'/public/bad_access.html', function(error, data){
-		response.send(data.toString());
-	});
+	response.render('bad_access.html');
 });
 
 app.get('/logout', function(request, response){
@@ -115,17 +105,13 @@ app.get('/logout', function(request, response){
 });
 
 app.get('/join', function(request, response){
-	fs.readFile(__dirname+'/public/join.html', function(error, data){
-		response.send(data.toString());
-	});
+	response.render('join.html');
 });
 
 app.get('/login_error/:id', function(request, response){
 	var id = request.params.id;
-	fs.readFile(__dirname+'/public/index_redirect.html', 'utf8', function(error, data){
-		response.send(ejs.render(data, {
-			data: id
-		}));
+	response.render('index_redirect.html', {
+		data: id
 	});
 });
 
@@ -168,20 +154,18 @@ app.get('/lobby', function(request, response){
 				response.redirect('/bad_access');
 			}else{
 				if(result.length>0){
-					fs.readFile(__dirname+'/public/lobby.html', 'utf8',  function(error, data){
-						var playerNum = quoridor.quoridorPlayerNum();
-						var maxAge = 7 * 24 * 60 * 60 * 1000;
-						response.cookie('session', result[0].token, {maxAge: maxAge});
-						response.send(ejs.render(data, {
-							data: {
-								test : test,
-								name: result[0].name,
-								nickname: result[0].nickname,
-								qNum1: playerNum.room1,
-								qNum2: playerNum.room2,
-								qNum3: playerNum.room3
-							}
-						}));
+					var playerNum = quoridor.quoridorPlayerNum();
+					var maxAge = 7 * 24 * 60 * 60 * 1000;
+					response.cookie('session', result[0].token, {maxAge: maxAge});
+					response.render('lobby.html', {
+						data: {
+							test : test,
+							name: result[0].name,
+							nickname: result[0].nickname,
+							qNum1: playerNum.room1,
+							qNum2: playerNum.room2,
+							qNum3: playerNum.room3
+						}
 					});
 				}else{
 					response.redirect('/bad_access');
@@ -193,10 +177,8 @@ app.get('/lobby', function(request, response){
 
 app.get('/lobby_error/:id', function(request, response){
 	var id = request.params.id;
-	fs.readFile(__dirname+'/public/lobby_redirect.html', 'utf8', function(error, data){
-		response.send(ejs.render(data, {
-			data: id
-		}));
+	response.render('lobby_redirect.html', {
+		data: id
 	});
 });
 
@@ -215,17 +197,48 @@ app.get('/game_quoridor/:room', function(request, response){
 				response.redirect('/bad_access');
 			}else{
 				if(result.length>0){
-					fs.readFile(__dirname+'/public/quoridor/index.html', 'utf8',  function(error, data){
-						var maxAge = 7 * 24 * 60 * 60 * 1000;
-						response.cookie('session', result[0].token, {maxAge: maxAge});
-						response.send(ejs.render(data, {
-							data: {
-								test : test,
-								name: result[0].name,
-								nickname: result[0].nickname,
-								room: room
-							}
-						}));
+					var maxAge = 7 * 24 * 60 * 60 * 1000;
+					response.cookie('session', result[0].token, {maxAge: maxAge});
+					response.render('quoridor/index.html', {
+						data: {
+							test : test,
+							name: result[0].name,
+							nickname: result[0].nickname,
+							room: room
+						}
+					});
+				}else{
+					response.redirect('/bad_access');
+				}
+			}
+		});
+	}
+});
+
+app.get('/game_golf/:room', function(request, response){
+	var room = request.params.room;
+	if(room!='1' && room!='2' && room!='3'){
+		response.redirect('/lobby_error/0');
+		return;
+	}
+	
+	if(request.cookies.session == undefined){
+		response.redirect('/bad_access');
+	}else{		
+		client.query('SELECT * from member where token = ?', request.cookies.session, function(error, result, fields){
+			if(error){
+				response.redirect('/bad_access');
+			}else{
+				if(result.length>0){
+					var maxAge = 7 * 24 * 60 * 60 * 1000;
+					response.cookie('session', result[0].token, {maxAge: maxAge});
+					response.render('golf/index.html', {
+						data: {
+							test : test,
+							name: result[0].name,
+							nickname: result[0].nickname,
+							room: room
+						}
 					});
 				}else{
 					response.redirect('/bad_access');
@@ -895,37 +908,10 @@ var quoridor_gg = function(socket){
 	}
 };
 
-var quoridor_disconnect = function(socket){
-	if(quoridor.length>1 && quoridor[0].id == socket.id){
-		io.sockets.in('quoridor').emit('quoridor_message', 0, quoridor[0].name + " left game.");
-		io.sockets.in('quoridor').emit('quoridor_message_win', 2);
-		quoridor_init();
-	}
-	if(quoridor.length>1 && quoridor[1].id == socket.id){
-		io.sockets.in('quoridor').emit('quoridor_message', 0, quoridor[1].name + " left game.");
-		io.sockets.in('quoridor').emit('quoridor_message_win', 1);
-		quoridor_init();
-	}
-	
-	quoridor = quoridor.filter(function(element, index, array){
-		return element.id != socket.id;
-	});
-	var list = [];
-	for(var i in quoridor){
-		list.push(quoridor[i].name);
-	}
-	io.sockets.in('quoridor').emit('quoridor_list_all', list);
-};
-
 var day;
 switch(server_data.date.getDay()){
-	case 0: day='일';break;
-	case 1: day='월';break;
-	case 2: day='화';break;
-	case 3: day='수';break;
-	case 4: day='목';break;
-	case 5: day='금';break;
-	case 6: day='토';break;
+	case 0: day='일';break; case 1: day='월';break; case 2: day='화';break; case 3: day='수';break; 
+	case 4: day='목';break; case 5: day='금';break; case 6: day='토';break;
 }
 
 timeLog();

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8" />
+        <title>가오수 World</title>
+		<link rel="stylesheet" href="/quoridor/stylesheet.css" />
+		<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+		<!-- [if lt IE 9]>
+		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+		<script src="/prefixfree.min.js"></script>
+		<script src="/jquery.cookie.js"></script>
+		<script src="../socket.io/socket.io.js"></script>
+		<script src="/golf/GameFrameCounter.js"></script>
+		<script src="/golf/GameObject.js"></script>
+		<script src="/golf/GameSoundManager.js"></script>
+		<script>
+			<% if(data.room==1){ %>
+				var room = 1;
+			<% }else if(data.room==2){ %>
+				var room = 2;
+			<% }else if(data.room==3){ %>
+				var room = 3;
+			<% } %>
+		</script>
+        <script src="/golf/golf.js"></script>
+    </head>
+    <body>
+		<div class="heading">
+      		<h1 class="title">프리티골프 온라인</h1>
+    	</div>
+    	<p class="game-intro">아슬아슬 캐주얼 골프의 세계로 오신것을 환영합니다!</p>
+        <canvas id="canvas" width="900" height="690" style="position: relative; top: 25px; left: 25px; margin-bottom: 20px">
+        	Sorry, Your browser doesn't support HTML5 Canvas.
+        </canvas>
+        <br />
+        <br />
+        <label id="label_name"><%= data.nickname %> : </label>
+        <input type="text" id="chat" style="left: 25px; width: 400px" maxlength="15" placeholder="15자까지 입력 가능합니다." onkeydown="javascript:if (event.keyCode == 13) chat_input()"/>
+        <button id="chatb">채팅입력</button>
+        <hr />
+		<!-- <p class="game-intro">한턴에 한번 다음 중 한가지를 할 수 있습니다.</p> -->
+		<!-- <p class="game-intro">- 자신의 캐릭터를 1칸 움직입니다.</p> -->
+		<!-- <p class="game-intro">- 길이 2의 벽을 1개 설치합니다.</p> -->
+		<!-- <p class="game-intro">반대쪽 9칸 중 한칸에 먼저 도달하는 쪽이 승리합니다.</p> -->
+		<!-- <p class="game-intro">상대나 내가 이길 수 없게 완전히 막는 벽은 설치할 수 없습니다.</p> -->
+		<!-- <p class="game-intro">이미 설치된 벽과 교차하는 벽은 설치할 수 없습니다.</p> -->
+		<!-- <p class="game-intro">상대와 만났을때 뛰어넘을 수 있습니다.</p> -->
+		<!-- <p class="game-intro">상대의 뒤에 벽이 있을 경우엔 대각선으로 뛰어넘을 수 있습니다.</p> -->
+    </body>
+</html>

@@ -68,34 +68,22 @@
 				});
 				
 				$('#server1_1').click(function(){
-					<% if(data.test==true){ %>
-						window.open('http://127.0.0.1:8002/game_quoridor/1', 'quoridor', 'width=960, height=1024, scrollbars=yes', true);
-					<% }else{ %>
-						window.open('http://kaosu.kr/game_quoridor/1', 'quoridor', 'width=960, height=1024, scrollbars=yes', true);
-					<% } %>
+					window_open('game_quoridor', 1, 'quoridor', 960, 1024);
 				});
 				$('#server1_2').click(function(){
-					<% if(data.test==true){ %>
-						window.open('http://127.0.0.1:8002/game_quoridor/2', 'quoridor', 'width=960, height=1024, scrollbars=yes', true);
-					<% }else{ %>
-						window.open('http://kaosu.kr/game_quoridor/2', 'quoridor', 'width=960, height=1024, scrollbars=yes', true);
-					<% } %>
+					window_open('game_quoridor', 2, 'quoridor', 960, 1024);
 				});
 				$('#server1_3').click(function(){
-					<% if(data.test==true){ %>
-						window.open('http://127.0.0.1:8002/game_quoridor/3', 'quoridor', 'width=960, height=1024, scrollbars=yes', true);
-					<% }else{ %>
-						window.open('http://kaosu.kr/game_quoridor/3', 'quoridor', 'width=960, height=1024, scrollbars=yes', true);
-					<% } %>
+					window_open('game_quoridor', 3, 'quoridor', 960, 1024);
 				});
 				$('#server2_1').click(function(){
-					alert('준비중입니다.');
+					window_open('game_golf', 1, 'golf', 960, 1024);
 				});
 				$('#server2_2').click(function(){
-					alert('준비중입니다.');
+					window_open('game_golf', 2, 'golf', 960, 1024);
 				});
 				$('#server2_3').click(function(){
-					alert('준비중입니다.');
+					window_open('game_golf', 3, 'golf', 960, 1024);
 				});
 				$('#server3_1').click(function(){
 					alert('준비도 안하고 있습니다.');
@@ -111,6 +99,14 @@
 					chat_input();
 				});
 			});
+			
+			function window_open(game, room, name, width, height){
+				<% if(data.test==true){ %>
+					window.open('http://127.0.0.1:8002/'+game+'/'+room, name, 'width='+width+', height='+height+', scrollbars=yes', true);
+				<% }else{ %>
+					window.open('http://kaosu.kr/'+game+'/'+room, name, 'width='+width+', height='+height+', scrollbars=yes', true);
+				<% } %>
+			}
 			
 			function chat_input(){
 				var str = $('.input_chat').val();
