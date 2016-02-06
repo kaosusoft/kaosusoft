@@ -95,6 +95,10 @@ app.get('/kaosu', function(request, response){
 	});
 });
 
+app.get('/random', function(request, response){
+	response.render('bokbulbok/index.html');
+});
+
 app.get('/bad_access', function(request, response){
 	response.render('bad_access.html');
 });
