@@ -99,6 +99,10 @@ app.get('/random', function(request, response){
 	response.render('bokbulbok/index.html');
 });
 
+app.get('/sadari', function(request, response){
+	response.render('bokbulbok/sadari.html');
+});
+
 app.get('/bad_access', function(request, response){
 	response.render('bad_access.html');
 });
