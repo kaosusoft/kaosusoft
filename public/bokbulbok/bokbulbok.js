@@ -307,6 +307,10 @@ function mouseClick(){
 				break;
 			}
 		}
+	}else{
+		if(valid<=0){
+			location.reload(true);
+		}
 	}
 }
 
