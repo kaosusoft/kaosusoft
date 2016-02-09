@@ -103,6 +103,75 @@ app.get('/sadari', function(request, response){
 	response.render('bokbulbok/sadari.html');
 });
 
+app.post('/sadari', function(request, response){
+	var body = request.body;
+	
+	var token = makeSadari(body);
+	
+	response.redirect('/sadari_ok/'+token);
+		
+	// var name = body.email;
+	// var password = body.password;
+});
+
+app.get('/sadari_ok/:token', function(request, response){
+	var token = request.params.token;
+	response.render('bokbulbok/sadari_ok.html', {
+		data: {
+			test : test,
+			token : token
+		}
+	});
+});
+
+app.get('/sadari_game/:token', function(request, response){
+	var token = request.params.token;
+	var data = sadariMap.get(token);
+	var date = new Date().getTime();
+	// this.open_timer = 0; this.range = 6; this.date = new Date().getTime();
+	// this.input_1_1 = ''; this.input_1_2 = ''; this.input_1_3 = ''; this.input_1_4 = ''; 
+	// this.input_1_5 = ''; this.input_1_6 = ''; this.input_1_7 = ''; this.input_1_8 = '';
+	// this.input_2_1 = ''; this.input_2_2 = ''; this.input_2_3 = ''; this.input_2_4 = '';
+	// this.input_2_5 = ''; this.input_2_6 = ''; this.input_2_7 = ''; this.input_2_8 = '';
+	// this.point1 = []; this.point2 = []; this.point3 = []; this.point4 = [];
+	// this.point5 = []; this.point6 = []; this.point7 = [];
+	if(date < (data.date + data.open_timer)){
+		var new_data = new sadari_data();
+		new_data.range = data.range;
+		new_data.open_timer = data.open_timer;
+		new_data.date = data.date;
+		new_data.input_1_1 = data.input_1_1;
+		new_data.input_1_2 = data.input_1_2;
+		new_data.input_1_3 = data.input_1_3;
+		new_data.input_1_4 = data.input_1_4;
+		new_data.input_1_5 = data.input_1_5;
+		new_data.input_1_6 = data.input_1_6;
+		new_data.input_1_7 = data.input_1_7;
+		new_data.input_1_8 = data.input_1_8;
+		new_data.input_2_1 = data.input_2_1;
+		new_data.input_2_2 = data.input_2_2;
+		new_data.input_2_3 = data.input_2_3;
+		new_data.input_2_4 = data.input_2_4;
+		new_data.input_2_5 = data.input_2_5;
+		new_data.input_2_6 = data.input_2_6;
+		new_data.input_2_7 = data.input_2_7;
+		new_data.input_2_8 = data.input_2_8;
+		response.render('bokbulbok/sadari_play.html', {
+			data: {
+				valid: data.date+data.open_timer-date,
+				play_data : JSON.stringify(new_data)
+			}
+		});
+	}else{
+		response.render('bokbulbok/sadari_play.html', {
+			data: {
+				valid: 0,
+				play_data : JSON.stringify(data)
+			}
+		});
+	}
+});
+
 app.get('/bad_access', function(request, response){
 	response.render('bad_access.html');
 });
@@ -628,7 +697,6 @@ io.sockets.on('connection', function(socket){
 	});
 	
 	socket.on('disconnect', function(){
-		// console.log('삭제!');
 		// quoridor.quoridorExit(socket);
 	});
 });
@@ -928,3 +996,247 @@ function timeLog(){
 	console.log((server_data.date.getMonth()+1)+'월 '+server_data.date.getDate()+'일 '
 +day+'요일 '+(server_data.date.getHours())+'시 '+server_data.date.getMinutes()+'분');
 }
+
+// **************************  Sadari ****************************** //
+
+function sadari_data(){
+	this.open_timer = 0; this.range = 6; this.date = new Date().getTime();
+	this.input_1_1 = ''; this.input_1_2 = ''; this.input_1_3 = ''; this.input_1_4 = ''; 
+	this.input_1_5 = ''; this.input_1_6 = ''; this.input_1_7 = ''; this.input_1_8 = '';
+	this.input_2_1 = ''; this.input_2_2 = ''; this.input_2_3 = ''; this.input_2_4 = '';
+	this.input_2_5 = ''; this.input_2_6 = ''; this.input_2_7 = ''; this.input_2_8 = '';
+	this.point1 = []; this.point2 = []; this.point3 = []; this.point4 = [];
+	this.point5 = []; this.point6 = []; this.point7 = [];
+}
+
+var sadari_array  = [];
+var sadariMap = new util.Map();
+
+function makeSadari(body){
+	var sadari = new sadari_data();
+	var check_up = parseInt(body.input_check_up);
+	var check_down = parseInt(body.input_check_down);
+	sadari.open_timer = parseInt(body.select_open);
+	sadari.range = body.input_range;
+	var shuffle1 = makeShuffle(sadari.range);
+	var shuffle2 = makeShuffle(sadari.range);
+	var inputArrayUp = [body.input_1_1, body.input_1_2, body.input_1_3, body.input_1_4, body.input_1_5, body.input_1_6, body.input_1_7, body.input_1_8];
+	var inputArrayDown = [body.input_2_1, body.input_2_2, body.input_2_3, body.input_2_4, body.input_2_5, body.input_2_6, body.input_2_7, body.input_2_8];
+	var shuffleArrayUp = [];
+	var shuffleArrayDown = [];
+	for(var i=0; i<8; i++){
+		if(i<sadari.range){
+			if(check_up>0) {
+				shuffleArrayUp.push(inputArrayUp[shuffle1[i]]);
+			}else{
+				shuffleArrayUp.push(inputArrayUp[i]);
+			}
+			if(check_down>0) {
+				shuffleArrayDown.push(inputArrayDown[shuffle2[i]]);
+			}else{
+				shuffleArrayDown.push(inputArrayDown[i]);
+			}
+		}else{
+			shuffleArrayUp.push(inputArrayUp[i]);
+			shuffleArrayDown.push(inputArrayDown[i]);
+		}
+	}
+	sadari.input_1_1 = shuffleArrayUp[0];
+	sadari.input_1_2 = shuffleArrayUp[1];
+	sadari.input_1_3 = shuffleArrayUp[2];
+	sadari.input_1_4 = shuffleArrayUp[3];
+	sadari.input_1_5 = shuffleArrayUp[4];
+	sadari.input_1_6 = shuffleArrayUp[5];
+	sadari.input_1_7 = shuffleArrayUp[6];
+	sadari.input_1_8 = shuffleArrayUp[7];
+	sadari.input_2_1 = shuffleArrayDown[0];
+	sadari.input_2_2 = shuffleArrayDown[1];;
+	sadari.input_2_3 = shuffleArrayDown[2];;
+	sadari.input_2_4 = shuffleArrayDown[3];;
+	sadari.input_2_5 = shuffleArrayDown[4];;
+	sadari.input_2_6 = shuffleArrayDown[5];;
+	sadari.input_2_7 = shuffleArrayDown[6];;
+	sadari.input_2_8 = shuffleArrayDown[7];;
+	sadari.point1 = makePoint(false, null);
+	sadari.point2 = makePoint(true, sadari.point1);
+	sadari.point3 = makePoint(true, sadari.point2);
+	sadari.point4 = makePoint(true, sadari.point3);
+	sadari.point5 = makePoint(true, sadari.point4);
+	sadari.point6 = makePoint(true, sadari.point5);
+	sadari.point7 = makePoint(true, sadari.point6);
+	
+	var token = makeToken();
+	
+	sadariMap.put(token, sadari);
+	
+	return token;
+}
+
+function makeShuffle(range){
+	var array = [];
+	for(var i=0; i<range; i++){
+		array.push(i);
+	}
+	
+	for(var i=0; i<100; i++){
+		var rand1 = Math.floor(Math.random()*range);
+		var rand2 = Math.floor(Math.random()*range);
+		if(rand1 >= range || rand2 >= range) continue;
+		
+		var temp = array[rand1];
+		array[rand1] = array[rand2];
+		array[rand2] = temp;
+	}
+	
+	return array;
+}
+
+function makePoint(isExistLeft, pointl){
+	var point_num = 4 + Math.floor(Math.random()*1.8);
+	var point = [];
+	var point1 = [];
+	var point2 = [];
+	var br = 0;
+	
+	if(isExistLeft){
+		for(var i=0; i<point_num; i++){
+			var flag = true;
+			var addflag = true;
+			var temp, temp2;
+			br = 0;
+			while(true){
+				flag = true;
+				temp = Math.floor(Math.random()*100);
+				for(var j=0; j<point1.length; j++){
+					if(Math.abs(temp - point1[j])<10) flag = false; 
+				}
+				for(var j=1; j<pointl.length; j+=2){
+					if(Math.abs(temp - pointl[j])<5) flag = false;
+				}
+				if(flag){
+					break;
+				}
+				br++;
+				if(br>1000){
+					addflag = false; break;
+				}
+			}
+			br = 0;
+			while(true){
+				flag = true;
+				temp2 = temp + Math.floor(Math.random()*20) - 10;
+				for(var j=0; j<point2.length; j++){
+					if(Math.abs(temp2 - point2[j])<10) flag = false;
+				}
+				if(temp2<0 || temp2 > 100) flag = false;
+				if(flag){
+					break;
+				}
+				br++;
+				if(br>1000){
+					addflag = false; break;
+				}
+			}
+			if(addflag){
+				point1.push(temp);
+				point2.push(temp2);
+			}
+		}
+		point1.sort(function(a, b){return a-b;});
+		point2.sort(function(a, b){return a-b;});
+		
+		for(var i=0; i<point1.length; i++){
+			point.push(point1[i]);
+			point.push(point2[i]);
+		}
+		return point;
+	}else{
+		for(var i=0; i<point_num; i++){
+			var flag = true;
+			var addflag = true;
+			var temp, temp2;
+			br = 0;
+			while(true){
+				flag = true;
+				temp = Math.floor(Math.random()*100);
+				for(var j=0; j<point1.length; j++){
+					if(Math.abs(temp - point1[j])<10) flag = false; 
+				}
+				if(flag){
+					break;
+				}
+				br++;
+				if(br>1000){
+					addflag = false; break;
+				}
+			}
+			br = 0;
+			while(true){
+				flag = true;
+				temp2 = temp + Math.floor(Math.random()*20) - 10;
+				if(temp2<0 || temp2 > 100) flag = false;
+				for(var j=0; j<point2.length; j++){
+					if(Math.abs(temp2 - point2[j])<10) flag = false;
+				}
+				if(flag){
+					break;
+				}
+				br++;
+				if(br>1000){
+					addflag = false; break;
+				}
+			}
+			if(addflag){
+				point1.push(temp);
+				point2.push(temp2);
+			}
+		}
+		point1.sort(function(a, b){return a-b;});
+		point2.sort(function(a, b){return a-b;});
+		
+		for(var i=0; i<point1.length; i++){
+			point.push(point1[i]);
+			point.push(point2[i]);
+		}
+		return point;
+	}
+}
+
+
+function makeToken(){
+	var str = '';
+	for(var i=0; i<10; i++){
+		var num = Math.floor(Math.random() * 26);
+		switch(num){
+			case 0: str += 'A'; break;
+			case 1: str += 'B'; break;
+			case 2: str += 'C'; break;
+			case 3: str += 'D'; break;
+			case 4: str += 'E'; break;
+			case 5: str += 'F'; break;
+			case 6: str += 'G'; break;
+			case 7: str += 'H'; break;
+			case 8: str += 'I'; break;
+			case 9: str += 'J'; break;
+			case 10: str += 'K'; break;
+			case 11: str += 'L'; break;
+			case 12: str += 'M'; break;
+			case 13: str += 'N'; break;
+			case 14: str += 'O'; break;
+			case 15: str += 'P'; break;
+			case 16: str += 'Q'; break;
+			case 17: str += 'R'; break;
+			case 18: str += 'S'; break;
+			case 19: str += 'T'; break;
+			case 20: str += 'U'; break;
+			case 21: str += 'V'; break;
+			case 22: str += 'W'; break;
+			case 23: str += 'X'; break;
+			case 24: str += 'Y'; break;
+			case 25: str += 'Z'; break;
+		}
+	}
+	
+	return str;
+}
+
