@@ -14,7 +14,8 @@
 		<script src="/bokbulbok/GameSoundManager.js"></script>
         <script>
         	$(document).ready(function(){
-        		var sadari_num = 6;
+        		var sadari_num = 4;
+        		$('#input_range').html(sadari_num);
 				$('#rangeinput').on('change', function(){
 					var range = this.value;
 					$('#label_range2').html(range);
@@ -24,8 +25,16 @@
 				$("#tr_2_8").hide();
 				$("#tr_1_7").hide();
 				$("#tr_2_7").hide();
+				$("#tr_1_6").hide();
+				$("#tr_2_6").hide();
+				$("#tr_1_5").hide();
+				$("#tr_2_5").hide();
+				$("#input_1_5").attr('required', false);
+				$("#input_1_6").attr('required', false);
 				$("#input_1_7").attr('required', false);
 				$("#input_1_8").attr('required', false);
+				$("#input_2_5").attr('required', false);
+				$("#input_2_6").attr('required', false);
 				$("#input_2_7").attr('required', false);
 				$("#input_2_8").attr('required', false);
 				
@@ -137,8 +146,8 @@
     	<div class="container">
     		<div id="div_range">
     			<label id="label_range">사다리수</label>
-    			<input type="range" name="range" id="rangeinput" min="2" max="8" value="6" />
-    			<label id="label_range2">6</label>
+    			<input type="range" name="range" id="rangeinput" min="2" max="8" value="4" />
+    			<label id="label_range2">4</label>
     			<button id="btn_range">변경</button>
     		</div>
 			<div id="form_container">
@@ -238,7 +247,7 @@
 										<option value="3600000">1시간후</option>
 									</select>
 								</td>
-								<td><input type="hidden" id="input_range" name="input_range" value="6"/></td>
+								<td><input type="hidden" id="input_range" name="input_range" value="4"/></td>
 								<td><input type="hidden" id="input_check_up" name="input_check_up" value="0"/></td>
 								<td><input type="hidden" id="input_check_down" name="input_check_down" value="0"/></td>
 							</tr>
