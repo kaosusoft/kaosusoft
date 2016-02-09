@@ -128,13 +128,8 @@ app.get('/sadari_game/:token', function(request, response){
 	var token = request.params.token;
 	var data = sadariMap.get(token);
 	var date = new Date().getTime();
-	// this.open_timer = 0; this.range = 6; this.date = new Date().getTime();
-	// this.input_1_1 = ''; this.input_1_2 = ''; this.input_1_3 = ''; this.input_1_4 = ''; 
-	// this.input_1_5 = ''; this.input_1_6 = ''; this.input_1_7 = ''; this.input_1_8 = '';
-	// this.input_2_1 = ''; this.input_2_2 = ''; this.input_2_3 = ''; this.input_2_4 = '';
-	// this.input_2_5 = ''; this.input_2_6 = ''; this.input_2_7 = ''; this.input_2_8 = '';
-	// this.point1 = []; this.point2 = []; this.point3 = []; this.point4 = [];
-	// this.point5 = []; this.point6 = []; this.point7 = [];
+	
+	console.log(data);
 	if(date < (data.date + data.open_timer)){
 		var new_data = new sadari_data();
 		new_data.range = data.range;
