@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, user-scalable=no maximum-scale=1.0 initial-scale=1.0">
+        <title>가오수 World</title>
+		<link rel="stylesheet" href="/bokbulbok/stylesheet.css" />
+		<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+		<script src="/prefixfree.min.js"></script>
+		<script src="/jquery.cookie.js"></script>
+		<script src="../socket.io/socket.io.js"></script>
+		<script src="/bokbulbok/GameFrameCounter.js"></script>
+		<script src="/bokbulbok/GameObject.js"></script>
+		<script src="/bokbulbok/GameSoundManager.js"></script>
+        <script src="/bokbulbok/rulet.js"></script>
+    </head>
+    <body>
+		<div class="heading">
+      		<h1 class="title">가오수 룰렛</h1>
+    	</div>
+    	<canvas id="canvas" width="350" height="400" style="position: relative; top: 25px; left: 25px; margin-bottom: 20px">
+        	Sorry, Your browser doesn't support HTML5 Canvas.
+        </canvas>
+        <br />
+		<hr />
+		<p class="game-intro">항목을 추가할 수 있습니다.</p>
+        <input type="text" id="input_player" style="left: 25px; width: 300px" maxlength="5" placeholder="최대 5자까지 입력 가능합니다." onkeydown="javascript:if (event.keyCode == 13) player_input()"/>
+        <button id="btn_add">추가</button>
+    </body>
+</html>

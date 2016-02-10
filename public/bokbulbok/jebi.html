@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, user-scalable=no maximum-scale=1.0 initial-scale=1.0">
+        <title>가오수 World</title>
+		<link rel="stylesheet" href="/bokbulbok/stylesheet.css" />
+		<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+		<script src="/prefixfree.min.js"></script>
+		<script src="/jquery.cookie.js"></script>
+		<script src="../socket.io/socket.io.js"></script>
+		<script src="/bokbulbok/GameFrameCounter.js"></script>
+		<script src="/bokbulbok/GameObject.js"></script>
+		<script src="/bokbulbok/GameSoundManager.js"></script>
+		<script>
+			var data, date, valid, isCan;
+			$(document).ready(function(){
+				valid = $('#input_valid').val();
+				if(valid>0) {
+					isCan = false;
+				}
+				else {
+					isCan = true;
+				}
+				data = JSON.parse($('#input_data').val());
+				date = new Date().getTime();
+			});
+		</script>
+        <script src="/bokbulbok/bokbulbok.js"></script>
+    </head>
+    <body>
+		<div class="heading">
+      		<h1 class="title">가오수 사다리</h1>
+    	</div>
+    	<canvas id="canvas" width="350" height="400" style="position: relative; top: 25px; left: 25px; margin-bottom: 20px">
+        	Sorry, Your browser doesn't support HTML5 Canvas.
+        </canvas>
+		<input type="hidden" id="input_valid" value="<%= data.valid %>"/>
+		<input type="hidden" id="input_data" value="<%= data.play_data %>"/>
+    </body>
+</html>

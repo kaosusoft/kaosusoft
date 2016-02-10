@@ -167,6 +167,10 @@ app.get('/sadari_game/:token', function(request, response){
 	}
 });
 
+app.get('/roulette', function(request, response){
+	response.render('bokbulbok/rulet.html');
+});
+
 app.get('/bad_access', function(request, response){
 	response.render('bad_access.html');
 });
