@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko">
+	<head>
+		<title>중고차</title>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<script src="prefixfree.min.js"></script>
+		<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+		<link rel="stylesheet" href="/junggo/stylesheet.css" />
+		<script>
+			
+		</script>
+	</head>
+	<body>
+	<h1 class="h1_title1">중고차 추가</h1>
+	<div class="div_input">
+	<form method="post" enctype="multipart/form-data">
+		<fieldset class="field_car">
+			<legend align="center">차량 정보</legend>
+			<table class="tb_car">
+				<tr>
+					<td class="td_name"><label>모델명</label></td>
+					<td class="td_input"><input type="text" name="data2" /><br /><label class="label_hint">ex)[BMW] 5-Series 520d</label></td>
+				</tr>
+				<tr>
+					<td class="td_name"><label>가격</label></td>
+					<td class="td_input"><input type="number" name="data1" /><br /><label class="label_hint">ex) 3700</label></td>
+				</tr>
+				<tr>
+					<td class="td_name"><label>연식</label></td>
+					<td class="td_input"><select name="data3">
+						<option>2015</option>
+						<option>2014</option>
+						<option>2013</option>
+						<option>2012</option>
+						<option>2011</option>
+						<option>2010</option>
+						<option>2009</option>
+						<option>2008</option>
+						<option>2007</option>
+						<option>2006</option>
+						<option>2005</option>
+						<option>2004</option>
+						<option>2003</option>
+						<option>2002</option>
+						<option>2001</option>
+						<option>2000</option>
+					</select></td>
+				</tr>
+				<tr>
+					<td class="td_name"><label>최초등록일</label></td>
+					<td class="td_input"><input type="month" name="data11" /></td>
+				</tr>
+				<tr>
+					<td class="td_name"><label>주행거리</label></td>
+					<td class="td_input"><input type="number" name="data4" /><br /><label class="label_hint">ex) 160000</label></td>
+				</tr>
+				<tr>
+					<td class="td_name"><label>연료</label></td>
+					<td class="td_input"><select name="data5">
+						<option>휘발유</option>
+						<option>경유</option>
+						<option>LPG</option>
+					</select></td>
+				</tr>
+				<tr>
+					<td class="td_name"><label>변속기</label></td>
+					<td class="td_input"><select name="data6">
+						<option>오토</option>
+						<option>수동</option>
+					</select></td>
+				</tr>
+				<tr>
+					<td class="td_name"><label>색상</label></td>
+					<td class="td_input"><input type="text" name="data9" /><br /><label class="label_hint">ex) 흰색</label></td>
+				</tr>
+				<tr>
+					<td class="td_name"><label>차량번호</label></td>
+					<td class="td_input"><input type="text" name="data10" /><br /><label class="label_hint">ex) 12가3456</label></td>
+				</tr>
+				<tr>
+					<td class="td_name"><label>사고정보</label></td>
+					<td class="td_input"><select name="data7">
+						<option>완전무사고</option>
+						<option>무사고</option>
+						<option>단순교환</option>
+						<option>기타</option>
+					</select></td>
+				</tr>
+				<tr>
+					<td class="td_name"><label>기타사항</label></td>
+					<td class="td_input"><input type="text" name="data8" /><br /><label class="label_hint">ex) 올튜닝, 엔진계열 올수리, 1인신조, 여성운전자</label></td>
+				</tr>
+				<tr>
+					<td class="td_name"><label>차량사진</label></td>
+					<td class="td_input"><input style="width: 180px" type="file" name="image" /></td>
+				</tr>
+			</table>
+			<input class="input_submit" type="submit" />
+		</fieldset>
+	</form>
+	</div>
+	</body>
+</html>

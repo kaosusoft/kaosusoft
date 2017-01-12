@@ -1,0 +1,220 @@
+* {
+	margin: 0; padding: 0;
+	font-family: 'Mouse Memoirs', sans-serif;
+}
+
+html {
+	background: #ffffff;
+}
+
+html, body {
+	margin: 0;
+	padding: 0;
+	color: #776e65;
+	font-family: Arial;
+	font-size: 18px;
+}
+
+body {
+	position: relative;
+}
+
+.junggo_wrap{
+}
+
+#title{
+	background: #faf8ef;
+	font-family: 'Mouse Memoirs', sans-serif;
+}
+
+.junggo{
+	float: left;
+	margin: 5px;
+	width: 310px;
+	height: 850px;
+	border: 1px solid #000000;
+	border-radius: 10px;
+	position: absolute;
+}
+
+.h1_title{
+	width: 310px;
+	height: 25px;
+	color: #000000;
+	margin-top: 10px;
+	text-align: center;
+	position: absolute;
+	float: left;
+}
+
+.h2_junggo_name{
+	width: 310px;
+	height: 30px;
+	margin-top: 10px;
+	text-align: center;
+	font-size: 18px;
+	color: #000000;
+	position: absolute;
+}
+
+.h4_junggo_age{
+	width: 240px;
+	height: 30px;
+	margin-left: 57px;
+	margin-top: 470px;
+	text-align: right;
+	color: #000000;
+	position: absolute;
+}
+
+.h2_junggo_kilo{
+	width: 270px;
+	height: 30px;
+	margin-left: 26px;
+	margin-top: 510px;
+	text-align: right;
+	color: orange;
+	position: absolute;
+}
+
+.h4_junggo_mission{
+	width: 160px;
+	height: 30px;
+	margin-left: 136px;
+	margin-top: 560px;
+	text-align: right;
+	color: #000000;
+	position: absolute;
+}
+
+.h4_junggo_color{
+	width: 180px;
+	height: 30px;
+	margin-left: 116px;
+	margin-top: 605px;
+	text-align: right;
+	color: #000000;
+	position: absolute;
+}
+
+.h3_junggo_acc{
+	width: 150px;
+	height: 30px;
+	margin-left: 146px;
+	margin-top: 650px;
+	text-align: right;
+	color: #FA6900;
+	position: absolute;
+}
+
+.h3_junggo_acc2{
+	width: 290px;
+	height: 30px;
+	margin-left: 6px;
+	margin-top: 690px;
+	text-align: right;
+	color: #FA6900;
+	position: absolute;
+}
+
+.h1_junggo_price{
+	width: 240px;
+	height: 30px;
+	margin-left: 60px;
+	margin-top: 400px;
+	text-align: right;
+	color: #FF0000;
+	position: absolute;
+}
+
+.img_junggo{
+	width: 300px;
+	height: 300px;
+	margin-top: 50px;
+	margin-left: 10px;
+	border-radius: 10px;
+	position: absolute;
+}
+
+.a_junggo_show{
+	margin-top: 355px;
+	margin-left: 130px;
+	position: absolute;
+}
+
+.h5_junggo_age{
+	width: 80px;
+	height: 30px;
+	margin-left: 5px;
+	margin-top: 475px;
+	text-align: center;
+	font-size: 12px;
+	color: #000000;
+	position: absolute;
+}
+
+.h5_junggo_price{
+	width: 80px;
+	height: 30px;
+	margin-left: 5px;
+	margin-top: 420px;
+	text-align: center;
+	font-size: 12px;
+	color: #000000;
+	position: absolute;
+}
+
+.h5_junggo_kilo{
+	width: 80px;
+	height: 30px;
+	margin-left: 5px;
+	margin-top: 520px;
+	text-align: center;
+	font-size: 12px;
+	color: #000000;
+	position: absolute;
+}
+
+.h5_junggo_oil{
+	width: 80px;
+	height: 30px;
+	margin-left: 5px;
+	margin-top: 565px;
+	text-align: center;
+	font-size: 12px;
+	color: #000000;
+	position: absolute;
+}
+
+.h5_junggo_color{
+	width: 80px;
+	height: 30px;
+	margin-left: 5px;
+	margin-top: 610px;
+	text-align: center;
+	font-size: 12px;
+	color: #000000;
+	position: absolute;
+}
+
+.h5_junggo_acc{
+	width: 80px;
+	height: 30px;
+	margin-left: 5px;
+	margin-top: 657px;
+	text-align: center;
+	font-size: 12px;
+	color: #000000;
+	position: absolute;
+}
+
+.h1_ps{
+	width: 300px;
+	height: 50px;
+	margin-left: 10px;
+	margin-top: 780px;
+	text-align: center;
+	font-size: 18px;
+	color: #000000;
+	position: absolute;
+}

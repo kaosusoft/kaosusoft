@@ -95,6 +95,24 @@ app.get('/kaosu', function(request, response){
 	});
 });
 
+app.get('/sherlock', function(request, response){
+	//response.render('sherlock/sherlock.html');
+	client.query('SELECT * from sherlock order by date desc', function(error, result, fields){
+			if(error){
+				
+			}else{
+				if(result.length>0){
+					console.log(result);
+					response.render('sherlock/sherlock.html', {
+						data: result
+					});
+				}else{
+					
+				}
+			}
+		});
+});
+
 app.get('/random', function(request, response){
 	response.render('bokbulbok/index.html');
 });
@@ -693,6 +711,30 @@ io.sockets.on('connection', function(socket){
 		mPlayer.disconnectPlayer(data);
 		socket.leave('lobby');
 		io.sockets.in('lobby').emit('lobby_player_update', mPlayer.getLobbyPlayerSimple());
+	});
+	
+	socket.on('sherlock_coupon_insert', function(data){
+		console.log(data);
+		var middle = data.middle;
+		var last = data.last;
+		var date = data.date;
+		var theme = data.theme;
+		var dc = data.dc;
+		var success = data.success;
+		var score = 20;
+		if(dc == 0) score += 5;
+		if(success == 0) score += 5;
+		console.log("score : "+score);
+		
+		// num1 = dc, num2 = success, num5 = score
+		client.query('INSERT INTO sherlock (name, middle, last, date, theme, data1, data2, data3, data4, data5, num1, num2, num3, num4, num5) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', ['', middle, last,String(date), theme, '', '', '', '', '', dc, success, 0, 0,score], function(error, result, fields){
+			if(error){
+				console.log(error);
+				socket.emit('sherlock_error');
+			}else{
+				socket.emit('sherlock_success');
+			}
+		});
 	});
 	
 	socket.on('disconnect', function(){
