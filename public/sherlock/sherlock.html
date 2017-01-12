@@ -39,17 +39,52 @@
 				
 				$('.p_time').text(datefunc());
 				
+				$('#btn_search').click(function(){
+					var middle = $('#input_middle2').val();
+					var last = $('#input_last2').val();
+					
+					if(checkNumber(middle)){
+						
+					}else{
+						alert('전화번호 가운데자리 4자리를 입력하세요.');
+						return;
+					}
+					if(checkNumber(last)){
+						
+					}else{
+						alert('전화번호 뒷자리 4자리를 입력하세요.');
+						return;
+					}
+					
+					var urlstring = middle+last;
+					
+					<% if(test==true){ %>
+						window.open('http://127.0.0.1:8002/sherlocksearch/'+urlstring, 'child', 'width=540, height=240', true);
+					<% }else{ %>
+						window.open('http://kaosu.kr/sherlocksearch/'+urlstring, 'child', 'width=540, height=240', true);
+					<% } %>
+					
+					// socket.emit('sherlock_coupon_search', {
+						// middle: middle,
+						// last: last
+					// });
+				});
+				
 				$('#btn_ok').click(function(){
 					var middle = $('#input_middle').val();
 					var last = $('#input_last').val();
 					var a = $('#select_theme').val();
 					
-					if(middle.length==0){
-						alert('전화번호를 입력하세요.');
+					if(checkNumber(middle)){
+						
+					}else{
+						alert('전화번호 가운데자리 4자리를 입력하세요.');
 						return;
 					}
-					if(last.length==0){
-						alert('전화번호를 입력하세요.');
+					if(checkNumber(last)){
+						
+					}else{
+						alert('전화번호 뒷자리 4자리를 입력하세요.');
 						return;
 					}
 					
@@ -156,6 +191,15 @@
 						case 1: $(this).text('실패.'); break;
 					}
 				});
+				
+				function checkNumber(str){
+					var filter = /^[0-9]{4,4}$/;
+					if(filter.test(str)){
+						return true;
+					}else{
+						return false;
+					}
+				}
 			});
 				
 			$(document).unload(function(){
@@ -169,30 +213,41 @@
     	</div>
     	<p class="game-intro">쿠폰적립 시스템!</p>
     	<div class="div_coupon">
-    		<label>010-</label>
-    		<input type="text" id="input_middle" name="input_middle" required/>
-    		<label>-</label>
-    		<input type="text" id="input_last" name="input_last" required/>
-    		<hr />
-    		<p class="p_time">2017년 1월 11일 19시 20분</p>
-    		<select name="select_theme" id="select_theme">
-				<option value="1">웨딩크루즈</option>
-				<option value="2">스토커</option>
-				<option value="3">고흐의방</option>
-				<option value="4">위험한레시피</option>
-				<option value="5">저주받은집</option>
-				<option value="6">화이트의죽음</option>
-			</select>
-			<select name="select_dc" id="select_dc">
-				<option value="0">할인받지않음</option>
-				<option value="1">할인받음</option>
-			</select>
-			<select name="select_success" id="select_success">
-				<option value="0">성공</option>
-				<option value="1">실패</option>
-			</select>
-    		<hr />
-    		<button id="btn_ok" class="btn_ok">적립하기</button>
+    		<div class="div_coupon_sub">
+	    		<label>010-</label>
+	    		<input type="text" id="input_middle" name="input_middle" required/>
+	    		<label>-</label>
+	    		<input type="text" id="input_last" name="input_last" required/>
+	    		<hr />
+	    		<p class="p_time">2017년 1월 11일 19시 20분</p>
+	    		<select name="select_theme" id="select_theme">
+					<option value="1">웨딩크루즈</option>
+					<option value="2">스토커</option>
+					<option value="3">고흐의방</option>
+					<option value="4">위험한레시피</option>
+					<option value="5">저주받은집</option>
+					<option value="6">화이트의죽음</option>
+				</select>
+				<select name="select_dc" id="select_dc">
+					<option value="0">할인받지않음</option>
+					<option value="1">할인받음</option>
+				</select>
+				<select name="select_success" id="select_success">
+					<option value="0">성공</option>
+					<option value="1">실패</option>
+				</select>
+	    		<hr />
+	    		<button id="btn_ok" class="btn_ok">적립하기</button>
+	    	</div>
+	    	<br />
+	    	<br />
+	    	<div class="div_search">
+	    		<label>010-</label>
+	    		<input type="text" id="input_middle2" name="input_middle2" />
+	    		<input type="text" id="input_last2" name="input_last2" />
+	    		<button id="btn_search" class="btn_search">검색하기</button>
+	    	</div>
+	    	<br />
     		<% if(data.length>0){ %>
     		<% data.forEach(function(item, index){ %>
     			<div class="div_sherloc_list">

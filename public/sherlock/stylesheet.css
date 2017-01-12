@@ -40,6 +40,28 @@ h1.title {
 	width:450px;
 }
 
+.div_coupon_sub{
+	border: 1px solid #000000;
+	padding: 10px;
+}
+
+.div_search{
+	border: 1px solid #000000;
+	padding: 10px;
+}
+
+#input_middle2{
+	width: 100px;
+}
+
+#input_last2{
+	width: 100px;
+}
+
+.btn_search{
+	
+}
+
 .div_sherloc_list{
 	margin-top: 10px;
 	padding: 10px;
@@ -55,6 +77,10 @@ p {
   margin-top: 0;
   margin-bottom: 5px;
   line-height: 1.65; }
+  
+  .game-intro{
+  	font-size: 2em;
+  }
 
 a {
 	margin-left: 100px;

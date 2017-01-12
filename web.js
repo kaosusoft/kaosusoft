@@ -98,21 +98,52 @@ app.get('/kaosu', function(request, response){
 app.get('/sherlock', function(request, response){
 	//response.render('sherlock/sherlock.html');
 	client.query('SELECT * from sherlock order by date desc', function(error, result, fields){
-			if(error){
-				
+		if(error){
+			console.log('error');
+		}else{
+			if(result.length>0){
+				console.log(result);
+				response.render('sherlock/sherlock.html', {
+					data: result,
+					test: test
+				});
 			}else{
-				if(result.length>0){
-					console.log(result);
-					response.render('sherlock/sherlock.html', {
-						data: result
-					});
-				}else{
-					response.render('sherlock/sherlock.html', {
-						data: {}
-					});
-				}
+				response.render('sherlock/sherlock.html', {
+					data: {},
+					test: test
+				});
 			}
-		});
+		}
+	});
+});
+
+app.get('/sherlocksearch/:number', function(request, response){
+	var number = request.params.number;
+	console.log(number);
+	var middle = number.substring(0,4);
+	var last = number.substring(4,8);
+	console.log("number : "+number);
+	console.log("middle : "+middle);
+	console.log("last : "+last);
+	client.query('SELECT * from sherlock where middle=? and last=? order by date desc',[middle, last], function(error, result, fields){
+		if(error){
+			console.log('error');
+		}else{
+			if(result.length>0){
+				console.log(result);
+				response.render('sherlock/sherlocksearch.html', {
+					data: result,
+					test: test
+				});
+			}else{
+				console.log(result);
+				response.render('sherlock/sherlocksearch.html', {
+					data: {},
+					test: test
+				});
+			}
+		}
+	});
 });
 
 app.get('/random', function(request, response){
@@ -713,6 +744,20 @@ io.sockets.on('connection', function(socket){
 		mPlayer.disconnectPlayer(data);
 		socket.leave('lobby');
 		io.sockets.in('lobby').emit('lobby_player_update', mPlayer.getLobbyPlayerSimple());
+	});
+	
+	socket.on('sherlock_coupon_search', function(data){
+		console.log(data);
+		var middle = data.middle;
+		var last = data.last;
+		
+		client.query('SELECT * from sherlock where middle = ? and last = ?', [data.middle, data.last], function(error, result, fields){
+			if(error){
+				
+			}else{
+				
+			}
+		});
 	});
 	
 	socket.on('sherlock_coupon_insert', function(data){
