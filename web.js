@@ -107,7 +107,9 @@ app.get('/sherlock', function(request, response){
 						data: result
 					});
 				}else{
-					
+					response.render('sherlock/sherlock.html', {
+						data: {}
+					});
 				}
 			}
 		});

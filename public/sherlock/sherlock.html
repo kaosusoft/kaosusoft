@@ -193,6 +193,7 @@
 			</select>
     		<hr />
     		<button id="btn_ok" class="btn_ok">적립하기</button>
+    		<% if(data.length>0){ %>
     		<% data.forEach(function(item, index){ %>
     			<div class="div_sherloc_list">
 	    			<h2 class="h2_list_phone"><%= item.middle %>-<%= item.last %>님</h2>
@@ -204,6 +205,7 @@
 	    			<label class="label_list_score"><%= item.num5 %>점</label>
 				</div>
     			<% }); %>
+    		<% } %>
     	</div>
         <br />
     </body>
