@@ -784,6 +784,22 @@ io.sockets.on('connection', function(socket){
 		});
 	});
 	
+	socket.on('sherlock_coupon_delete', function(data){
+		console.log(data);
+		var id = data.id;
+		
+		// num1 = dc, num2 = success, num5 = score
+		client.query('delete from sherlock where id=?', id, function(error, result, fields){
+			if(error){
+				console.log(error);
+				socket.emit('sherlock_error');
+			}else{
+				console.log('delete success');
+				socket.emit('sherlock_coupon_delete_success');
+			}
+		});
+	});
+	
 	socket.on('disconnect', function(){
 		// quoridor.quoridorExit(socket);
 	});

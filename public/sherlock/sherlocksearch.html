@@ -4,7 +4,7 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, user-scalable=no maximum-scale=1.0 initial-scale=1.0">
         <title>셜록홈즈 일산점</title>
-		<link rel="stylesheet" href="/sherlock/stylesheet.css" />
+		<link rel="stylesheet" href="/sherlock/stylesheet2.css" />
 		<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
 		<script src="/prefixfree.min.js"></script>
 		<script src="/jquery.cookie.js"></script>
@@ -13,27 +13,11 @@
 		<script src="/sherlock/GameObject.js"></script>
 		<script src="/sherlock/GameSoundManager.js"></script>
 		<script>
-			// var socket = undefined;
+			var socket = undefined;
 // 			
-			// $(document).ready(function(){
-				// socket = io.connect();
-// 				
-				// var datefunc = function(){
-					// var date = new Date();
-					// var dateString = '';
-					// dateString += (date.getYear()+1900) +'년 ';
-					// dateString += (date.getMonth()+1) + '월 ';
-					// dateString += date.getDate() + '일 ';
-					// if(date.getHours() < 12) dateString += '오전 ';
-					// else dateString += '오후 ';
-					// if(date.getHours()%12 == 0) dateString += '12시 ';
-					// else dateString += (date.getHours()%12) + '시 ';
-					// if(date.getMinutes()<10) dateString += '0';
-					// dateString += date.getMinutes() + '분 ';
-					// if(date.getSeconds()<10) dateString += '0';
-					// dateString += date.getSeconds() + '초';
-					// return dateString;
-				// };
+			$(document).ready(function(){
+				socket = io.connect();
+				
 				// var date = new Date();
 				// var dateTime = date.getTime();
 // 				
@@ -131,86 +115,128 @@
 					// location.reload();
 				// });
 // 				
-				// $('.label_list_date').each(function(index){
-					// var dateTime = Number($(this).text());
-					// var date = new Date(dateTime);
-// 					
-					// var dateString = '';
-					// dateString += (date.getYear()+1900) +'년 ';
-					// dateString += (date.getMonth()+1) + '월 ';
-					// dateString += date.getDate() + '일 ';
-					// if(date.getHours() < 12) dateString += '오전 ';
-					// else dateString += '오후 ';
-					// if(date.getHours()%12 == 0) dateString += '12시 ';
-					// else dateString += (date.getHours()%12) + '시 ';
-					// if(date.getMinutes()<10) dateString += '0';
-					// dateString += date.getMinutes() + '분, ';
-// 					
-					// $(this).text(dateString);
-				// });
-// 				
-				// $('.label_list_theme').each(function(index){
-					// var theme = Number($(this).text());
-// 						
-					// switch(theme){
-						// case 1: $(this).text('웨딩크루즈, '); break;
-						// case 2: $(this).text('스토커, '); break;
-						// case 3: $(this).text('고흐의 방, '); break;
-						// case 4: $(this).text('위험한 레시피, '); break;
-						// case 5: $(this).text('저주받은 집, '); break;
-						// case 6: $(this).text('화이트의 죽음, '); break;
-					// }
-				// });
-// 				
-				// $('.label_list_dc').each(function(index){
-					// var dc = Number($(this).text());
-// 						
-					// switch(dc){
-						// case 0: $(this).text('할인받지않음, '); break;
-						// case 1: $(this).text('할인받음, '); break;
-					// }
-				// });
-// 				
-				// $('.label_list_success').each(function(index){
-					// var success = Number($(this).text());
-// 						
-					// switch(success){
-						// case 0: $(this).text('성공.'); break;
-						// case 1: $(this).text('실패.'); break;
-					// }
-				// });
-// 				
-				// function checkNumber(str){
-					// var filter = /^[0-9]{4,4}$/;
-					// if(filter.test(str)){
-						// return true;
-					// }else{
-						// return false;
-					// }
-				// }
-			// });
-// 				
-			// $(document).unload(function(){
-				// if (socket != undefined) socket.disconnect();
-			// });
+				$('.label_list_date').each(function(index){
+					var dateTime = Number($(this).text());
+					var date = new Date(dateTime);
+					
+					var dateString = '';
+					dateString += (date.getYear()+1900) +'년 ';
+					dateString += (date.getMonth()+1) + '월 ';
+					dateString += date.getDate() + '일 ';
+					if(date.getHours() < 12) dateString += '오전 ';
+					else dateString += '오후 ';
+					if(date.getHours()%12 == 0) dateString += '12시 ';
+					else dateString += (date.getHours()%12) + '시 ';
+					if(date.getMinutes()<10) dateString += '0';
+					dateString += date.getMinutes() + '분, ';
+					
+					$(this).text(dateString);
+				});
+				
+				$('.label_list_theme').each(function(index){
+					var theme = Number($(this).text());
+						
+					switch(theme){
+						case 1: $(this).text('웨딩크루즈, '); break;
+						case 2: $(this).text('스토커, '); break;
+						case 3: $(this).text('고흐의 방, '); break;
+						case 4: $(this).text('위험한 레시피, '); break;
+						case 5: $(this).text('저주받은 집, '); break;
+						case 6: $(this).text('화이트의 죽음, '); break;
+					}
+				});
+				
+				$('.label_list_dc').each(function(index){
+					var dc = Number($(this).text());
+						
+					switch(dc){
+						case 0: $(this).text('할인받지않음, '); break;
+						case 1: $(this).text('할인받음, '); break;
+					}
+				});
+				
+				$('.label_list_success').each(function(index){
+					var success = Number($(this).text());
+						
+					switch(success){
+						case 0: $(this).text('성공.'); break;
+						case 1: $(this).text('실패.'); break;
+					}
+				});
+				
+				var total = 0;
+				
+				$('.label_list_score').each(function(index){
+					total += Number($(this).text());
+						
+					$(this).text($(this).text()+'점');
+				});
+				
+				$('.h2_list_phone').each(function(index){
+					$('.game-intro').text($(this).text());
+				});
+				
+				if(totla > 0){
+					$('.game-intro').text($('.game-intro').text()+'의 점수 : '+total+'점');
+				}else{
+					$('.game-intro').text('일치하는 정보가 없습니다.');
+				}
+				
+				$('.btn_edit').each(function(index){
+					$(this).click(function(){
+						if(confirm('수정하시겠습니까?')){
+							// location = "/junggodelete/"+$(this).data('x');
+							alert('아직 기능을 안만들었어요~');
+							location.reload();
+						}
+					});
+				});
+				
+				$('.btn_delete').each(function(index){
+					$(this).click(function(){
+						if(confirm('삭제하시겠습니까?')){
+							var id = $(this).data('x');
+							socket.emit('sherlock_coupon_delete', {
+								id: id
+							});
+						}
+					});
+				});
+				
+				socket.on('sherlock_error', function(){
+					alert('에러가 발생하였습니다.');
+				});
+				
+				socket.on('sherlock_coupon_delete_success', function(){
+					alert('삭제하였습니다.');
+					location.reload();
+				});
+			});
+				
+			$(document).unload(function(){
+				if (socket != undefined) socket.disconnect();
+			});
 		</script>
     </head>
     <body>
 		<div class="heading">
-      		<h1 class="title">셜록홈즈 일산점</h1>
+      		<h1 class="title">셜록홈즈 일산점 마일리지</h1>
     	</div>
-    	<p class="game-intro">쿠폰적립 시스템!</p>
+    	<p class="game-intro">일치하는 정보가 없습니다.</p>
     	<div class="div_coupon">
     		<% if(data.length>0){ %>
     		<% data.forEach(function(item, index){ %>
     			<div class="div_sherloc_list">
-	    			<h2 class="h2_list_phone"><%= item.middle %>-<%= item.last %>님</h2>
+    				<h2 class="h2_list_id" style="display: none"><%= item.id %></h2>
+	    			<h2 class="h2_list_phone" style="display: none"><%= item.middle %>-<%= item.last %>님</h2>
 	    			<label class="label_list_date"><%= item.date %></label>
 	    			<label class="label_list_theme"><%= item.theme %></label>
 	    			<label class="label_list_dc"><%= item.num1 %></label>
 	    			<label class="label_list_success"><%= item.num2 %></label>
 	    			<br/>
-	    			<label class="label_list_score"><%= item.num5 %>점</label>
+	    			<label class="label_list_score"><%= item.num5 %></label>
+	    			<button class="btn_edit" data-x='<%= item.id %>'>수정</button>
+	    			<button class="btn_delete" data-x='<%= item.id %>'>삭제</button>
 				</div>
     			<% }); %>
     		<% } %>

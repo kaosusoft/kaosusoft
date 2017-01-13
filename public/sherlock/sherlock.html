@@ -59,9 +59,10 @@
 					var urlstring = middle+last;
 					
 					<% if(test==true){ %>
-						window.open('http://127.0.0.1:8002/sherlocksearch/'+urlstring, 'child', 'width=540, height=240', true);
+						window.open('http://127.0.0.1:8002/sherlocksearch/'+urlstring, 'child', 'width=720, height=480', true);
 					<% }else{ %>
-						window.open('http://kaosu.kr/sherlocksearch/'+urlstring, 'child', 'width=540, height=240', true);
+						window.open('http://kaosu.kr/sherlocksearch/'+urlstring, 'child', 'width=960, height=480, scrollbars=true', true);
+						
 					<% } %>
 					
 					// socket.emit('sherlock_coupon_search', {

@@ -1,0 +1,153 @@
+* {
+	font-family: 'NanumBarunGothicBold';
+}
+
+html, body {
+	margin: 0;
+	padding: 0;
+	background: #faf8ef;
+	color: #776e65;
+	font-family: Arial;
+	font-size: 12px;
+	width: 960px;
+	position: absolute;
+}
+
+body {
+	margin: 20px 0;
+}
+
+.heading{
+	float:none;
+	margin-left: 100px;
+}
+
+.heading:after {
+
+}
+
+h1.title {
+  font-size: 3em;
+  font-weight: bold;}
+
+.scores-container {
+	float: right;
+	text-align: right; 
+}
+
+.div_coupon{
+	margin-left:100px;
+	width:450px;
+}
+
+.div_coupon_sub{
+	border: 1px solid #000000;
+	padding: 10px;
+}
+
+.div_search{
+	border: 1px solid #000000;
+	padding: 10px;
+}
+
+#input_middle2{
+	width: 100px;
+}
+
+#input_last2{
+	width: 100px;
+}
+
+.btn_search{
+	
+}
+
+.div_sherloc_list{
+	margin-top: 10px;
+	padding: 10px;
+	border: 1px solid #000000;
+}
+
+.label_list_score{
+	font-size: 2em;
+}
+
+p {
+	text-align: center;
+  margin-top: 0;
+  margin-bottom: 5px;
+  line-height: 1.65; }
+  
+  .game-intro{
+  	font-size: 2em;
+  	text-align: left;
+  	margin-left: 150px;
+  }
+
+a {
+	margin-left: 100px;
+  color: #776e65;
+  font-weight: bold;
+  text-decoration: underline;
+  cursor: pointer; }
+
+hr {
+  border: none;
+  border-bottom: 2px solid #d8d4d0;
+  margin-top: 20px; }
+
+.game_tile {
+	overflow: hidden;
+	position: relative;
+	margin-top: 40px;
+	width: 500px;
+	height: 500px;
+	background: #bbada0;
+	border-radius: 6px;
+	box-sizing: border-box; 
+}
+
+@font-face {
+	font-family: 'Nanum';
+	src: local('NanumBarunGothic'), 
+	url('NanumBarunGothic.eot'),
+	url('NanumBarunGothic.ttf'),
+	url('NanumGothic.woff');
+}
+
+.div_random{
+	width: 320px;
+	position: relative;
+}
+
+.btn_random{
+	margin-left: 10%;
+	margin-top: 20px;
+	width: 80%;
+	height: 100px;
+}
+
+#label_range{
+	margin-left: 5px;
+	width: 10%;
+}
+
+#label_range2{
+	margin-left: 5px;
+	width: 10%;
+	font-size: 2em;
+}
+
+#rangeinput{
+	margin-left: 5px;
+	width: 50%;
+}
+
+#btn_range{
+	margin-left: 5px;
+	width: 15%;
+}
+
+.label_num{
+	width: 150px;
+}
