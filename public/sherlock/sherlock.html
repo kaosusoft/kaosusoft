@@ -140,7 +140,7 @@
 				});
 				
 				socket.on('sherlock_success', function(){
-					alert('성공하였습니다.');
+					alert('등록에 성공하였습니다.');
 					location.reload();
 				});
 				
@@ -162,19 +162,6 @@
 					$(this).text(dateString);
 				});
 				
-				$('.label_list_theme').each(function(index){
-					var theme = Number($(this).text());
-						
-					switch(theme){
-						case 1: $(this).text('웨딩크루즈, '); break;
-						case 2: $(this).text('스토커, '); break;
-						case 3: $(this).text('고흐의 방, '); break;
-						case 4: $(this).text('위험한 레시피, '); break;
-						case 5: $(this).text('저주받은 집, '); break;
-						case 6: $(this).text('화이트의 죽음, '); break;
-					}
-				});
-				
 				$('.label_list_dc').each(function(index){
 					var dc = Number($(this).text());
 						
@@ -190,6 +177,24 @@
 					switch(success){
 						case 0: $(this).text('성공.'); break;
 						case 1: $(this).text('실패.'); break;
+					}
+				});
+				
+				$('.label_list_theme').each(function(index){
+					var theme = Number($(this).text());
+					if(theme < 1){
+						$('.label_list_dc').eq(index).text('');
+						$('.label_list_success').eq(index).text('');
+					}
+					
+					switch(theme){
+						case 0: $(this).text('상품 증정.'); break;
+						case 1: $(this).text('웨딩크루즈, '); break;
+						case 2: $(this).text('스토커, '); break;
+						case 3: $(this).text('고흐의 방, '); break;
+						case 4: $(this).text('위험한 레시피, '); break;
+						case 5: $(this).text('저주받은 집, '); break;
+						case 6: $(this).text('화이트의 죽음, '); break;
 					}
 				});
 				

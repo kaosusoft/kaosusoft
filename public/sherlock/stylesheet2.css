@@ -107,6 +107,13 @@ hr {
 	box-sizing: border-box; 
 }
 
+#btn_jeju{
+	width: 100px;
+	height: 50px;
+	margin-left: 450px;
+	margin-top: 10px;
+}
+
 @font-face {
 	font-family: 'Nanum';
 	src: local('NanumBarunGothic'), 

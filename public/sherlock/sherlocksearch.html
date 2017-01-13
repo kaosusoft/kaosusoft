@@ -133,19 +133,6 @@
 					$(this).text(dateString);
 				});
 				
-				$('.label_list_theme').each(function(index){
-					var theme = Number($(this).text());
-						
-					switch(theme){
-						case 1: $(this).text('웨딩크루즈, '); break;
-						case 2: $(this).text('스토커, '); break;
-						case 3: $(this).text('고흐의 방, '); break;
-						case 4: $(this).text('위험한 레시피, '); break;
-						case 5: $(this).text('저주받은 집, '); break;
-						case 6: $(this).text('화이트의 죽음, '); break;
-					}
-				});
-				
 				$('.label_list_dc').each(function(index){
 					var dc = Number($(this).text());
 						
@@ -164,6 +151,24 @@
 					}
 				});
 				
+				$('.label_list_theme').each(function(index){
+					var theme = Number($(this).text());
+					if(theme < 1){
+						$('.label_list_dc').eq(index).text('');
+						$('.label_list_success').eq(index).text('');
+					}
+						
+					switch(theme){
+						case 0: $(this).text('상품 증정.'); break;
+						case 1: $(this).text('웨딩크루즈, '); break;
+						case 2: $(this).text('스토커, '); break;
+						case 3: $(this).text('고흐의 방, '); break;
+						case 4: $(this).text('위험한 레시피, '); break;
+						case 5: $(this).text('저주받은 집, '); break;
+						case 6: $(this).text('화이트의 죽음, '); break;
+					}
+				});
+				
 				var total = 0;
 				
 				$('.label_list_score').each(function(index){
@@ -179,13 +184,33 @@
 				if(total > 0){
 					$('.game-intro').text($('.game-intro').text()+'의 점수 : '+total+'점');
 				}else{
-					$('.game-intro').text('일치하는 정보가 없습니다.');
+					$('.game-intro').text($('.game-intro').text()+'의 점수 : '+'0점');
 				}
+				
+				if(total < 100){
+					var btn_jeju = document.getElementById('btn_jeju');
+					btn_jeju.disabled = true;
+				}else{
+					var btn_jeju = document.getElementById('btn_jeju');
+					btn_jeju.disabled = false;
+				}
+				
+				$('#btn_jeju').click(function(){
+					var middle = $('.h2_list_middle').first().text();
+					var last = $('.h2_list_last').first().text();
+					
+					socket.emit('sherlock_coupon_insert_jeju', {
+						middle: middle,
+						last: last
+					});
+					
+					var btn_jeju = document.getElementById('btn_jeju');
+					btn_jeju.disabled = true;
+				});
 				
 				$('.btn_edit').each(function(index){
 					$(this).click(function(){
 						if(confirm('수정하시겠습니까?')){
-							// location = "/junggodelete/"+$(this).data('x');
 							alert('아직 기능을 안만들었어요~');
 							location.reload();
 						}
@@ -208,7 +233,7 @@
 				});
 				
 				socket.on('sherlock_coupon_delete_success', function(){
-					alert('삭제하였습니다.');
+					alert('완료하였습니다.');
 					location.reload();
 				});
 			});
@@ -228,6 +253,8 @@
     		<% data.forEach(function(item, index){ %>
     			<div class="div_sherloc_list">
     				<h2 class="h2_list_id" style="display: none"><%= item.id %></h2>
+    				<h2 class="h2_list_middle" style="display: none"><%= item.middle %></h2>
+    				<h2 class="h2_list_last" style="display: none"><%= item.last %></h2>
 	    			<h2 class="h2_list_phone" style="display: none"><%= item.middle %>-<%= item.last %>님</h2>
 	    			<label class="label_list_date"><%= item.date %></label>
 	    			<label class="label_list_theme"><%= item.theme %></label>
@@ -241,6 +268,7 @@
     			<% }); %>
     		<% } %>
     	</div>
+    	<button id="btn_jeju">상품 증정</button>
         <br />
     </body>
 </html>

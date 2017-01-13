@@ -784,6 +784,28 @@ io.sockets.on('connection', function(socket){
 		});
 	});
 	
+	socket.on('sherlock_coupon_insert_jeju', function(data){
+		console.log(data);
+		var middle = data.middle;
+		var last = data.last;
+		var date = new Date();
+		var dateTime = date.getTime();
+		var theme = 0;
+		var dc = 0;
+		var success = 0;
+		var score = -100;
+		
+		// num1 = dc, num2 = success, num5 = score
+		client.query('INSERT INTO sherlock (name, middle, last, date, theme, data1, data2, data3, data4, data5, num1, num2, num3, num4, num5) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', ['', middle, last,String(dateTime), theme, '', '', '', '', '', dc, success, 0, 0,score], function(error, result, fields){
+			if(error){
+				console.log(error);
+				socket.emit('sherlock_error');
+			}else{
+				socket.emit('sherlock_coupon_delete_success');
+			}
+		});
+	});
+	
 	socket.on('sherlock_coupon_delete', function(data){
 		console.log(data);
 		var id = data.id;
