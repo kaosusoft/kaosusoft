@@ -145,7 +145,7 @@ $(document).ready(function(){
 	socket.on('sherlockTimerSet5', function(data){
 		timeMode5 = 1;
 		time5 = Number(data);
-		canBtn1 = true;
+		canBtn5 = true;
 	});
 	
 	socket.on('sherlockTimerSet6', function(data){
@@ -161,7 +161,6 @@ $(document).ready(function(){
 	});
 	
 	socket.on('sherlockTimerReset2', function(data){
-		console.log('reset2');
 		timeMode2 = 0;
 		canBtn2 = true;
 		timeGap2 = 0;
@@ -237,7 +236,6 @@ function mouseClick(){
 			canBtn2 = false;
 		}
 	}else if(mousePoint == 4 && canBtn2){
-		console.log('reset');
 		if(timeMode2 == 1){
 			socket.emit('sherlockTimerReset',{
 				number : 2
@@ -434,12 +432,12 @@ function Render()
 	Context.fillText('리셋', 112, 213);
 	Context.fillText('리셋', 272, 213);
 	Context.fillText('리셋', 432, 213);
-	Context.fillText(Math.floor(timeGap1/60000)+'분', 80, 55);
-	Context.fillText(Math.floor(timeGap2/60000)+'분', 240, 55);
-	Context.fillText(Math.floor(timeGap3/60000)+'분', 400, 55);
-	Context.fillText(Math.floor(timeGap4/60000)+'분', 80, 175);
-	Context.fillText(Math.floor(timeGap5/60000)+'분', 240, 175);
-	Context.fillText(Math.floor(timeGap6/60000)+'분', 400, 175);
+	if(timeMode1 == 1) Context.fillText(Math.floor(timeGap1/60000)+'분', 80, 55);
+	if(timeMode2 == 1) Context.fillText(Math.floor(timeGap2/60000)+'분', 240, 55);
+	if(timeMode3 == 1) Context.fillText(Math.floor(timeGap3/60000)+'분', 400, 55);
+	if(timeMode4 == 1) Context.fillText(Math.floor(timeGap4/60000)+'분', 80, 175);
+	if(timeMode5 == 1) Context.fillText(Math.floor(timeGap5/60000)+'분', 240, 175);
+	if(timeMode6 == 1) Context.fillText(Math.floor(timeGap6/60000)+'분', 400, 175);
 	
 	// Context.fillText(mousePoint, 10, 30);
 	// Context.fillText(test, 10, 50);
