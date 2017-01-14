@@ -15,6 +15,8 @@ var bodyParser = require('body-parser');
 var util = require('./util.js');
 var mPlayer = require('./player.js'); // Player
 var quoridor = require('./quoridor.js'); // Quoridor
+var cheerio = require('cheerio');
+var request = require('request');
 
 var test = false; // 테스트중이면 true, 진짜는 false 
 
@@ -97,12 +99,11 @@ app.get('/kaosu', function(request, response){
 
 app.get('/sherlock', function(request, response){
 	//response.render('sherlock/sherlock.html');
-	client.query('SELECT * from sherlock order by date desc', function(error, result, fields){
+	client.query('SELECT * from sherlock where num4=1 order by date desc', function(error, result, fields){
 		if(error){
 			console.log('error');
 		}else{
 			if(result.length>0){
-				console.log(result);
 				response.render('sherlock/sherlock.html', {
 					data: result,
 					test: test
@@ -773,8 +774,8 @@ io.sockets.on('connection', function(socket){
 		if(success == 0) score += 5;
 		console.log("score : "+score);
 		
-		// num1 = dc, num2 = success, num5 = score
-		client.query('INSERT INTO sherlock (name, middle, last, date, theme, data1, data2, data3, data4, data5, num1, num2, num3, num4, num5) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', ['', middle, last,String(date), theme, '', '', '', '', '', dc, success, 0, 0,score], function(error, result, fields){
+		// num1 = dc, num2 = success, num4 = ready, num5 = score
+		client.query('INSERT INTO sherlock (name, middle, last, date, theme, data1, data2, data3, data4, data5, num1, num2, num3, num4, num5) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', ['', middle, last,String(date), theme, '', '', '', '', '', dc, success, 0, 1, score], function(error, result, fields){
 			if(error){
 				console.log(error);
 				socket.emit('sherlock_error');
@@ -818,6 +819,55 @@ io.sockets.on('connection', function(socket){
 			}else{
 				console.log('delete success');
 				socket.emit('sherlock_coupon_delete_success');
+			}
+		});
+	});
+	
+	socket.on('sherlockTimerStart', function(data){
+		// num1 = dc, num2 = success, num5 = score
+		client.query('select * from sherlocktimer', function(error, result, fields){
+			if(error){
+				
+			}else{
+				socket.emit('sherlockTimerStarting', result);
+			}
+		});
+	});
+	
+	socket.on('sherlockTimerSet', function(data){
+		var theme = data.number;
+		var date = new Date();
+		var dateTime = date.getTime();
+		// num1 = dc, num2 = success, num5 = score
+		client.query('update sherlocktimer set timer = ?, status = 1 where name = ?', [dateTime, theme], function(error, result, fields){
+			if(error){
+				
+			}else{
+				if(theme==1) socket.emit('sherlockTimerSet1', dateTime);
+				if(theme==2) socket.emit('sherlockTimerSet2', dateTime);
+				if(theme==3) socket.emit('sherlockTimerSet3', dateTime);
+				if(theme==4) socket.emit('sherlockTimerSet4', dateTime);
+				if(theme==5) socket.emit('sherlockTimerSet5', dateTime);
+				if(theme==6) socket.emit('sherlockTimerSet6', dateTime);
+
+			}
+		});
+	});
+	
+	socket.on('sherlockTimerReset', function(data){
+		var theme = data.number;
+		// num1 = dc, num2 = success, num5 = score
+		client.query('update sherlocktimer set status = 0 where name = ?', theme, function(error, result, fields){
+			if(error){
+				
+			}else{
+				if(theme==1) socket.emit('sherlockTimerReset1');
+				if(theme==2) socket.emit('sherlockTimerReset2');
+				if(theme==3) socket.emit('sherlockTimerReset3');
+				if(theme==4) socket.emit('sherlockTimerReset4');
+				if(theme==5) socket.emit('sherlockTimerReset5');
+				if(theme==6) socket.emit('sherlockTimerReset6');
+
 			}
 		});
 	});
@@ -1366,3 +1416,94 @@ function makeToken(){
 	return str;
 }
 
+// var url = 'http://sherlock-holmes.co.kr/sadmin/EP_now_list.asp';
+// var myJSONObject = {
+	// ADMIN_CODE: 'S27',
+	// ADMIN_ID: 'admin27',
+	// ADMIN_PWD: 'admin'
+// };
+
+// app.get('/list1', function(req, res){
+	// request({url: url, encoding: 'binary'}, function(error, response, body){
+		// if(!error){
+			// console.log(response);
+		// }
+	// });
+// });
+
+// var headers = undefined;
+// 
+// request({
+	// url: "http://sherlock-holmes.co.kr/sadmin/",
+	// method: "POST",
+	// json: true,
+	// body: myJSONObject
+// }, function(error, response, body){
+	// headers = response.headers;
+	// var cookies = headers['set-cookie'];
+	// var $ = cheerio.load(body);
+// 	
+// 	
+	// // console.log(cookies);
+	// // console.log(body);
+// });
+// 
+// setInterval(requests, 5000);
+// 
+// function requests(){
+	// // console.log('1');
+	// console.log(request);
+	// request({
+		// url: "http://sherlock-holmes.co.kr/sadmin/main.asp",
+		// method: "GET",
+		// json: true,
+		// body: myJSONObject,
+		// header: headers
+	// }, function(error, response, body){
+		// console.log('2');
+		// if(error) console.log(error);
+		// console.log(response);
+	// });
+// }
+
+// var request = require("request");
+// var querystring = require('querystring');
+// 
+// process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
+// var endpoint = "https://some-domain.com/";
+// var username = "tom.rock";
+// var password = "somepassword";
+// var csrftoken = "xxxxxssometokenxxxxx";  // Guarantee the token is fresh
+// 
+// var form = {
+    // username: username,
+    // password: password,
+    // csrfmiddlewaretoken: csrftoken
+// };
+// 
+// request({
+        // "headers": {
+            // "Referer": endpoint + "accounts/login/",
+            // "Cookie": "csrftoken=" + csrftoken
+        // },
+        // "url": endpoint,
+        // "body": querystring.stringify(form),
+        // "method": "POST"
+    // }, function(error, response, body) {
+        // if (error) {
+            // console.log("Here is error:");
+            // console.dir(error);
+        // } else {
+            // console.log("Status code is " + response.statusCode);
+        // }
+    // });
+
+// request(url, function(error, response, html){
+	// if(error){throw error};
+// 	
+	// console.log(html);
+// 	
+	// // var $ = cheerio.load(html);
+// 	
+// 	
+// });

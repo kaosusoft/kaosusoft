@@ -35,6 +35,10 @@ h1.title {
 	text-align: right; 
 }
 
+#canvas{
+	margin-left: 210px;
+}
+
 .div_coupon{
 	margin-left:250px;
 	width:450px;
@@ -79,6 +83,7 @@ p {
   line-height: 1.65; }
   
   .game-intro{
+  	margin-top: 30px;
   	font-size: 2em;
   }
 

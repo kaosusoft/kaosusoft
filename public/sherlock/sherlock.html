@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, user-scalable=no maximum-scale=1.0 initial-scale=1.0">
-        <title>셜록홈즈 일산점</title>
+        <title>쿠폰적립</title>
 		<link rel="stylesheet" href="/sherlock/stylesheet.css" />
 		<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
 		<script src="/prefixfree.min.js"></script>
@@ -12,6 +12,7 @@
 		<script src="/sherlock/GameFrameCounter.js"></script>
 		<script src="/sherlock/GameObject.js"></script>
 		<script src="/sherlock/GameSoundManager.js"></script>
+        <script src="/sherlock/sherlock.js"></script>
 		<script>
 			var socket = undefined;
 			
@@ -206,6 +207,9 @@
 						return false;
 					}
 				}
+				
+				
+				
 			});
 				
 			$(document).unload(function(){
@@ -217,6 +221,9 @@
 		<div class="heading">
       		<h1 class="title">셜록홈즈 일산점</h1>
     	</div>
+    	<canvas id="canvas" width="480" height="230" style="position: relative; top: 25px; left: 25px; margin-bottom: 20px">
+        	Sorry, Your browser doesn't support HTML5 Canvas.
+        </canvas>
     	<p class="game-intro">쿠폰적립 시스템!</p>
     	<div class="div_coupon">
     		<div class="div_coupon_sub">
