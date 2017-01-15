@@ -1416,7 +1416,7 @@ function makeToken(){
 	return str;
 }
 
-// var url = 'http://sherlock-holmes.co.kr/sadmin/EP_now_list.asp';
+var url = 'http://sherlock-holmes.co.kr/sub02_1.html?JIJEM=S27';
 // var myJSONObject = {
 	// ADMIN_CODE: 'S27',
 	// ADMIN_ID: 'admin27',
@@ -1450,21 +1450,20 @@ function makeToken(){
 // 
 // setInterval(requests, 5000);
 // 
-// function requests(){
-	// // console.log('1');
-	// console.log(request);
-	// request({
-		// url: "http://sherlock-holmes.co.kr/sadmin/main.asp",
-		// method: "GET",
-		// json: true,
-		// body: myJSONObject,
-		// header: headers
-	// }, function(error, response, body){
-		// console.log('2');
-		// if(error) console.log(error);
-		// console.log(response);
-	// });
-// }
+function requests(){
+	// console.log('1');
+	console.log(request);
+	request({
+		url: "http://sherlock-holmes.co.kr/sub02_1.html?JIJEM=S27",
+		method: "GET",
+		json: true,
+		body: myJSONObject
+	}, function(error, response, body){
+		console.log('2');
+		if(error) console.log(error);
+		console.log(response);
+	});
+}
 
 // var request = require("request");
 // var querystring = require('querystring');

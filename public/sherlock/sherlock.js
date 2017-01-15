@@ -377,12 +377,23 @@ function Render()
 	
 	Context.fillStyle = "#faf8ef";
 	Context.fillRect(0, 0, 470, 240);
-	Context.fillStyle = "#aa9c8f";
+	if(timeMode1==0) Context.fillStyle = "#00CC00";
+	else Context.fillStyle = "#ff0000";
 	Context.fillRect(0, 0, 150, 110);
+	if(timeMode2==0) Context.fillStyle = "#00CC00";
+	else Context.fillStyle = "#ff0000";
 	Context.fillRect(160, 0, 150, 110);
+	if(timeMode3==0) Context.fillStyle = "#00CC00";
+	else Context.fillStyle = "#ff0000";
 	Context.fillRect(320, 0, 150, 110);
+	if(timeMode4==0) Context.fillStyle = "#00CC00";
+	else Context.fillStyle = "#ff0000";
 	Context.fillRect(0, 120, 150, 110);
+	if(timeMode5==0) Context.fillStyle = "#00CC00";
+	else Context.fillStyle = "#ff0000";
 	Context.fillRect(160, 120, 150, 110);
+	if(timeMode6==0) Context.fillStyle = "#00CC00";
+	else Context.fillStyle = "#ff0000";
 	Context.fillRect(320, 120, 150, 110);
 	Context.fillStyle = "#faf8ef";
 	Context.fillRect(2, 2, 146, 106);
@@ -432,12 +443,12 @@ function Render()
 	Context.fillText('리셋', 112, 213);
 	Context.fillText('리셋', 272, 213);
 	Context.fillText('리셋', 432, 213);
-	if(timeMode1 == 1) Context.fillText(Math.floor(timeGap1/60000)+'분', 80, 55);
-	if(timeMode2 == 1) Context.fillText(Math.floor(timeGap2/60000)+'분', 240, 55);
-	if(timeMode3 == 1) Context.fillText(Math.floor(timeGap3/60000)+'분', 400, 55);
-	if(timeMode4 == 1) Context.fillText(Math.floor(timeGap4/60000)+'분', 80, 175);
-	if(timeMode5 == 1) Context.fillText(Math.floor(timeGap5/60000)+'분', 240, 175);
-	if(timeMode6 == 1) Context.fillText(Math.floor(timeGap6/60000)+'분', 400, 175);
+	if(timeMode1 == 1) Context.fillText(Math.floor(timeGap1/60000)+'분 '+Math.floor((timeGap1%60000)/1000)+'초', 80, 55);
+	if(timeMode2 == 1) Context.fillText(Math.floor(timeGap2/60000)+'분 '+Math.floor((timeGap2%60000)/1000)+'초', 240, 55);
+	if(timeMode3 == 1) Context.fillText(Math.floor(timeGap3/60000)+'분 '+Math.floor((timeGap3%60000)/1000)+'초', 400, 55);
+	if(timeMode4 == 1) Context.fillText(Math.floor(timeGap4/60000)+'분 '+Math.floor((timeGap4%60000)/1000)+'초', 80, 175);
+	if(timeMode5 == 1) Context.fillText(Math.floor(timeGap5/60000)+'분 '+Math.floor((timeGap5%60000)/1000)+'초', 240, 175);
+	if(timeMode6 == 1) Context.fillText(Math.floor(timeGap6/60000)+'분 '+Math.floor((timeGap6%60000)/1000)+'초', 400, 175);
 	
 	// Context.fillText(mousePoint, 10, 30);
 	// Context.fillText(test, 10, 50);

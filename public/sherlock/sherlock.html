@@ -167,17 +167,17 @@
 					var dc = Number($(this).text());
 						
 					switch(dc){
-						case 0: $(this).text('할인받지않음, '); break;
-						case 1: $(this).text('할인받음, '); break;
+						case 0: $('.select_list_dc').eq(index).val(0); break;
+						case 1: $('.select_list_dc').eq(index).val(1); break;
 					}
 				});
 				
 				$('.label_list_success').each(function(index){
 					var success = Number($(this).text());
-						
+
 					switch(success){
-						case 0: $(this).text('성공.'); break;
-						case 1: $(this).text('실패.'); break;
+						case 0: $('.select_list_success').eq(index).val(0); break;
+						case 1: $('.select_list_success').eq(index).val(1); break;
 					}
 				});
 				
@@ -187,15 +187,17 @@
 						$('.label_list_dc').eq(index).text('');
 						$('.label_list_success').eq(index).text('');
 					}
-					
+					console.log(theme);
+					console.log('index : '+index);
+					console.log($('.select_list_theme').eq(index).val());
 					switch(theme){
-						case 0: $(this).text('상품 증정.'); break;
-						case 1: $(this).text('웨딩크루즈, '); break;
-						case 2: $(this).text('스토커, '); break;
-						case 3: $(this).text('고흐의 방, '); break;
-						case 4: $(this).text('위험한 레시피, '); break;
-						case 5: $(this).text('저주받은 집, '); break;
-						case 6: $(this).text('화이트의 죽음, '); break;
+						case 0: $(this).text('상품증정'); break;
+						case 1: $('.select_list_theme').eq(index).val(1); break;
+						case 2: $('.select_list_theme').eq(index).val(2); break;
+						case 3: $('.select_list_theme').eq(index).val(3); break;
+						case 4: $('.select_list_theme').eq(index).val(4); break;
+						case 5: $('.select_list_theme').eq(index).val(5); break;
+						case 6: $('.select_list_theme').eq(index).val(6); break;
 					}
 				});
 				
@@ -266,9 +268,25 @@
     			<div class="div_sherloc_list">
 	    			<h2 class="h2_list_phone"><%= item.middle %>-<%= item.last %>님</h2>
 	    			<label class="label_list_date"><%= item.date %></label>
-	    			<label class="label_list_theme"><%= item.theme %></label>
-	    			<label class="label_list_dc"><%= item.num1 %></label>
-	    			<label class="label_list_success"><%= item.num2 %></label>
+	    			<label class="label_list_theme" style="display: none"><%= item.theme %></label>
+	    			<select name="select_list_theme" id="select_list_theme" class="select_list_theme">
+	    				<option value="1">웨딩크루즈</option>
+	    				<option value="2">스토커</option>
+	    				<option value="3">고흐의방</option>
+	    				<option value="4">위험한레시피</option>
+	    				<option value="5">저주받은집</option>
+	    				<option value="6">화이트의죽음</option> 
+	    			</select>
+	    			<label class="label_list_dc" style="display: none"><%= item.num1 %></label>
+	    			<select name="select_list_dc" id="select_list_dc" class="select_list_dc">
+	    				<option value="0">할인받지않음</option>
+	    				<option value="1">할인받음</option>
+	    			</select>
+	    			<label class="label_list_success" style="display: none"><%= item.num2 %></label>
+	    			<select name="select_list_success" id="select_list_success" class="select_list_success">
+	    				<option value="0">성공</option>
+	    				<option value="1">실패</option>
+	    			</select>
 	    			<br/>
 	    			<label class="label_list_score"><%= item.num5 %>점</label>
 				</div>
