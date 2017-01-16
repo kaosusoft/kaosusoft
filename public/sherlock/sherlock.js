@@ -376,12 +376,12 @@ function Render()
 	
 	var date = new Date();
 	newTime = date.getTime();
-	if(timeMode1 == 1) timeGap1 = newTime - time1;
-	if(timeMode2 == 1) timeGap2 = newTime - time2;
-	if(timeMode3 == 1) timeGap3 = newTime - time3;
-	if(timeMode4 == 1) timeGap4 = newTime - time4;
-	if(timeMode5 == 1) timeGap5 = newTime - time5;
-	if(timeMode6 == 1) timeGap6 = newTime - time6;
+	if(timeMode1 == 1) timeGap1 = time1 + 3600000 -newTime;
+	if(timeMode2 == 1) timeGap2 = time2 + 3600000 -newTime;
+	if(timeMode3 == 1) timeGap3 = time3 + 3600000 -newTime;
+	if(timeMode4 == 1) timeGap4 = time4 + 3600000 -newTime;
+	if(timeMode5 == 1) timeGap5 = time5 + 3600000 -newTime;
+	if(timeMode6 == 1) timeGap6 = time6 + 3600000 -newTime;
 	
 	Context.fillStyle = "#faf8ef";
 	Context.fillRect(0, 0, 900, 240);
@@ -451,12 +451,36 @@ function Render()
 	Context.fillText('리셋', 112, 213);
 	Context.fillText('리셋', 272, 213);
 	Context.fillText('리셋', 432, 213);
-	if(timeMode1 == 1) Context.fillText(Math.floor(timeGap1/60000)+'분 '+Math.floor((timeGap1%60000)/1000)+'초', 80, 55);
-	if(timeMode2 == 1) Context.fillText(Math.floor(timeGap2/60000)+'분 '+Math.floor((timeGap2%60000)/1000)+'초', 240, 55);
-	if(timeMode3 == 1) Context.fillText(Math.floor(timeGap3/60000)+'분 '+Math.floor((timeGap3%60000)/1000)+'초', 400, 55);
-	if(timeMode4 == 1) Context.fillText(Math.floor(timeGap4/60000)+'분 '+Math.floor((timeGap4%60000)/1000)+'초', 80, 175);
-	if(timeMode5 == 1) Context.fillText(Math.floor(timeGap5/60000)+'분 '+Math.floor((timeGap5%60000)/1000)+'초', 240, 175);
-	if(timeMode6 == 1) Context.fillText(Math.floor(timeGap6/60000)+'분 '+Math.floor((timeGap6%60000)/1000)+'초', 400, 175);
+	if(timeMode1 == 1) {
+		if(timeGap1 < 600000) Context.fillStyle = "#FF0000";
+		else Context.fillStyle = "#000000";
+		Context.fillText(Math.floor(timeGap1/60000)+'분 '+Math.floor((timeGap1%60000)/1000)+'초', 80, 55);
+	}
+	if(timeMode2 == 1) {
+		if(timeGap2 < 600000) Context.fillStyle = "#FF0000";
+		else Context.fillStyle = "#000000";
+		Context.fillText(Math.floor(timeGap2/60000)+'분 '+Math.floor((timeGap2%60000)/1000)+'초', 240, 55);
+	}
+	if(timeMode3 == 1) {
+		if(timeGap3 < 600000) Context.fillStyle = "#FF0000";
+		else Context.fillStyle = "#000000";
+		Context.fillText(Math.floor(timeGap3/60000)+'분 '+Math.floor((timeGap3%60000)/1000)+'초', 400, 55);
+	}
+	if(timeMode4 == 1) {
+		if(timeGap4 < 600000) Context.fillStyle = "#FF0000";
+		else Context.fillStyle = "#000000";
+		Context.fillText(Math.floor(timeGap4/60000)+'분 '+Math.floor((timeGap4%60000)/1000)+'초', 80, 175);
+	}
+	if(timeMode5 == 1) {
+		if(timeGap5 < 600000) Context.fillStyle = "#FF0000";
+		else Context.fillStyle = "#000000";
+		Context.fillText(Math.floor(timeGap5/60000)+'분 '+Math.floor((timeGap5%60000)/1000)+'초', 240, 175);
+	}
+	if(timeMode6 == 1) {
+		if(timeGap6 < 600000) Context.fillStyle = "#FF0000";
+		else Context.fillStyle = "#000000";
+		Context.fillText(Math.floor(timeGap6/60000)+'분 '+Math.floor((timeGap6%60000)/1000)+'초', 400, 175);
+	}
 	
 	// 고흐, 스토커, 저주, 레시피, 웨딩, 화이트
 	Context.font = '10px Nanum';
