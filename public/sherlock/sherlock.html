@@ -72,6 +72,14 @@
 					// });
 				});
 				
+				$('.btn_bonsa').click(function(){
+					window.open('http://sherlock-holmes.co.kr/sub_02/sub02_1.html?JIJEM=S27');
+				});
+				
+				$('.btn_gwanri').click(function(){
+					window.open('http://sherlock-holmes.co.kr/sadmin');
+				});
+				
 				$('#btn_ok').click(function(){
 					var middle = $('#input_middle').val();
 					var last = $('#input_last').val();
@@ -219,6 +227,8 @@
     <body>
 		<div class="heading">
       		<h1 class="title">셜록홈즈 일산점</h1>
+      		<button class="btn_gwanri">관리자페이지</button>
+      		<button class="btn_bonsa">룸홀딩</button>
     	</div>
     	<canvas id="canvas" width="920" height="230" style="position: relative; top: 25px; left: 25px; margin-bottom: 20px">
         	Sorry, Your browser doesn't support HTML5 Canvas.

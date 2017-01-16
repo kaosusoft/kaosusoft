@@ -39,6 +39,16 @@ h1.title {
 	margin-left: 40px;
 }
 
+.btn_bonsa{
+	width: 100px;
+	height: 20px;
+}
+
+.btn_gwanri{
+	width: 100px;
+	height: 20px;
+}
+
 .div_coupon{
 	margin-left:250px;
 	width:450px;

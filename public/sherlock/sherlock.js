@@ -484,6 +484,7 @@ function Render()
 	
 	// 고흐, 스토커, 저주, 레시피, 웨딩, 화이트
 	Context.font = '10px Nanum';
+	Context.fillStyle = "#000000";
 	if(reserveData != undefined)
 	Context.fillText('크루즈', 500, 20);
 	Context.fillText('스토커', 500, 45);
