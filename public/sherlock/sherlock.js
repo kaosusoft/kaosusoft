@@ -470,11 +470,11 @@ function Render()
 	for(var j=0; j<6; j++){
 		var reserveItem = undefined;
 		switch(j){
-			case 0: reserveItem = reserveData.gogh; break;
+			case 0: reserveItem = reserveData.wedding; break;
 			case 1: reserveItem = reserveData.stalker; break;
-			case 2: reserveItem = reserveData.curse; break;
+			case 2: reserveItem = reserveData.gogh; break;
 			case 3: reserveItem = reserveData.recipe; break;
-			case 4: reserveItem = reserveData.wedding; break;
+			case 4: reserveItem = reserveData.curse; break;
 			case 5: reserveItem = reserveData.white; break;
 		}
 		for(var i=0; i<10; i++){
