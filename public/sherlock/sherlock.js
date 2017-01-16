@@ -467,6 +467,7 @@ function Render()
 	Context.fillText('레시피', 500, 95);
 	Context.fillText('저주', 500, 120);
 	Context.fillText('화이트', 500, 145);
+	
 	for(var j=0; j<6; j++){
 		var reserveItem = undefined;
 		switch(j){
@@ -508,6 +509,27 @@ function Render()
 	Context.fillText('최종 업데이트 시간 : '+reserveDataUpdate, 690, 220);
 	// Context.fillText(reserveData.gogh[0], 500, 30);
 	
+	Context.font = '9px Nanum';
+	for(var i=0; i<10; i++){
+		for(var j=0; j<6; j++){
+			var num = 1000 + j*10;
+			for(var k=0; k<i; k++){
+				num += 120;
+				if(num%100 >= 60){
+					num += 40;
+				}
+			}
+			
+			var numstring = '';
+			numstring += String(Math.floor(num/100));
+			numstring += ':';
+			if(num%100 < 10){
+				numstring += '0';
+			}
+			numstring += String(num%100);
+			Context.fillText(numstring, Math.floor(543.5 + i*36 + j*4.5), 20+j*25);
+		}
+	}
 }
 
 function gameLoop()
