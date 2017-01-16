@@ -28,6 +28,8 @@ var canBtn6 = true;
 var mouseX = 0;
 var mouseY = 0;
 
+var reserveData = undefined;
+var reserveDataUpdate = '';
 
 // function chat_input(){
 	// var session = $.cookie("session");
@@ -69,6 +71,7 @@ $(document).ready(function(){
 	});
 	
 	socket.emit('sherlockTimerStart');
+	socket.emit('sherlockReserveData');
 	
 	socket.on('sherlockTimerStarting', function(data){
 		for(var i=0; i<data.length; i+=1){
@@ -190,14 +193,19 @@ $(document).ready(function(){
 		timeGap6 = 0;
 	});
 	
-	// socket.on('quoridor_init', function(){
-		// isCanPlay = false;
-	// });
-// 	
-	// socket.on('quoridor_permission', function(data){
-		// isCanPlay = true;
-		// playerNum = data;
-	// });
+	socket.on('sherlockReserveData', function(data){
+		reserveData = data;
+		var date = new Date(Number(reserveData.time));
+		reserveDataUpdate = '';
+		reserveDataUpdate += (date.getMonth()+1) + '월 ';
+		reserveDataUpdate += date.getDate() + '일 ';
+		if(date.getHours() < 12) reserveDataUpdate += '오전 ';
+		else reserveDataUpdate += '오후 ';
+		if(date.getHours()%12 == 0) reserveDataUpdate += '12시 ';
+		else reserveDataUpdate += (date.getHours()%12) + '시 ';
+		if(date.getMinutes()<10) reserveDataUpdate += '0';
+		reserveDataUpdate += date.getMinutes() + '분';
+	});
 	
 	onPageLoadComplete();
 });
@@ -376,7 +384,7 @@ function Render()
 	if(timeMode6 == 1) timeGap6 = newTime - time6;
 	
 	Context.fillStyle = "#faf8ef";
-	Context.fillRect(0, 0, 470, 240);
+	Context.fillRect(0, 0, 900, 240);
 	if(timeMode1==0) Context.fillStyle = "#00CC00";
 	else Context.fillStyle = "#ff0000";
 	Context.fillRect(0, 0, 150, 110);
@@ -450,8 +458,55 @@ function Render()
 	if(timeMode5 == 1) Context.fillText(Math.floor(timeGap5/60000)+'분 '+Math.floor((timeGap5%60000)/1000)+'초', 240, 175);
 	if(timeMode6 == 1) Context.fillText(Math.floor(timeGap6/60000)+'분 '+Math.floor((timeGap6%60000)/1000)+'초', 400, 175);
 	
-	// Context.fillText(mousePoint, 10, 30);
-	// Context.fillText(test, 10, 50);
+	// 고흐, 스토커, 저주, 레시피, 웨딩, 화이트
+	Context.font = '10px Nanum';
+	if(reserveData != undefined)
+	Context.fillText('크루즈', 500, 20);
+	Context.fillText('스토커', 500, 45);
+	Context.fillText('고흐', 500, 70);
+	Context.fillText('레시피', 500, 95);
+	Context.fillText('저주', 500, 120);
+	Context.fillText('화이트', 500, 145);
+	for(var j=0; j<6; j++){
+		var reserveItem = undefined;
+		switch(j){
+			case 0: reserveItem = reserveData.gogh; break;
+			case 1: reserveItem = reserveData.stalker; break;
+			case 2: reserveItem = reserveData.curse; break;
+			case 3: reserveItem = reserveData.recipe; break;
+			case 4: reserveItem = reserveData.wedding; break;
+			case 5: reserveItem = reserveData.white; break;
+		}
+		for(var i=0; i<10; i++){
+			if(reserveItem[i] == 0){
+				Context.fillStyle = "#00CC00";
+			}else{
+				Context.fillStyle = "#FFAAAA";
+			}
+			Context.fillRect(530+i*36+Math.floor(j*4.5), 8+j*25, 27, 18);
+		}
+	}
+	Context.fillStyle = "#000000";
+	for(var i=0; i<reserveData.gogh.length; i++){
+		// Context.fillText(reserveData.gogh[i], 500+30*i, 30);
+	}
+	
+	var nowTime = (newTime+9*3600000)%86400000;
+	
+	if(nowTime > 36000000){
+		var gapTime = nowTime-36000000;
+		var gapPoint = Math.floor((gapTime/3600000)*27);
+		Context.fillStyle = "#ff0000";
+		Context.fillRect(530+gapPoint, 8, 2, 150);
+		Context.fillRect(530+gapPoint, 8, 27, 2);
+		Context.fillRect(530+gapPoint+27, 8, 2, 143);
+		Context.fillRect(530+gapPoint, 149, 27, 2);
+		// Context.fillText(gapPoint, 690, 180);
+		Context.fillStyle = "#000000";
+		Context.fillText(Math.floor(nowTime/3600000)+'시 '+Math.floor((nowTime%3600000)/60000)+'분', 530+gapPoint, 170);
+	}
+	Context.fillText('최종 업데이트 시간 : '+reserveDataUpdate, 690, 220);
+	// Context.fillText(reserveData.gogh[0], 500, 30);
 	
 }
 

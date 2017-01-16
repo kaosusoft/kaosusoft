@@ -187,9 +187,6 @@
 						$('.label_list_dc').eq(index).text('');
 						$('.label_list_success').eq(index).text('');
 					}
-					console.log(theme);
-					console.log('index : '+index);
-					console.log($('.select_list_theme').eq(index).val());
 					switch(theme){
 						case 0: $(this).text('상품증정'); break;
 						case 1: $('.select_list_theme').eq(index).val(1); break;
@@ -223,7 +220,7 @@
 		<div class="heading">
       		<h1 class="title">셜록홈즈 일산점</h1>
     	</div>
-    	<canvas id="canvas" width="480" height="230" style="position: relative; top: 25px; left: 25px; margin-bottom: 20px">
+    	<canvas id="canvas" width="920" height="230" style="position: relative; top: 25px; left: 25px; margin-bottom: 20px">
         	Sorry, Your browser doesn't support HTML5 Canvas.
         </canvas>
     	<p class="game-intro">쿠폰적립 시스템!</p>

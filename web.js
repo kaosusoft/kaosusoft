@@ -872,6 +872,10 @@ io.sockets.on('connection', function(socket){
 		});
 	});
 	
+	socket.on('sherlockReserveData', function(){
+		sherlockRequests(socket);
+	});
+	
 	socket.on('disconnect', function(){
 		// quoridor.quoridorExit(socket);
 	});
@@ -1450,18 +1454,65 @@ var url = 'http://sherlock-holmes.co.kr/sub02_1.html?JIJEM=S27';
 // 
 // setInterval(requests, 5000);
 // 
-function requests(){
-	// console.log('1');
-	console.log(request);
+
+var cycle = 10;
+
+function sherlockRequests(socket){
 	request({
-		url: "http://sherlock-holmes.co.kr/sub02_1.html?JIJEM=S27",
+		url: "http://sherlock-holmes.co.kr/sub_02/sub02_1.html?JIJEM=S27",
 		method: "GET",
-		json: true,
-		body: myJSONObject
+		json: true
 	}, function(error, response, body){
-		console.log('2');
 		if(error) console.log(error);
-		console.log(response);
+		var $ = cheerio.load(body);
+		
+		var reservData = {
+			gogh:{
+				
+			},
+			wedding:{
+				
+			},
+			stalker:{
+				
+			},
+			white:{
+				
+			},
+			curse:{
+				
+			},
+			recipe:{
+				
+			},
+			time: 0
+		};
+		
+		$('.reservTime > ul').each(function(index){
+			var data = [];
+			for(var i=0; i<cycle; i++){
+				var a = $(this).find('a').eq(i).attr('href');
+				
+				if(a == '#'){
+					data.push(1);
+				}else{
+					data.push(0);
+				}
+			}
+			switch(index){
+				case 0:reservData.gogh = data; break;
+				case 1:reservData.stalker = data; break;
+				case 2:reservData.curse = data; break;
+				case 3:reservData.recipe = data; break;
+				case 4:reservData.wedding = data; break;
+				case 5:reservData.white = data; break;
+			}
+			var date = new Date();
+			reservData.time = date.getTime();
+			
+		});
+		console.log(reservData);
+		socket.emit('sherlockReserveData', reservData);
 	});
 }
 
