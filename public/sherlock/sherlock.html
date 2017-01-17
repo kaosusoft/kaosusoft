@@ -233,73 +233,82 @@
     	<canvas id="canvas" width="920" height="230" style="position: relative; top: 25px; left: 25px; margin-bottom: 20px">
         	Sorry, Your browser doesn't support HTML5 Canvas.
         </canvas>
-    	<p class="game-intro">쿠폰적립 시스템!</p>
-    	<div class="div_coupon">
-    		<div class="div_coupon_sub">
-	    		<label>010-</label>
-	    		<input type="text" id="input_middle" name="input_middle" required/>
-	    		<label>-</label>
-	    		<input type="text" id="input_last" name="input_last" required/>
-	    		<hr />
-	    		<p class="p_time">2017년 1월 11일 19시 20분</p>
-	    		<select name="select_theme" id="select_theme">
-					<option value="1">웨딩크루즈</option>
-					<option value="2">스토커</option>
-					<option value="3">고흐의방</option>
-					<option value="4">위험한레시피</option>
-					<option value="5">저주받은집</option>
-					<option value="6">화이트의죽음</option>
-				</select>
-				<select name="select_dc" id="select_dc">
-					<option value="0">할인받지않음</option>
-					<option value="1">할인받음</option>
-				</select>
-				<select name="select_success" id="select_success">
-					<option value="0">성공</option>
-					<option value="1">실패</option>
-				</select>
-	    		<hr />
-	    		<button id="btn_ok" class="btn_ok">적립하기</button>
+        <hr />
+    	<div class="div_contents">
+	    	<div class="div_coupon">
+    			<p class="game-intro">쿠폰적립 시스템!</p>
+	    		<div class="div_coupon_sub">
+		    		<label>010-</label>
+		    		<input type="text" id="input_middle" name="input_middle" required/>
+		    		<label>-</label>
+		    		<input type="text" id="input_last" name="input_last" required/>
+		    		<hr />
+		    		<p class="p_time">2017년 1월 11일 19시 20분</p>
+		    		<select name="select_theme" id="select_theme">
+						<option value="1">웨딩크루즈</option>
+						<option value="2">스토커</option>
+						<option value="3">고흐의방</option>
+						<option value="4">위험한레시피</option>
+						<option value="5">저주받은집</option>
+						<option value="6">화이트의죽음</option>
+					</select>
+					<select name="select_dc" id="select_dc">
+						<option value="0">할인받지않음</option>
+						<option value="1">할인받음</option>
+					</select>
+					<select name="select_success" id="select_success">
+						<option value="0">성공</option>
+						<option value="1">실패</option>
+					</select>
+		    		<hr />
+		    		<button id="btn_ok" class="btn_ok">적립하기</button>
+		    	</div>
+		    	<br />
+		    	<br />
+		    	<div class="div_search">
+		    		<label>010-</label>
+		    		<input type="text" id="input_middle2" name="input_middle2" />
+		    		<input type="text" id="input_last2" name="input_last2" />
+		    		<button id="btn_search" class="btn_search">검색하기</button>
+		    	</div>
+		    	<br />
+	    		<% if(data.length>0){ %>
+	    		<% data.forEach(function(item, index){ %>
+	    			<div class="div_sherloc_list">
+		    			<h2 class="h2_list_phone"><%= item.middle %>-<%= item.last %>님</h2>
+		    			<label class="label_list_date"><%= item.date %></label>
+		    			<label class="label_list_theme" style="display: none"><%= item.theme %></label>
+		    			<select name="select_list_theme" id="select_list_theme" class="select_list_theme">
+		    				<option value="1">웨딩크루즈</option>
+		    				<option value="2">스토커</option>
+		    				<option value="3">고흐의방</option>
+		    				<option value="4">위험한레시피</option>
+		    				<option value="5">저주받은집</option>
+		    				<option value="6">화이트의죽음</option> 
+		    			</select>
+		    			<label class="label_list_dc" style="display: none"><%= item.num1 %></label>
+		    			<select name="select_list_dc" id="select_list_dc" class="select_list_dc">
+		    				<option value="0">할인받지않음</option>
+		    				<option value="1">할인받음</option>
+		    			</select>
+		    			<label class="label_list_success" style="display: none"><%= item.num2 %></label>
+		    			<select name="select_list_success" id="select_list_success" class="select_list_success">
+		    				<option value="0">성공</option>
+		    				<option value="1">실패</option>
+		    			</select>
+		    			<br/>
+		    			<label class="label_list_score"><%= item.num5 %>점</label>
+					</div>
+	    			<% }); %>
+	    		<% } %>
 	    	</div>
-	    	<br />
-	    	<br />
-	    	<div class="div_search">
-	    		<label>010-</label>
-	    		<input type="text" id="input_middle2" name="input_middle2" />
-	    		<input type="text" id="input_last2" name="input_last2" />
-	    		<button id="btn_search" class="btn_search">검색하기</button>
+	    	<div class="div_memo">
+	    		<p class="p_memo">인수인계 메모장</p>
+	    		<div class="div_memo_sub">
+	    			<label style="margin-left:160px">아직 준비중이에요</label>
+	    		</div>
 	    	</div>
-	    	<br />
-    		<% if(data.length>0){ %>
-    		<% data.forEach(function(item, index){ %>
-    			<div class="div_sherloc_list">
-	    			<h2 class="h2_list_phone"><%= item.middle %>-<%= item.last %>님</h2>
-	    			<label class="label_list_date"><%= item.date %></label>
-	    			<label class="label_list_theme" style="display: none"><%= item.theme %></label>
-	    			<select name="select_list_theme" id="select_list_theme" class="select_list_theme">
-	    				<option value="1">웨딩크루즈</option>
-	    				<option value="2">스토커</option>
-	    				<option value="3">고흐의방</option>
-	    				<option value="4">위험한레시피</option>
-	    				<option value="5">저주받은집</option>
-	    				<option value="6">화이트의죽음</option> 
-	    			</select>
-	    			<label class="label_list_dc" style="display: none"><%= item.num1 %></label>
-	    			<select name="select_list_dc" id="select_list_dc" class="select_list_dc">
-	    				<option value="0">할인받지않음</option>
-	    				<option value="1">할인받음</option>
-	    			</select>
-	    			<label class="label_list_success" style="display: none"><%= item.num2 %></label>
-	    			<select name="select_list_success" id="select_list_success" class="select_list_success">
-	    				<option value="0">성공</option>
-	    				<option value="1">실패</option>
-	    			</select>
-	    			<br/>
-	    			<label class="label_list_score"><%= item.num5 %>점</label>
-				</div>
-    			<% }); %>
-    		<% } %>
-    	</div>
+	    </div>
         <br />
     </body>
 </html>

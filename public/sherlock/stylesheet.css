@@ -49,9 +49,21 @@ h1.title {
 	height: 20px;
 }
 
+.div_contents{
+	
+}
+
 .div_coupon{
-	margin-left:250px;
+	float: left;
+	margin-left:70px;
 	width:450px;
+}
+
+.div_memo{
+	position: absolute;
+	float: left;
+	margin-left: 520px;
+	width: 300px;
 }
 
 .div_coupon_sub{
@@ -93,6 +105,13 @@ p {
   line-height: 1.65; }
   
   .game-intro{
+  	width: 420px;
+  	margin-top: 30px;
+  	font-size: 2em;
+  }
+  
+  .p_memo{
+  	width: 420px;
   	margin-top: 30px;
   	font-size: 2em;
   }

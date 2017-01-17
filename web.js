@@ -873,7 +873,12 @@ io.sockets.on('connection', function(socket){
 	});
 	
 	socket.on('sherlockReserveData', function(){
-		sherlockRequests(socket);
+		socket.emit('sherlockReserveData', reservData);
+		var date = new Date();
+		var dateTime = date.getTime();
+		if(reservData.time < dateTime - 30000){
+			sherlockRequests();
+		}
 	});
 	
 	socket.on('disconnect', function(){
@@ -1452,12 +1457,34 @@ var url = 'http://sherlock-holmes.co.kr/sub02_1.html?JIJEM=S27';
 	// // console.log(body);
 // });
 // 
-// setInterval(requests, 5000);
+sherlockRequests();
+setInterval(sherlockRequests, 60000);
 // 
 
 var cycle = 10;
+var reservData = {
+	gogh:{
+		
+	},
+	wedding:{
+		
+	},
+	stalker:{
+		
+	},
+	white:{
+		
+	},
+	curse:{
+		
+	},
+	recipe:{
+		
+	},
+	time: 0
+};
 
-function sherlockRequests(socket){
+function sherlockRequests(){
 	request({
 		url: "http://sherlock-holmes.co.kr/sub_02/sub02_1.html?JIJEM=S27",
 		method: "GET",
@@ -1465,28 +1492,6 @@ function sherlockRequests(socket){
 	}, function(error, response, body){
 		if(error) console.log(error);
 		var $ = cheerio.load(body);
-		
-		var reservData = {
-			gogh:{
-				
-			},
-			wedding:{
-				
-			},
-			stalker:{
-				
-			},
-			white:{
-				
-			},
-			curse:{
-				
-			},
-			recipe:{
-				
-			},
-			time: 0
-		};
 		
 		$('.reservTime > ul').each(function(index){
 			var data = [];
@@ -1511,8 +1516,6 @@ function sherlockRequests(socket){
 			reservData.time = date.getTime();
 			
 		});
-		console.log(reservData);
-		socket.emit('sherlockReserveData', reservData);
 	});
 }
 
