@@ -879,6 +879,19 @@ io.sockets.on('connection', function(socket){
 		if(reservData.time < dateTime - 30000){
 			sherlockRequests();
 		}
+		sherlockMemo(socket, true);
+	});
+	
+	socket.on('sherlock_memo', function(data){
+		var memo = data;
+		var date = new Date();
+		var dateTime = date.getTime();
+		client.query('update sherlockmemo set memo=?, date=?', [memo, dateTime], function(error, result, fields){
+			if(error) console.log(error);
+			else{
+				sherlockMemo(socket, false);
+			}
+		});
 	});
 	
 	socket.on('disconnect', function(){
@@ -1426,41 +1439,12 @@ function makeToken(){
 }
 
 var url = 'http://sherlock-holmes.co.kr/sub02_1.html?JIJEM=S27';
-// var myJSONObject = {
-	// ADMIN_CODE: 'S27',
-	// ADMIN_ID: 'admin27',
-	// ADMIN_PWD: 'admin'
-// };
 
-// app.get('/list1', function(req, res){
-	// request({url: url, encoding: 'binary'}, function(error, response, body){
-		// if(!error){
-			// console.log(response);
-		// }
-	// });
-// });
-
-// var headers = undefined;
-// 
-// request({
-	// url: "http://sherlock-holmes.co.kr/sadmin/",
-	// method: "POST",
-	// json: true,
-	// body: myJSONObject
-// }, function(error, response, body){
-	// headers = response.headers;
-	// var cookies = headers['set-cookie'];
-	// var $ = cheerio.load(body);
-// 	
-// 	
-	// // console.log(cookies);
-	// // console.log(body);
-// });
-// 
 sherlockRequests();
 setInterval(sherlockRequests, 60000);
 // 
 
+var sherlock_memo = '';
 var cycle = 10;
 var reservData = {
 	gogh:{
@@ -1519,44 +1503,14 @@ function sherlockRequests(){
 	});
 }
 
-// var request = require("request");
-// var querystring = require('querystring');
-// 
-// process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
-// var endpoint = "https://some-domain.com/";
-// var username = "tom.rock";
-// var password = "somepassword";
-// var csrftoken = "xxxxxssometokenxxxxx";  // Guarantee the token is fresh
-// 
-// var form = {
-    // username: username,
-    // password: password,
-    // csrfmiddlewaretoken: csrftoken
-// };
-// 
-// request({
-        // "headers": {
-            // "Referer": endpoint + "accounts/login/",
-            // "Cookie": "csrftoken=" + csrftoken
-        // },
-        // "url": endpoint,
-        // "body": querystring.stringify(form),
-        // "method": "POST"
-    // }, function(error, response, body) {
-        // if (error) {
-            // console.log("Here is error:");
-            // console.dir(error);
-        // } else {
-            // console.log("Status code is " + response.statusCode);
-        // }
-    // });
+function sherlockMemo(socket, flag){
+	client.query('select * from sherlockmemo', function(error, result, fields){
+		if(error){
+			
+		}else{
+			if(flag) socket.emit('sherlock_memo', result[0]);
+			else socket.emit('sherlock_memo_edit', result[0]);
+		}
+	});
+}
 
-// request(url, function(error, response, html){
-	// if(error){throw error};
-// 	
-	// console.log(html);
-// 	
-	// // var $ = cheerio.load(html);
-// 	
-// 	
-// });

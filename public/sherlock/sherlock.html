@@ -80,6 +80,10 @@
 					window.open('http://sherlock-holmes.co.kr/sadmin');
 				});
 				
+				$('.btn_memo').click(function(){
+					socket.emit('sherlock_memo', $('.textarea_memo').val());
+				});
+				
 				$('#btn_ok').click(function(){
 					var middle = $('#input_middle').val();
 					var last = $('#input_last').val();
@@ -151,6 +155,15 @@
 				socket.on('sherlock_success', function(){
 					alert('등록에 성공하였습니다.');
 					location.reload();
+				});
+				
+				socket.on('sherlock_memo', function(data){
+					$('.textarea_memo').val(data.memo);
+				});
+				
+				socket.on('sherlock_memo_edit', function(data){
+					alert('수정되었습니다.');
+					$('.textarea_memo').val(data.memo);
 				});
 				
 				$('.label_list_date').each(function(index){
@@ -305,7 +318,10 @@
 	    	<div class="div_memo">
 	    		<p class="p_memo">인수인계 메모장</p>
 	    		<div class="div_memo_sub">
-	    			<label style="margin-left:160px">아직 준비중이에요</label>
+	    			<textarea class="textarea_memo" style="resize: none"></textarea>
+	    		</div>
+	    		<div class="div_memo_input">
+	    			<button class="btn_memo" id="btn_memo">메모수정</button>
 	    		</div>
 	    	</div>
 	    	<div class="div_call">
