@@ -18,7 +18,7 @@ var quoridor = require('./quoridor.js'); // Quoridor
 var cheerio = require('cheerio');
 var request = require('request');
 
-var test = true; // 테스트중이면 true, 진짜는 false 
+var test = false; // 테스트중이면 true, 진짜는 false 
 
 var client;
 
