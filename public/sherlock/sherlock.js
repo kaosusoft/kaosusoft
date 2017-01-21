@@ -306,6 +306,40 @@ function mouseClick(){
 			});
 			canBtn6 = false;
 		}
+	}else if(mousePoint >= 13 && mousePoint <= 18){
+		// if(confirm(textString)){
+			// var btn_ok = document.getElementById('btn_ok');
+			// btn_ok.disabled = 'false';
+			// socket.emit('sherlock_coupon_insert', {
+				// middle: middle,
+				// last: last,
+				// date: dateTime,
+				// theme: theme,
+				// dc: dc,
+				// success: success
+			// });
+		// }else{
+			// alert('취소');
+		// }
+		var textString = '';
+		var urlString = '';
+		switch(mousePoint){
+			case 13: textString = '웨딩크루즈 룸홀딩하러 가시겠습니까?'; 
+			urlString = 'http://sherlock-holmes.co.kr/sub_02/sub02_1.html?JIJEM=S27&D_ROOM=E'; break;
+			case 14: textString = '스토커 룸홀딩하러 가시겠습니까?';
+			urlString = 'http://sherlock-holmes.co.kr/sub_02/sub02_1.html?JIJEM=S27&D_ROOM=B'; break;
+			case 15: textString = '고흐의방 룸홀딩하러 가시겠습니까?';
+			urlString = 'http://sherlock-holmes.co.kr/sub_02/sub02_1.html?JIJEM=S27&D_ROOM=A'; break;
+			case 16: textString = '위험한 레시피 룸홀딩하러 가시겠습니까?';
+			urlString = 'http://sherlock-holmes.co.kr/sub_02/sub02_1.html?JIJEM=S27&D_ROOM=D'; break;
+			case 17: textString = '저주받은 집 룸홀딩하러 가시겠습니까?';
+			urlString = 'http://sherlock-holmes.co.kr/sub_02/sub02_1.html?JIJEM=S27&D_ROOM=C'; break;
+			case 18: textString = '화이트 룸홀딩하러 가시겠습니까?';
+			urlString = 'http://sherlock-holmes.co.kr/sub_02/sub02_1.html?JIJEM=S27&D_ROOM=F'; break;
+		}
+		if(confirm(textString)){
+			window.open(urlString);
+		}
 	}
 }
 
@@ -358,6 +392,31 @@ function mouseMove(){
 		mousePoint = 12;
 		return;
 	}
+	if(mouseX>530 && mouseX<880 && mouseY>8 && mouseY<26){
+		mousePoint = 13;
+		return;
+	}
+	if(mouseX>530 && mouseX<880 && mouseY>33 && mouseY<51){
+		mousePoint = 14;
+		return;
+	}
+	if(mouseX>530 && mouseX<880 && mouseY>58 && mouseY<76){
+		mousePoint = 15;
+		return;
+	}
+	if(mouseX>530 && mouseX<880 && mouseY>83 && mouseY<101){
+		mousePoint = 16;
+		return;
+	}
+	if(mouseX>530 && mouseX<880 && mouseY>108 && mouseY<126){
+		mousePoint = 17;
+		return;
+	}
+	if(mouseX>530 && mouseX<880 && mouseY>133 && mouseY<151){
+		mousePoint = 18;
+		return;
+	}
+	// Context.fillRect(530+i*36+Math.floor(j*4.5), 8+j*25, 27, 18);
 	mousePoint = 0;
 }
 
@@ -493,6 +552,15 @@ function Render()
 	Context.fillText('저주', 500, 120);
 	Context.fillText('화이트', 500, 145);
 	
+	var nowTime = (newTime+9*3600000)%86400000;
+	var gapTime = 0;
+	var gapPoint = 0;
+	
+	if(nowTime > 36000000){
+		gapTime = nowTime-36000000;
+		gapPoint = Math.floor((gapTime/3600000)*27);
+	}
+	
 	for(var j=0; j<6; j++){
 		var reserveItem = undefined;
 		switch(j){
@@ -505,9 +573,17 @@ function Render()
 		}
 		for(var i=0; i<10; i++){
 			if(reserveItem[i] == 0){
-				Context.fillStyle = "#00CC00";
+				if(gapPoint >= i*36+Math.floor(j*4.5)){
+					Context.fillStyle = "#AAAAAA";
+				}else{
+					Context.fillStyle = "#00CC00";
+				}
 			}else{
-				Context.fillStyle = "#FFAAAA";
+				if(gapPoint >= i*36+Math.floor(j*4.5)){
+					Context.fillStyle = "#AAAAAA";
+				}else{
+					Context.fillStyle = "#FFAAAA";
+				}
 			}
 			Context.fillRect(530+i*36+Math.floor(j*4.5), 8+j*25, 27, 18);
 		}
@@ -517,11 +593,9 @@ function Render()
 		// Context.fillText(reserveData.gogh[i], 500+30*i, 30);
 	}
 	
-	var nowTime = (newTime+9*3600000)%86400000;
+	
 	
 	if(nowTime > 36000000){
-		var gapTime = nowTime-36000000;
-		var gapPoint = Math.floor((gapTime/3600000)*27);
 		Context.fillStyle = "#ff0000";
 		Context.fillRect(530+gapPoint, 8, 2, 150);
 		Context.fillRect(530+gapPoint, 8, 27, 2);
