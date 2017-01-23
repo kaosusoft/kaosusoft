@@ -120,24 +120,19 @@ app.get('/sherlock', function(request, response){
 
 app.get('/sherlocksearch/:number', function(request, response){
 	var number = request.params.number;
-	console.log(number);
 	var middle = number.substring(0,4);
 	var last = number.substring(4,8);
-	console.log("number : "+number);
-	console.log("middle : "+middle);
-	console.log("last : "+last);
+	
 	client.query('SELECT * from sherlock where middle=? and last=? order by date desc',[middle, last], function(error, result, fields){
 		if(error){
 			console.log('error');
 		}else{
 			if(result.length>0){
-				console.log(result);
 				response.render('sherlock/sherlocksearch.html', {
 					data: result,
 					test: test
 				});
 			}else{
-				console.log(result);
 				response.render('sherlock/sherlocksearch.html', {
 					data: {},
 					test: test
@@ -181,7 +176,6 @@ app.get('/sadari_game/:token', function(request, response){
 	var data = sadariMap.get(token);
 	var date = new Date().getTime();
 	
-	console.log(data);
 	if(date < (data.date + data.open_timer)){
 		var new_data = new sadari_data();
 		new_data.range = data.range;
@@ -748,7 +742,6 @@ io.sockets.on('connection', function(socket){
 	});
 	
 	socket.on('sherlock_coupon_search', function(data){
-		console.log(data);
 		var middle = data.middle;
 		var last = data.last;
 		
@@ -762,7 +755,6 @@ io.sockets.on('connection', function(socket){
 	});
 	
 	socket.on('sherlock_coupon_insert', function(data){
-		console.log(data);
 		var middle = data.middle;
 		var last = data.last;
 		var date = data.date;
@@ -785,7 +777,6 @@ io.sockets.on('connection', function(socket){
 	});
 	
 	socket.on('sherlock_coupon_insert_jeju', function(data){
-		console.log(data);
 		var middle = data.middle;
 		var last = data.last;
 		var date = new Date();
@@ -823,8 +814,18 @@ io.sockets.on('connection', function(socket){
 			}
 		});
 	});
-	// UPDATE  `lible`.`sherlock` SET  `num1` =  '1',
-// `num2` =  '1' WHERE  `sherlock`.`id` =10 LIMIT 1 ;
+	
+	socket.on('sherlock_coupon_confirm', function(data){
+		var id = data.id;
+		
+		client.query('update sherlock set num4=0 where id=?', id, function(error, result, fields){
+			if(error){
+				
+			}else{
+				socket.emit('sherlock_coupon_delete_success');
+			}
+		});
+	});
 	
 	socket.on('sherlock_coupon_delete', function(data){
 		var id = data.id;
@@ -835,7 +836,6 @@ io.sockets.on('connection', function(socket){
 				console.log(error);
 				socket.emit('sherlock_error');
 			}else{
-				console.log('delete success');
 				socket.emit('sherlock_coupon_delete_success');
 			}
 		});

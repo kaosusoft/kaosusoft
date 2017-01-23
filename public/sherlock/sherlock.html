@@ -298,6 +298,17 @@
 					});
 				});
 				
+				$('.btn_list_confirm').each(function(index){
+					$(this).click(function(){
+						if(confirm('확정하시겠습니까?')){
+							var id = $('.label_list_id').eq(index).text();
+							socket.emit('sherlock_coupon_confirm', {
+								id: id
+							});
+						}
+					});
+				});
+				
 				$('.btn_list_delete').each(function(index){
 					$(this).click(function(){
 						if(confirm('삭제하시겠습니까?')){
@@ -391,6 +402,7 @@
 		    			<hr />
 		    			<label class="label_list_score"><%= item.num5 %>점</label>
 		    			<button class="btn_list_edit">수정</button>
+		    			<button class="btn_list_confirm">확정하기</button>
 		    			<button class="btn_list_delete">삭제</button>
 					</div>
 	    			<% }); %>
