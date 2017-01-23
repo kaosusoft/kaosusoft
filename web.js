@@ -1475,6 +1475,8 @@ function sherlockRequests(){
 		json: true
 	}, function(error, response, body){
 		if(error) console.log(error);
+		
+		try{
 		var $ = cheerio.load(body);
 		
 		$('.reservTime > ul').each(function(index){
@@ -1500,6 +1502,7 @@ function sherlockRequests(){
 			reservData.time = date.getTime();
 			
 		});
+		}catch(e){console.log(e);}
 	});
 }
 

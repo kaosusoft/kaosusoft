@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, user-scalable=no maximum-scale=1.0 initial-scale=1.0">
-        <title>쿠폰적립</title>
+        <title>셜록 시스템</title>
 		<link rel="stylesheet" href="/sherlock/stylesheet.css" />
 		<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
 		<script src="/prefixfree.min.js"></script>
@@ -228,8 +228,83 @@
 					}
 				}
 				
+				function calMoney(){
+					var adult = document.getElementsByName('adult');
+					var student = document.getElementsByName('student');
+					var child = document.getElementsByName('child');
+					var time = document.getElementsByName('time');
+					var coupon = document.getElementsByName('coupon');
+					
+					var adultNum = 0;
+					var studentNum = 0;
+					var childNum = 0;
+					
+					for(var i=0; i<5; i++){
+						if(adult[i].checked) adultNum = i;
+						if(student[i].checked) studentNum = i;
+						if(child[i].checked) childNum = i;
+					}
+					
+					var totalNum = adultNum + studentNum + childNum;
+					
+					var calStr = '';
+					calStr += '성인 ';
+					calStr += adultNum;
+					calStr += "명, 중고생 ";
+					calStr += studentNum;
+					calStr += "명, 초등생 ";
+					calStr += childNum;
+					calStr += "명 - 총 ";
+					calStr += totalNum;
+					calStr += "명";
+					
+					$('.label_cal').text(calStr);
+					
+					var basePrice = 22000;
+					
+					var calStr2 = '';
+					calStr2 += '총 ';
+					calStr2 += totalNum;
+					calStr2 += '명이므로 기본 1인당 단가는 ';
+					
+					if(totalNum <= 2) basePrice = 22000;
+					else if(totalNum == 3) basePrice = 20000;
+					else basePrice = 18000;
+					calStr2 += basePrice;
+					calStr2 += '원 : 총 ';
+					calStr2 += (basePrice * totalNum);
+					calStr2 += '원';
+					
+					$('.label_cal2').text(calStr2);
+				}
 				
+				calMoney();
 				
+				$('.btn_list_edit').each(function(index){
+					$(this).click(function(){
+						if(confirm('수정하시겠습니까?')){
+							alert('아직 기능을 안만들었어요~');
+							location.reload();
+						}
+					});
+				});
+				
+				$('.btn_list_delete').each(function(index){
+					$(this).click(function(){
+						if(confirm('삭제하시겠습니까?')){
+							var label = document.getElementsByClassName('label_list_id');
+							var id = label[index].innerText;
+							socket.emit('sherlock_coupon_delete', {
+								id: id
+							});
+						}
+					});
+				});
+				
+				socket.on('sherlock_coupon_delete_success', function(){
+					alert('완료하였습니다.');
+					location.reload();
+				});
 			});
 				
 			$(document).unload(function(){
@@ -288,6 +363,7 @@
 	    		<% if(data.length>0){ %>
 	    		<% data.forEach(function(item, index){ %>
 	    			<div class="div_sherloc_list">
+	    				<label class="label_list_id" style="display: none"><%= item.id %></label>
 		    			<h2 class="h2_list_phone"><%= item.middle %>-<%= item.last %>님</h2>
 		    			<label class="label_list_date"><%= item.date %></label>
 		    			<label class="label_list_theme" style="display: none"><%= item.theme %></label>
@@ -310,7 +386,10 @@
 		    				<option value="1">실패</option>
 		    			</select>
 		    			<br/>
+		    			<hr />
 		    			<label class="label_list_score"><%= item.num5 %>점</label>
+		    			<button class="btn_list_edit">수정</button>
+		    			<button class="btn_list_delete">삭제</button>
 					</div>
 	    			<% }); %>
 	    		<% } %>
@@ -325,7 +404,47 @@
 	    		</div>
 	    	</div>
 	    	<div class="div_calculator">
-	    		
+	    		<div class="div_calculator_person">
+	    			<label>성인 : </label>
+	    			<input type="radio" name="adult" value="adult0">성인없음
+	    			<input type="radio" name="adult" value="adult1">성인1인
+	    			<input type="radio" name="adult" value="adult2" checked="checked">성인2인
+	    			<input type="radio" name="adult" value="adult3">성인3인
+	    			<input type="radio" name="adult" value="adult4">성인4인
+	    			<br />
+	    			<label>중고 : </label>
+	    			<input type="radio" name="student" value="student0" checked="checked">중고생없음
+	    			<input type="radio" name="student" value="student1">중고생1인
+	    			<input type="radio" name="student" value="student2">중고생2인
+	    			<input type="radio" name="student" value="student3">중고생3인
+	    			<input type="radio" name="student" value="student4">중고생4인
+	    			<br />
+	    			<label>초등 : </label>
+	    			<input type="radio" name="child" value="child0" checked="checked">초등생없음
+	    			<input type="radio" name="child" value="child1">초등생1인
+	    			<input type="radio" name="child" value="child2">초등생2인
+	    			<input type="radio" name="child" value="child3">초등생3인
+	    			<input type="radio" name="child" value="child4">초등생4인
+	    			<br />
+	    			<label>시간 : </label>
+	    			<input type="radio" name="time" value="time2">2시이전
+	    			<input type="radio" name="time" value="time5">5시이전
+	    			<input type="radio" name="time" value="time0" checked="checked">야간
+	    			<br />
+	    			<label>쿠폰 : </label>
+	    			<input type="radio" name="coupon" value="coupon0">쿠폰할인없음
+	    			<input type="radio" name="coupon" value="coupon1" checked="checked">쿠폰할인
+	    			<br />
+	    			<button class="btn_cal">계산하기</button>
+	    			<label></label>
+	    			<br />
+	    			<label class="label_cal"></label>
+	    			<br />
+	    			<br />
+	    			<label>계산과정</label>
+	    			<br />
+	    			<label class="label_cal2"></label>
+	    		</div>
 	    	</div>
 	    	<div class="div_call">
 	    		<p class="p_call">비상연락망</p>
