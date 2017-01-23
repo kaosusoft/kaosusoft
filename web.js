@@ -772,7 +772,6 @@ io.sockets.on('connection', function(socket){
 		var score = 20;
 		if(dc == 0) score += 5;
 		if(success == 0) score += 5;
-		console.log("score : "+score);
 		
 		// num1 = dc, num2 = success, num4 = ready, num5 = score
 		client.query('INSERT INTO sherlock (name, middle, last, date, theme, data1, data2, data3, data4, data5, num1, num2, num3, num4, num5) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', ['', middle, last,String(date), theme, '', '', '', '', '', dc, success, 0, 1, score], function(error, result, fields){
@@ -807,8 +806,27 @@ io.sockets.on('connection', function(socket){
 		});
 	});
 	
+	socket.on('sherlock_coupon_update', function(data){
+		var id = data.id;
+		var theme = data.theme;
+		var dc = data.dc;
+		var success = data.success;
+		var score = 20;
+		if(dc == 0) score += 5;
+		if(success == 0) score += 5;
+		
+		client.query('update sherlock set theme=?, num1=?, num2=?, num5=? where id=?', [theme, dc, success, score, id], function(error, result, fields){
+			if(error){
+				
+			}else{
+				socket.emit('sherlock_coupon_delete_success');
+			}
+		});
+	});
+	// UPDATE  `lible`.`sherlock` SET  `num1` =  '1',
+// `num2` =  '1' WHERE  `sherlock`.`id` =10 LIMIT 1 ;
+	
 	socket.on('sherlock_coupon_delete', function(data){
-		console.log(data);
 		var id = data.id;
 		
 		// num1 = dc, num2 = success, num5 = score

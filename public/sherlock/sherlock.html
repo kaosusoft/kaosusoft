@@ -283,8 +283,17 @@
 				$('.btn_list_edit').each(function(index){
 					$(this).click(function(){
 						if(confirm('수정하시겠습니까?')){
-							alert('아직 기능을 안만들었어요~');
-							location.reload();
+							var id = $('.label_list_id').eq(index).text();
+							var theme = $('.select_list_theme').eq(index).val();
+							var dc = $('.select_list_dc').eq(index).val();
+							var success = $('.select_list_success').eq(index).val();
+							socket.emit('sherlock_coupon_update', {
+								id: id,
+								theme: theme,
+								dc: dc,
+								success: success
+							});
+							// console.log(id);
 						}
 					});
 				});
@@ -342,8 +351,8 @@
 						<option value="6">화이트의죽음</option>
 					</select>
 					<select name="select_dc" id="select_dc">
-						<option value="0">할인받지않음</option>
 						<option value="1">할인받음</option>
+						<option value="0">할인받지않음</option>
 					</select>
 					<select name="select_success" id="select_success">
 						<option value="0">성공</option>
