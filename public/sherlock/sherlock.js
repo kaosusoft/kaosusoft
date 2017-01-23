@@ -31,18 +31,6 @@ var mouseY = 0;
 var reserveData = undefined;
 var reserveDataUpdate = '';
 
-// function chat_input(){
-	// var session = $.cookie("session");
-	// if($('#chat').val().length>0){
-		// socket.emit('quoridor_chat_input', {
-			// session: session,
-			// str: $('#chat').val(),
-			// room: room
-			// });
-		// $('#chat').val('');
-	// }
-// }
-
 $(document).unload(function(){
 	if (socket != undefined) socket.disconnect();
 });
@@ -515,13 +503,13 @@ function Render()
 		}
 		for(var i=0; i<10; i++){
 			if(reserveItem[i] == 0){
-				if(gapPoint >= i*36+Math.floor(j*4.5)){
+				if(gapPoint > i*36+Math.floor(j*4.5)){
 					Context.fillStyle = "#AAAAAA";
 				}else{
 					Context.fillStyle = "#00CC00";
 				}
 			}else{
-				if(gapPoint >= i*36+Math.floor(j*4.5)){
+				if(gapPoint > i*36+Math.floor(j*4.5)){
 					Context.fillStyle = "#AAAAAA";
 				}else{
 					Context.fillStyle = "#FFAAAA";
@@ -534,7 +522,6 @@ function Render()
 	for(var i=0; i<reserveData.gogh.length; i++){
 		// Context.fillText(reserveData.gogh[i], 500+30*i, 30);
 	}
-	
 	
 	
 	if(nowTime > 36000000){
