@@ -121,6 +121,14 @@ h1.title {
 	padding: 10px;
 }
 
+#input_middle{
+	width: 100px;
+}
+
+#input_last{
+	width: 100px;
+}
+
 #input_middle2{
 	width: 100px;
 }

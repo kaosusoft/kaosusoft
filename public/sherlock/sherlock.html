@@ -41,8 +41,8 @@
 				$('.p_time').text(datefunc());
 				
 				$('#btn_search').click(function(){
-					var middle = $('#input_middle2').val();
-					var last = $('#input_last2').val();
+					var middle = $('#input_middle').val();
+					var last = $('#input_last').val();
 					
 					if(checkNumber(middle)){
 						
@@ -330,6 +330,7 @@
 		    		<input type="text" id="input_middle" name="input_middle" required/>
 		    		<label>-</label>
 		    		<input type="text" id="input_last" name="input_last" required/>
+		    		<button id="btn_search" class="btn_search">검색하기</button>
 		    		<hr />
 		    		<p class="p_time">2017년 1월 11일 19시 20분</p>
 		    		<select name="select_theme" id="select_theme">
@@ -350,14 +351,6 @@
 					</select>
 		    		<hr />
 		    		<button id="btn_ok" class="btn_ok">적립하기</button>
-		    	</div>
-		    	<br />
-		    	<br />
-		    	<div class="div_search">
-		    		<label>010-</label>
-		    		<input type="text" id="input_middle2" name="input_middle2" />
-		    		<input type="text" id="input_last2" name="input_last2" />
-		    		<button id="btn_search" class="btn_search">검색하기</button>
 		    	</div>
 		    	<br />
 	    		<% if(data.length>0){ %>
