@@ -509,7 +509,7 @@ function Render()
 					Context.fillStyle = "#00CC00";
 				}
 			}else{
-				if(gapPoint > i*36+Math.floor(j*4.5)){
+				if(gapPoint >= i*36+Math.floor(j*4.5)){
 					Context.fillStyle = "#AAAAAA";
 				}else{
 					Context.fillStyle = "#FFAAAA";
