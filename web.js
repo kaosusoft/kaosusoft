@@ -1500,6 +1500,7 @@ function sherlockRequests(socket){
 		console.log('1');
 		
 		$('.reservTime > ul').each(function(index){
+			console.log('2');
 			var data = [];
 			for(var i=0; i<cycle; i++){
 				var a = $(this).find('a').eq(i).attr('href');
