@@ -892,11 +892,6 @@ io.sockets.on('connection', function(socket){
 	
 	socket.on('sherlockReserveData', function(){
 		socket.emit('sherlockReserveData', reservData);
-		var date = new Date();
-		var dateTime = date.getTime();
-		if(reservData.time < dateTime - 30000){
-			sherlockRequests(socket);
-		}
 		sherlockMemo(socket, true);
 	});
 	
@@ -1458,8 +1453,8 @@ function makeToken(){
 
 var url = 'http://sherlock-holmes.co.kr/sub02_1.html?JIJEM=S27';
 
-sherlockRequests(undefined);
-setInterval(sherlockRequests, 60000);
+sherlockRequests();
+setInterval(sherlockRequests, 20000);
 // 
 
 var sherlock_memo = '';
@@ -1486,7 +1481,7 @@ var reservData = {
 	time: 0
 };
 
-function sherlockRequests(socket){
+function sherlockRequests(){
 	request({
 		url: "http://sherlock-holmes.co.kr/sub_02/sub02_1.html?JIJEM=S27",
 		method: "GET",
@@ -1521,11 +1516,6 @@ function sherlockRequests(socket){
 			}
 			var date = new Date();
 			reservData.time = date.getTime();
-			if(socket == undefined){
-				
-			}else{
-				socket.emit('sherlockReserveData', reservData);
-			}
 			
 		});
 		}catch(e){console.log(e);}
